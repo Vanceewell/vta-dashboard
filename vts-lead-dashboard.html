@@ -1295,22 +1295,18 @@
 
         function sendEmail() {
             const lead = window.currentLead;
-            if (!lead.email) return;
-
-            if (confirm(`Mark "${lead.businessName}" as contacted via email?\n\nThis will move them to "Already Outreached."`)) {
-                const lead_idx = data.potential.findIndex(l => l.id === lead.id);
-                if (lead_idx !== -1) {
-                    const movedLead = data.potential[lead_idx];
-                    data.potential.splice(lead_idx, 1);
-                    movedLead.status = 'outreached';
-                    data.outreached.push(movedLead);
-                    saveData();
-                    renderAll();
-                    populateFilters();
-                    closeDraftModal();
-                    alert('Lead moved to "Already Outreached."');
-                }
+            if (!lead || !lead.email) {
+                alert("No email available for this lead.");
+                return;
             }
+
+            const emailAddress = Array.isArray(lead.email) ? lead.email[0] : lead.email;
+
+            const subject = "Commercial Cleaning Quote";
+
+            const body = `Hi ${lead.businessName},\n\nVTA Cleaning Solutions offers customized commercial cleaning services. I'd love to provide you with a quick quote.\n\nBest,\nVance\nVTA Cleaning Solutions\n949-424-3230`;
+
+            window.location.href = `mailto:${emailAddress}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
 
         function sendText() {
