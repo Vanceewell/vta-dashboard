@@ -1320,7 +1320,12 @@
             try {
                 alert("Fetching 1 Apify lead...");
 
-                const response = await fetch("https://api.apify.com/v2/datasets/yBWXoHE0muxuQamZk/items?limit=1");
+                const controller = new AbortController();
+                setTimeout(() => controller.abort(), 5000);
+
+                const response = await fetch("https://api.apify.com/v2/datasets/yBWXoHE0muxuQamZk/items?token=apify_api_fvpKxtT3JkteKyW6tcxs5f921GYQG52NPa05&format=json&clean=true&limit=1", {
+                    signal: controller.signal
+                });
                 const apifyData = await response.json();
 
                 console.log("Apify data:", apifyData);
