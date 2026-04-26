@@ -1346,10 +1346,61 @@
                     return;
                 }
 
-                const needScore = 8;
-                const decisionScore = 6;
-                const sizeScore = 6;
-                const urgencyScore = 7;
+                const leadText = `${businessName} ${website} ${city}`.toLowerCase();
+
+                let needScore = 6;
+
+                if (
+                    leadText.includes("dentist") ||
+                    leadText.includes("dental") ||
+                    leadText.includes("orthodontist") ||
+                    leadText.includes("oral") ||
+                    leadText.includes("clinic") ||
+                    leadText.includes("medical") ||
+                    leadText.includes("med spa") ||
+                    leadText.includes("chiropractor") ||
+                    leadText.includes("physical therapy") ||
+                    leadText.includes("optometry") ||
+                    leadText.includes("vision") ||
+                    leadText.includes("urgent care") ||
+                    leadText.includes("dermatology")
+                ) {
+                    needScore = 9;
+                }
+                let decisionScore = 7;
+
+                if (
+                    leadText.includes("corporate") ||
+                    leadText.includes("franchise") ||
+                    leadText.includes("group") ||
+                    leadText.includes("national") ||
+                    leadText.includes("chain")
+                ) {
+                    decisionScore = 4;
+                }
+                let sizeScore = 5;
+
+                if (
+                    leadText.includes("clinic") ||
+                    leadText.includes("medical") ||
+                    leadText.includes("dental") ||
+                    leadText.includes("office") ||
+                    leadText.includes("center")
+                ) {
+                    sizeScore = 7;
+                }
+                let urgencyScore = 5;
+
+                if (
+                    leadText.includes("urgent care") ||
+                    leadText.includes("clinic") ||
+                    leadText.includes("medical") ||
+                    leadText.includes("dental") ||
+                    leadText.includes("med spa") ||
+                    leadText.includes("dermatology")
+                ) {
+                    urgencyScore = 8;
+                }
                 const totalScore = needScore + decisionScore + sizeScore + urgencyScore;
 
                 const newLead = {
