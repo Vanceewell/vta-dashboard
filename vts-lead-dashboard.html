@@ -1318,19 +1318,76 @@
 
         async function refreshFromApify() {
             try {
-                alert("Fetching leads...");
+                alert("Fetching 1 Apify lead...");
 
-                const response = await fetch("https://api.apify.com/v2/datasets/yBWXoHE0muxuQamZk/items?limit=5");
+                const response = await fetch("https://api.apify.com/v2/datasets/yBWXoHE0muxuQamZk/items?limit=1");
+                const apifyData = await response.json();
 
-                const data = await response.json();
+                console.log("Apify data:", apifyData);
 
-                console.log("Apify data:", data);
+                if (!apifyData || apifyData.length === 0) {
+                    alert("No leads found from Apify.");
+                    return;
+                }
 
-                alert("Leads loaded. Check console.");
+                const item = apifyData[0];
+
+                const businessName = item.title || item.name || "Unknown Business";
+                const phone = item.phone || "";
+                const website = item.website || "";
+                const city = item.city || item.address || "Unknown";
+
+                const duplicate = data.potential.some(lead =>
+                    lead.businessName === businessName
+                );
+
+                if (duplicate) {
+                    alert("Lead already exists.");
+                    return;
+                }
+
+                const needScore = 8;
+                const decisionScore = 6;
+                const sizeScore = 6;
+                const urgencyScore = 7;
+                const totalScore = needScore + decisionScore + sizeScore + urgencyScore;
+
+                const newLead = {
+                    id: nextId++,
+                    businessName: businessName,
+                    email: "",
+                    phone: phone,
+                    website: website,
+                    city: city,
+                    businessType: "Dentist",
+                    newBuild: "Maybe",
+                    propertyType: "Tenant",
+                    hasCleaner: "Maybe",
+                    needScore: needScore,
+                    decisionScore: decisionScore,
+                    sizeScore: sizeScore,
+                    urgencyScore: urgencyScore,
+                    totalScore: totalScore,
+                    scoreTier: getScoreTier(totalScore),
+                    status: "potential"
+                };
+
+                data.potential.unshift(newLead);
+                data.potential.sort((a, b) => b.totalScore - a.totalScore);
+
+                if (data.potential.length > 50) {
+                    data.potential = data.potential.slice(0, 50);
+                }
+
+                saveData();
+                renderAll();
+                populateFilters();
+
+                alert("1 Apify lead added to Potential Leads.");
 
             } catch (error) {
                 console.error(error);
-                alert("Failed to load leads");
+                alert("Failed to load lead from Apify.");
             }
         }
 
