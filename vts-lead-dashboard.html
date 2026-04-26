@@ -1378,6 +1378,25 @@
                 ) {
                     decisionScore = 4;
                 }
+                let contactTarget = "Business owner or office manager";
+
+                if (
+                    leadText.includes("corporate") ||
+                    leadText.includes("franchise") ||
+                    leadText.includes("group") ||
+                    leadText.includes("national") ||
+                    leadText.includes("chain")
+                ) {
+                    contactTarget = "Front desk or location manager";
+                }
+
+                if (
+                    leadText.includes("property") ||
+                    leadText.includes("management") ||
+                    leadText.includes("building")
+                ) {
+                    contactTarget = "Property manager or building owner";
+                }
                 let sizeScore = 5;
 
                 if (
@@ -1420,7 +1439,8 @@
                     urgencyScore: urgencyScore,
                     totalScore: totalScore,
                     scoreTier: getScoreTier(totalScore),
-                    status: "potential"
+                    status: "potential",
+                    contactTarget: contactTarget
                 };
 
                 data.potential.unshift(newLead);
