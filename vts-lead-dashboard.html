@@ -609,7 +609,7 @@
                 </div>
                 <button onclick="openAddLeadModal()">+ Add Lead</button>
                 <button onclick="alert('Import feature coming next')">Import Leads</button>
-                <button onclick="alert('Apify refresh coming next')">Refresh Leads from Apify</button>
+                <button onclick="refreshFromApify()">Refresh Leads from Apify</button>
             </div>
         </div>
 
@@ -1314,6 +1314,24 @@
 
         function escapeQuotes(text) {
             return text.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        async function refreshFromApify() {
+            try {
+                alert("Fetching leads...");
+
+                const response = await fetch("https://api.apify.com/v2/datasets/yBWXoHE0muxuQamZk/items?limit=5");
+
+                const data = await response.json();
+
+                console.log("Apify data:", data);
+
+                alert("Leads loaded. Check console.");
+
+            } catch (error) {
+                console.error(error);
+                alert("Failed to load leads");
+            }
         }
 
         // Start
