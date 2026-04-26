@@ -982,9 +982,21 @@
 
                             <div class="lead-details">
                                 ${lead.website ? `<div class="lead-detail"><div class="lead-label">Website</div><div class="lead-value"><a href="https://${lead.website}" target="_blank">${lead.website}</a></div></div>` : ''}
-                                ${lead.email ? `<div class="lead-detail"><div class="lead-label">Email</div><div class="lead-value"><a href="mailto:${lead.email}">${lead.email}</a></div></div>` : ''}
+                                ${lead.email ? `
+<div class="lead-detail">
+                                    <div class="lead-label">Email</div>
+                                    <div class="lead-value">
+                                        ${
+                                            Array.isArray(lead.email)
+                                            ? lead.email.slice(0, 3).map(e => `<div><a href="mailto:${e}">${e}</a></div>`).join('')
+                                            : `<a href="mailto:${lead.email}">${lead.email}</a>`
+                                        }
+                                    </div>
+                                </div>
+` : ''}
                                 ${lead.phone ? `<div class="lead-detail"><div class="lead-label">Phone</div><div class="lead-value"><a href="tel:${lead.phone}">${lead.phone}</a></div></div>` : ''}
                                 <div class="lead-detail"><div class="lead-label">Location</div><div class="lead-value">${lead.city}</div></div>
+                                <div class="lead-detail"><div class="lead-label">Who to contact</div><div class="lead-value">${lead.contactTarget || "Business owner or office manager"}</div></div>
                             </div>
 
                             <div class="lead-tags">
@@ -1284,20 +1296,15 @@
             const lead = window.currentLead;
             if (!lead.phone) return;
 
-            if (confirm(`Mark "${lead.businessName}" as contacted via text?\n\nThis will move them to "Already Outreached."`)) {
-                const lead_idx = data.potential.findIndex(l => l.id === lead.id);
-                if (lead_idx !== -1) {
-                    const movedLead = data.potential[lead_idx];
-                    data.potential.splice(lead_idx, 1);
-                    movedLead.status = 'outreached';
-                    data.outreached.push(movedLead);
-                    saveData();
-                    renderAll();
-                    populateFilters();
-                    closeDraftModal();
-                    alert('Lead moved to "Already Outreached."');
-                }
-            }
+            const message = `Hi ${lead.businessName}, this is Vance with VTA Cleaning Solutions. I'm reaching out to see if you're happy with your current commercial cleaning service, or if you'd be open to a quick quote.`;
+
+            const copyText = `${lead.phone}\n${message}`;
+
+            navigator.clipboard.writeText(copyText).then(() => {
+                window.open("https://voice.google.com/u/0/messages", "_blank");
+            }).catch(() => {
+                window.open("https://voice.google.com/u/0/messages", "_blank");
+            });
         }
 
         function closeDraftModal() {
