@@ -791,6 +791,7 @@
                 <div class="draft-title">Text Drafts (3 options) - Send from: 949-424-3230</div>
                 <div id="textDrafts"></div>
                 <button style="width: 100%; margin-top: 12px;" onclick="sendText()" id="sendTextBtn">Send Text</button>
+                <button class="secondary" style="width: 100%; margin-top: 8px;" onclick="markAlreadyOutreached()">Already Outreached</button>
             </div>
 
             <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
@@ -1305,6 +1306,23 @@
             }).catch(() => {
                 window.open("https://voice.google.com/u/0/messages", "_blank");
             });
+        }
+
+        function markAlreadyOutreached() {
+            const lead = window.currentLead;
+            if (!lead) return;
+            const lead_idx = data.potential.findIndex(l => l.id === lead.id);
+            if (lead_idx !== -1) {
+                const movedLead = data.potential[lead_idx];
+                data.potential.splice(lead_idx, 1);
+                movedLead.status = 'outreached';
+                data.outreached.push(movedLead);
+                saveData();
+                renderAll();
+                populateFilters();
+                closeDraftModal();
+                alert('Lead moved to Already Outreached.');
+            }
         }
 
         function closeDraftModal() {
