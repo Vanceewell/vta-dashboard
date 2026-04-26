@@ -1344,8 +1344,16 @@
                 const website = item.website || "";
                 const city = item.city || item.address || "Unknown";
 
-                const duplicate = data.potential.some(lead =>
-                    lead.businessName === businessName
+                const allLeads = [
+                    ...(data.potential || []),
+                    ...(data.outreached || []),
+                    ...(data.notNow || [])
+                ];
+
+                const duplicate = allLeads.some(lead =>
+                    (lead.businessName && lead.businessName === businessName) ||
+                    (lead.phone && phone && lead.phone === phone) ||
+                    (lead.website && website && lead.website === website)
                 );
 
                 if (duplicate) {
