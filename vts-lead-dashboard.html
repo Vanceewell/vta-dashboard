@@ -926,6 +926,21 @@
             }
             renderAll();
             populateFilters();
+            autoFillLeads();
+        }
+
+        async function autoFillLeads() {
+            const TARGET = 19;
+            const MAX_ATTEMPTS = 5;
+            let attempts = 0;
+
+            while (data.potential.length < TARGET && attempts < MAX_ATTEMPTS) {
+                attempts++;
+                const before = data.potential.length;
+                await refreshFromApify();
+                const after = data.potential.length;
+                if (after <= before) break;
+            }
         }
 
         // Data management
