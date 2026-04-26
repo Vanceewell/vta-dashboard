@@ -1250,14 +1250,16 @@
                 `Hi there,\n\nWe work with ${lead.businessType.toLowerCase()}s throughout Orange County to maintain spotless, professional environments. From routine cleaning to specialized needs, we've got you covered.\n\nAvailable for a quick call this week?\n\nBest regards,\nVTS Cleaning Solutions\n949-424-3230`
             ];
 
+            window._emailDrafts = drafts;
+
             let html = '';
             drafts.forEach((draft, index) => {
                 html += `
                     <div class="draft-item">
                         <div class="draft-number">Draft Option ${index + 1}</div>
-                        <div class="draft-text">${draft}</div>
+                        <div class="draft-text">${draft.replace(/\n/g, '<br>')}</div>
                         <div class="draft-actions">
-                            <button class="secondary" onclick="copyToClipboard('${escapeQuotes(draft)}')">Copy</button>
+                            <button class="secondary" onclick="copyToClipboard(window._emailDrafts[${index}])">Copy</button>
                         </div>
                     </div>
                 `;
@@ -1273,6 +1275,8 @@
                 `Hi, VTS Cleaning Solutions. We work with local ${lead.businessType.toLowerCase()}s. Looking to upgrade your cleaning? Let's discuss. 949-424-3230`
             ];
 
+            window._textDrafts = drafts;
+
             let html = '';
             drafts.forEach((draft, index) => {
                 html += `
@@ -1280,7 +1284,7 @@
                         <div class="draft-number">Draft Option ${index + 1}</div>
                         <div class="draft-text">${draft}</div>
                         <div class="draft-actions">
-                            <button class="secondary" onclick="copyToClipboard('${escapeQuotes(draft)}')">Copy</button>
+                            <button class="secondary" onclick="copyToClipboard(window._textDrafts[${index}])">Copy</button>
                         </div>
                     </div>
                 `;
@@ -1347,8 +1351,15 @@
         }
 
         function copyToClipboard(text) {
-            const decoded = text.replace(/\\n/g, '\n');
-            navigator.clipboard.writeText(decoded).then(() => {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(() => {
+                const el = document.createElement('textarea');
+                el.value = text;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
                 alert('Copied to clipboard!');
             });
         }
