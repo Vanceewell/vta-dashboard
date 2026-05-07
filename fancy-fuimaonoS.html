@@ -43,6 +43,7 @@
     html {
       scroll-behavior: smooth;
       font-size: 16px;
+      overflow-x: hidden; /* prevent horizontal scroll on all devices */
     }
 
     body {
@@ -52,6 +53,7 @@
       font-weight: 300;
       line-height: 1.75;
       overflow-x: hidden;
+      width: 100%;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -1592,6 +1594,9 @@
       .nav-links { display: none; }
       .nav-reserve { display: none; }
       .nav-toggle { display: flex; }
+
+      /* Disable parallax/fixed bg on tablets — broken on iOS */
+      .experience-bg { background-attachment: scroll; }
     }
 
     /* ================================================================
@@ -1607,16 +1612,32 @@
       #about, #chef, #menu, #gallery, #reservation, #location { padding: 5rem 0; }
       #experience { padding: 6rem 0; }
 
-      .about-image-wrap img { height: 320px; }
-      .about-badge { width: 85px; height: 85px; }
-      .about-badge-num { font-size: 1.5rem; }
+      /* Hide decorative frames that cause horizontal overflow on small screens */
+      .about-image-wrap::before { display: none; }
+      .chef-image-outer::before,
+      .chef-image-outer::after { display: none; }
 
-      .chef-photo { height: 380px; }
+      /* Keep decorative badges/monograms inside the viewport */
+      .about-image-wrap img { height: 300px; }
+      .about-badge {
+        width: 76px;
+        height: 76px;
+        bottom: 0.5rem;
+        right: 0.5rem;
+      }
+      .about-badge-num { font-size: 1.4rem; }
+
+      .chef-monogram {
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+
+      .chef-photo { height: 360px; }
       .chef-awards { flex-direction: column; gap: 1rem; }
 
       .menu-grid { grid-template-columns: 1fr; }
       .menu-tabs { flex-wrap: wrap; width: 100%; }
-      .menu-tab { flex: 1; min-width: 80px; }
+      .menu-tab { flex: 1; min-width: 80px; text-align: center; }
 
       .pillars { grid-template-columns: 1fr; gap: 2.5rem; }
 
@@ -1632,14 +1653,40 @@
 
       .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
       .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+      .footer-bottom-links { flex-wrap: wrap; justify-content: center; }
 
       .hero-cta-group { flex-direction: column; align-items: center; }
-      .btn-primary, .btn-ghost { width: 100%; text-align: center; }
+      .btn-primary, .btn-ghost { width: 100%; max-width: 320px; text-align: center; }
 
       .about-stats { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 
       .location-inner { gap: 3rem; }
-      .location-map-placeholder { height: 280px; }
+      .location-map-placeholder { height: 260px; }
+
+      /* Clip sections that had decorative elements protruding outside */
+      #about, #chef { overflow: hidden; }
+    }
+
+    /* ================================================================
+       EXTRA SMALL — iPhone SE / mini (max 389px)
+    ================================================================ */
+    @media (max-width: 389px) {
+      .section-inner { padding: 0 1rem; }
+      .nav-logo { font-size: 0.88rem; letter-spacing: 0.12em; }
+
+      .hero-title { font-size: clamp(2.8rem, 14vw, 3.5rem); }
+
+      .stat-num { font-size: 1.6rem; }
+      .stat-label { font-size: 0.48rem; }
+
+      .menu-tab { font-size: 0.52rem; padding: 0.7rem 0.8rem; }
+
+      .reservation-form { padding: 1.2rem 1rem; }
+
+      /* Gallery: single column on tiny screens */
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item:nth-child(1),
+      .gallery-item:nth-child(4) { grid-column: span 1; }
     }
 
     /* ================================================================
