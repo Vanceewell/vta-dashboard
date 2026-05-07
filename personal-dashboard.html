@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Command Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-input: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: #333333;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        body.light-mode {
+            --bg-dark: #f9f9f9;
+            --bg-card: #ffffff;
+            --bg-input: #f0f0f0;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .header-date {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button.secondary {
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        button.secondary:hover {
+            background-color: var(--border);
+        }
+
+        button.danger {
+            background-color: var(--danger);
+        }
+
+        button.danger:hover {
+            background-color: #dc2626;
+        }
+
+        button.success {
+            background-color: var(--success);
+        }
+
+        button.success:hover {
+            background-color: #059669;
+        }
+
+        .theme-toggle {
+            width: 50px;
+            height: 28px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        .theme-toggle.active {
+            background-color: var(--accent);
+        }
+
+        .theme-toggle::after {
+            content: '🌙';
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            transform: translateY(-50%);
+            font-size: 14px;
+            transition: left 0.3s;
+        }
+
+        .theme-toggle.active::after {
+            content: '☀️';
+            left: calc(100% - 22px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .task-category {
+            margin-bottom: 16px;
+        }
+
+        .task-category-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 8px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background-color: var(--bg-input);
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .task-item:hover {
+            background-color: var(--border);
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--success);
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .task-remove {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-remove:hover {
+            color: var(--danger);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        input[type="text"],
+        input[type="time"],
+        select,
+        textarea {
+            flex: 1;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus,
+        input[type="time"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .schedule-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .time-block {
+            padding: 12px;
+            background-color: var(--bg-input);
+            border-left: 4px solid var(--text-secondary);
+            border-radius: 6px;
+            transition: border-color 0.2s;
+        }
+
+        .time-block.current {
+            border-left-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .time-block.past {
+            opacity: 0.5;
+        }
+
+        .time-block-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .time-block-title {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .time-block-label {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 6px;
+            background-color: var(--border);
+            border-radius: 3px;
+            color: var(--text-secondary);
+        }
+
+        .next-up {
+            padding: 12px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .next-up-label {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .next-up-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .next-up-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .person-item {
+            padding: 12px;
+            background-color: var(--bg-input);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .person-item.completed {
+            opacity: 0.6;
+        }
+
+        .person-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .person-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--success);
+        }
+
+        .person-info {
+            flex: 1;
+        }
+
+        .person-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .person-reason {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .person-priority {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .person-priority.high {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .person-priority.medium {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .person-priority.low {
+            background-color: rgba(107, 114, 128, 0.2);
+            color: var(--text-secondary);
+        }
+
+        .person-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .person-actions button {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .person-actions button.draft {
+            background-color: var(--accent);
+        }
+
+        .person-actions button.remove {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .person-actions button.remove:hover {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .quick-actions button {
+            padding: 12px 16px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 24px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-form .input-group {
+            margin-bottom: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background-color: var(--bg-input);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Daily Command Center</h1>
+                <div class="header-date" id="currentDate"></div>
+            </div>
+            <div class="header-controls">
+                <button class="secondary" onclick="resetDay()">Reset Day</button>
+                <div class="theme-toggle" onclick="toggleTheme()" id="themeToggle"></div>
+            </div>
+        </div>
+
+        <!-- Checklist Section -->
+        <div class="grid">
+            <div class="card">
+                <h2>Today's Checklist</h2>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number" id="tasksTotal">0</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="tasksComplete">0</div>
+                        <div class="stat-label">Done</div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="Add a task...">
+                    <select id="taskCategory">
+                        <option value="must">Must Do</option>
+                        <option value="should">Should Do</option>
+                        <option value="optional">Optional</option>
+                    </select>
+                    <button onclick="addTask()">Add</button>
+                </div>
+                <div class="task-list" id="taskList"></div>
+            </div>
+
+            <!-- Schedule Section -->
+            <div class="card">
+                <h2>Daily Schedule</h2>
+                <div id="nextUp"></div>
+                <div class="input-group">
+                    <input type="time" id="scheduleTime">
+                    <input type="text" id="scheduleTitle" placeholder="Activity...">
+                    <button onclick="addScheduleItem()">Add</button>
+                </div>
+                <div class="schedule-timeline" id="scheduleList"></div>
+            </div>
+        </div>
+
+        <!-- People to Reach Out To -->
+        <div class="card full">
+            <h2>People to Reach Out To</h2>
+            <div class="input-group">
+                <input type="text" id="personName" placeholder="Person's name...">
+                <input type="text" id="personReason" placeholder="Reason...">
+                <select id="personPriority">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <button onclick="addPerson()">Add</button>
+            </div>
+            <div id="personList"></div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="grid">
+            <div class="card">
+                <h2>Notes / Brain Dump</h2>
+                <textarea id="notesInput" placeholder="Quick thoughts, reminders, ideas..."></textarea>
+                <button onclick="saveNotes()" style="margin-top: 12px;">Save</button>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <h2>Quick Actions</h2>
+                <div class="quick-actions">
+                    <button onclick="openTaskModal()">+ Task</button>
+                    <button onclick="openScheduleModal()">+ Schedule</button>
+                    <button onclick="openPersonModal()">+ Person</button>
+                    <button onclick="clearCompletedTasks()" class="danger">Clear Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('taskModal')">×</button>
+            <div class="modal-title">Add Task</div>
+            <div class="modal-form">
+                <input type="text" id="modalTaskInput" placeholder="Task description...">
+                <select id="modalTaskCategory">
+                    <option value="must">Must Do</option>
+                    <option value="should">Should Do</option>
+                    <option value="optional">Optional</option>
+                </select>
+                <div class="modal-actions">
+                    <button onclick="closeModal('taskModal')" class="secondary">Cancel</button>
+                    <button onclick="addTaskFromModal()">Add Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('scheduleModal')">×</button>
+            <div class="modal-title">Add Schedule Item</div>
+            <div class="modal-form">
+                <input type="time" id="modalScheduleTime">
+                <input type="text" id="modalScheduleTitle" placeholder="Activity...">
+                <div class="modal-actions">
+                    <button onclick="closeModal('scheduleModal')" class="secondary">Cancel</button>
+                    <button onclick="addScheduleFromModal()">Add Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="personModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('personModal')">×</button>
+            <div class="modal-title">Add Person</div>
+            <div class="modal-form">
+                <input type="text" id="modalPersonName" placeholder="Name...">
+                <input type="text" id="modalPersonReason" placeholder="Reason to reach out...">
+                <select id="modalPersonPriority">
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+                <div class="modal-actions">
+                    <button onclick="closeModal('personModal')" class="secondary">Cancel</button>
+                    <button onclick="addPersonFromModal()">Add Person</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data structure
+        const DATA_KEY = 'dashboardData';
+        
+        let data = {
+            tasks: [],
+            schedule: [],
+            people: [],
+            notes: ''
+        };
+
+        // Initialize
+        function init() {
+            loadData();
+            updateDate();
+            renderAll();
+            setupAutoSave();
+        }
+
+        // Data management
+        function loadData() {
+            const stored = localStorage.getItem(DATA_KEY);
+            if (stored) {
+                try {
+                    data = JSON.parse(stored);
+                } catch (e) {
+                    console.error('Error loading data:', e);
+                }
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(DATA_KEY, JSON.stringify(data));
+        }
+
+        function setupAutoSave() {
+            document.getElementById('notesInput').addEventListener('change', saveData);
+        }
+
+        // Date and time
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Tasks
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const category = document.getElementById('taskCategory').value;
+            
+            if (input.value.trim()) {
+                data.tasks.push({
+                    id: Date.now(),
+                    text: input.value.trim(),
+                    category: category,
+                    completed: false
+                });
+                saveData();
+                input.value = '';
+                renderTasks();
+            }
+        }
+
+        function addTaskFromModal() {
+            const input = document.getElementById('modalTaskInput');
+            const category = document.getElementById('modalTaskCategory').value;
+            
+            if (input.value.trim()) {
+                data.tasks.push({
+                    id: Date.now(),
+                    text: input.value.trim(),
+                    category: category,
+                    completed: false
+                });
+                saveData();
+                closeModal('taskModal');
+                renderTasks();
+            }
+        }
+
+        function toggleTask(id) {
+            const task = data.tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveData();
+                renderTasks();
+            }
+        }
+
+        function removeTask(id) {
+            data.tasks = data.tasks.filter(t => t.id !== id);
+            saveData();
+            renderTasks();
+        }
+
+        function clearCompletedTasks() {
+            data.tasks = data.tasks.filter(t => !t.completed);
+            saveData();
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('taskList');
+            const categories = {
+                must: 'Must Do Today',
+                should: 'Should Do',
+                optional: 'Optional'
+            };
+
+            let html = '';
+            
+            for (const [catKey, catLabel] of Object.entries(categories)) {
+                const tasks = data.tasks.filter(t => t.category === catKey);
+                if (tasks.length > 0) {
+                    html += `<div class="task-category">`;
+                    html += `<div class="task-category-title">${catLabel}</div>`;
+                    tasks.forEach(task => {
+                        html += `
+                            <div class="task-item ${task.completed ? 'completed' : ''}">
+                                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
+                                       onchange="toggleTask(${task.id})">
+                                <span class="task-text">${escapeHtml(task.text)}</span>
+                                <button class="task-remove" onclick="removeTask(${task.id})">×</button>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+            }
+
+            if (data.tasks.length === 0) {
+                html = '<div class="empty-state">No tasks yet. Add one to get started.</div>';
+            }
+
+            list.innerHTML = html;
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = data.tasks.length;
+            const completed = data.tasks.filter(t => t.completed).length;
+            document.getElementById('tasksTotal').textContent = total;
+            document.getElementById('tasksComplete').textContent = completed;
+        }
+
+        // Schedule
+        function addScheduleItem() {
+            const time = document.getElementById('scheduleTime').value;
+            const title = document.getElementById('scheduleTitle').value;
+            
+            if (time && title.trim()) {
+                data.schedule.push({
+                    id: Date.now(),
+                    time: time,
+                    title: title.trim()
+                });
+                data.schedule.sort((a, b) => a.time.localeCompare(b.time));
+                saveData();
+                document.getElementById('scheduleTime').value = '';
+                document.getElementById('scheduleTitle').value = '';
+                renderSchedule();
+            }
+        }
+
+        function addScheduleFromModal() {
+            const time = document.getElementById('modalScheduleTime').value;
+            const title = document.getElementById('modalScheduleTitle').value;
+            
+            if (time && title.trim()) {
+                data.schedule.push({
+                    id: Date.now(),
+                    time: time,
+                    title: title.trim()
+                });
+                data.schedule.sort((a, b) => a.time.localeCompare(b.time));
+                saveData();
+                closeModal('scheduleModal');
+                renderSchedule();
+            }
+        }
+
+        function removeScheduleItem(id) {
+            data.schedule = data.schedule.filter(s => s.id !== id);
+            saveData();
+            renderSchedule();
+        }
+
+        function renderSchedule() {
+            const list = document.getElementById('scheduleList');
+            const nextUpEl = document.getElementById('nextUp');
+            
+            if (data.schedule.length === 0) {
+                list.innerHTML = '<div class="empty-state">No schedule yet. Add an item to organize your day.</div>';
+                nextUpEl.innerHTML = '';
+                return;
+            }
+
+            const now = new Date();
+            const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            
+            let nextItem = null;
+            let html = '';
+            
+            data.schedule.forEach((item, index) => {
+                const isPast = item.time < currentTimeStr;
+                const isCurrent = !isPast && (index === data.schedule.length - 1 || data.schedule[index + 1].time > currentTimeStr);
+                
+                if (!nextItem && !isPast) {
+                    nextItem = item;
+                }
+                
+                const [hours, mins] = item.time.split(':');
+                const timeObj = new Date();
+                timeObj.setHours(parseInt(hours), parseInt(mins));
+                const timeStr = timeObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                
+                html += `
+                    <div class="time-block ${isCurrent ? 'current' : ''} ${isPast ? 'past' : ''}">
+                        <div class="time-block-time">${timeStr}</div>
+                        <div class="time-block-title">${escapeHtml(item.title)}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                            <span class="time-block-label">${isPast ? 'Past' : isCurrent ? 'Current' : 'Upcoming'}</span>
+                            <button class="task-remove" onclick="removeScheduleItem(${item.id})" style="padding: 0; width: auto; margin-right: -8px;">×</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+
+            // Next up
+            if (nextItem) {
+                const [hours, mins] = nextItem.time.split(':');
+                const timeObj = new Date();
+                timeObj.setHours(parseInt(hours), parseInt(mins));
+                const timeStr = timeObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                
+                nextUpEl.innerHTML = `
+                    <div class="next-up">
+                        <div class="next-up-label">Next Up</div>
+                        <div class="next-up-title">${escapeHtml(nextItem.title)}</div>
+                        <div class="next-up-time">${timeStr}</div>
+                    </div>
+                `;
+            } else {
+                nextUpEl.innerHTML = '';
+            }
+        }
+
+        // People
+        function addPerson() {
+            const name = document.getElementById('personName').value;
+            const reason = document.getElementById('personReason').value;
+            const priority = document.getElementById('personPriority').value;
+            
+            if (name.trim() && reason.trim()) {
+                data.people.push({
+                    id: Date.now(),
+                    name: name.trim(),
+                    reason: reason.trim(),
+                    priority: priority,
+                    completed: false
+                });
+                saveData();
+                document.getElementById('personName').value = '';
+                document.getElementById('personReason').value = '';
+                renderPeople();
+            }
+        }
+
+        function addPersonFromModal() {
+            const name = document.getElementById('modalPersonName').value;
+            const reason = document.getElementById('modalPersonReason').value;
+            const priority = document.getElementById('modalPersonPriority').value;
+            
+            if (name.trim() && reason.trim()) {
+                data.people.push({
+                    id: Date.now(),
+                    name: name.trim(),
+                    reason: reason.trim(),
+                    priority: priority,
+                    completed: false
+                });
+                saveData();
+                closeModal('personModal');
+                renderPeople();
+            }
+        }
+
+        function togglePerson(id) {
+            const person = data.people.find(p => p.id === id);
+            if (person) {
+                person.completed = !person.completed;
+                saveData();
+                renderPeople();
+            }
+        }
+
+        function removePerson(id) {
+            data.people = data.people.filter(p => p.id !== id);
+            saveData();
+            renderPeople();
+        }
+
+        function draftMessage(id) {
+            const person = data.people.find(p => p.id === id);
+            if (person) {
+                const message = `Hi ${person.name}! ${person.reason}`;
+                alert(`Draft message:\n\n"${message}"\n\nCopy this and send it!`);
+            }
+        }
+
+        function renderPeople() {
+            const list = document.getElementById('personList');
+            
+            if (data.people.length === 0) {
+                list.innerHTML = '<div class="empty-state">No one to reach out to yet. Add a person to stay connected.</div>';
+                return;
+            }
+
+            // Sort by priority
+            const sorted = [...data.people].sort((a, b) => {
+                const priorityMap = { high: 0, medium: 1, low: 2 };
+                return priorityMap[a.priority] - priorityMap[b.priority];
+            });
+
+            let html = '';
+            sorted.forEach(person => {
+                html += `
+                    <div class="person-item ${person.completed ? 'completed' : ''}">
+                        <div class="person-header">
+                            <input type="checkbox" class="person-checkbox" ${person.completed ? 'checked' : ''} 
+                                   onchange="togglePerson(${person.id})">
+                            <div class="person-info">
+                                <div class="person-name">${escapeHtml(person.name)}</div>
+                                <div class="person-reason">${escapeHtml(person.reason)}</div>
+                                <span class="person-priority ${person.priority}">${person.priority.charAt(0).toUpperCase() + person.priority.slice(1)} Priority</span>
+                            </div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="draft" onclick="draftMessage(${person.id})">Draft Message</button>
+                            <button class="remove" onclick="removePerson(${person.id})">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        // Notes
+        function saveNotes() {
+            data.notes = document.getElementById('notesInput').value;
+            saveData();
+            alert('Notes saved!');
+        }
+
+        function loadNotes() {
+            document.getElementById('notesInput').value = data.notes;
+        }
+
+        // Theme
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            updateThemeToggle();
+        }
+
+        function updateThemeToggle() {
+            const toggle = document.getElementById('themeToggle');
+            if (document.body.classList.contains('light-mode')) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                updateThemeToggle();
+            }
+        }
+
+        // Modals
+        function openTaskModal() {
+            document.getElementById('taskModal').classList.add('active');
+            document.getElementById('modalTaskInput').focus();
+        }
+
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').classList.add('active');
+            document.getElementById('modalScheduleTime').focus();
+        }
+
+        function openPersonModal() {
+            document.getElementById('personModal').classList.add('active');
+            document.getElementById('modalPersonName').focus();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // Reset day
+        function resetDay() {
+            if (confirm('Reset all today\'s tasks and schedule? (Notes and people will be saved)')) {
+                data.tasks = [];
+                data.schedule = [];
+                saveData();
+                renderAll();
+            }
+        }
+
+        // Render all
+        function renderAll() {
+            renderTasks();
+            renderSchedule();
+            renderPeople();
+            loadNotes();
+        }
+
+        // Utility
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const taskModal = document.getElementById('taskModal');
+                const scheduleModal = document.getElementById('scheduleModal');
+                const personModal = document.getElementById('personModal');
+
+                if (taskModal.classList.contains('active')) {
+                    addTaskFromModal();
+                } else if (scheduleModal.classList.contains('active')) {
+                    addScheduleFromModal();
+                } else if (personModal.classList.contains('active')) {
+                    addPersonFromModal();
+                }
+            }
+        });
+
+        // Start
+        loadTheme();
+        init();
+    </script>
+</body>
+</html>

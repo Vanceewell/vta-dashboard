@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Jason's Glass Tint — Premium window tinting in San Clemente, CA. Residential, commercial, automotive, and marine tinting since 1989. Owner-installed. Text for a quote." />
+  <meta name="keywords" content="window tinting San Clemente, window tint Dana Point, automotive tint San Clemente, residential window tint Orange County, marine tinting, window film South Orange County" />
+  <title>Jason's Glass Tint | Premium Window Tinting — San Clemente, CA</title>
+
+  <!-- Fonts: Cormorant Garamond (display) + Montserrat (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       ============================================================ */
+    :root {
+      --black:       #0D0B09;
+      --dark:        #1C1917;
+      --charcoal:    #2C2825;
+      --mid:         #44403C;
+      --muted:       #78716C;
+      --border:      #2E2A26;
+      --gold:        #C9A84C;
+      --gold-light:  #E2C47A;
+      --gold-dim:    #8A6F30;
+      --warm-white:  #FAFAF9;
+      --off-white:   #F5F3F0;
+      --text-light:  #E7E5E4;
+      --text-muted:  #A8A29E;
+
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'Montserrat', sans-serif;
+
+      --radius-sm:  4px;
+      --radius-md:  8px;
+      --radius-lg:  14px;
+
+      --transition: 220ms ease;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--warm-white);
+      color: var(--dark);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ============================================================
+       UTILITY
+       ============================================================ */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .gold-line {
+      display: block;
+      width: 48px;
+      height: 2px;
+      background: var(--gold);
+      margin: 0 auto 20px;
+    }
+
+    .gold-line--left {
+      margin: 0 0 20px;
+    }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* ============================================================
+       NAV
+       ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 18px 0;
+      background: transparent;
+      transition: background var(--transition), padding var(--transition);
+    }
+
+    .nav.scrolled {
+      background: rgba(13, 11, 9, 0.97);
+      backdrop-filter: blur(8px);
+      padding: 12px 0;
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav__logo {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--warm-white);
+      letter-spacing: 0.04em;
+    }
+
+    .nav__logo span {
+      color: var(--gold);
+    }
+
+    .nav__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: var(--dark);
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      border: none;
+    }
+
+    .nav__cta:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      background: var(--black);
+      overflow: hidden;
+    }
+
+    /* Dark gradient texture background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(201,168,76,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 50%),
+        linear-gradient(160deg, #0D0B09 0%, #1C1917 50%, #0D0B09 100%);
+      z-index: 0;
+    }
+
+    /* Subtle grid texture */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      padding: 120px 0 80px;
+    }
+
+    .hero__eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero__eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--warm-white);
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+
+    .hero__title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero__title strong {
+      font-weight: 600;
+      display: block;
+    }
+
+    .hero__sub {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: var(--dark);
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 16px 32px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: none;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201,168,76,0.25);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text-light);
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 16px 28px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: border-color var(--transition), color var(--transition), transform var(--transition);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      color: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    .hero__badge {
+      margin-top: 64px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .hero__badge-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero__badge-num {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .hero__badge-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero__scroll span {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .hero__scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* ============================================================
+       TRUST BAR
+       ============================================================ */
+    .trust-bar {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+
+    .trust-bar__inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      justify-content: center;
+    }
+
+    .trust-bar__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 28px;
+      border-right: 1px solid var(--border);
+    }
+
+    .trust-bar__item:last-child {
+      border-right: none;
+    }
+
+    .trust-bar__icon {
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .trust-bar__text {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      white-space: nowrap;
+    }
+
+    /* ============================================================
+       SECTION: ABOUT / TRUST
+       ============================================================ */
+    .about {
+      padding: 100px 0;
+      background: var(--warm-white);
+    }
+
+    .about__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about__visual {
+      position: relative;
+    }
+
+    .about__img-frame {
+      position: relative;
+      background: var(--dark);
+      border-radius: var(--radius-lg);
+      aspect-ratio: 4/5;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Placeholder visual for draft */
+    .about__img-placeholder {
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(135deg, #1C1917 0%, #2C2825 50%, #1C1917 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .about__img-placeholder svg {
+      opacity: 0.2;
+    }
+
+    .about__img-placeholder p {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .about__accent-block {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      width: 120px;
+      height: 120px;
+      background: var(--gold);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .about__accent-num {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1;
+    }
+
+    .about__accent-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      text-align: center;
+    }
+
+    .about__text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--dark);
+      margin-bottom: 24px;
+    }
+
+    .about__text h2 em {
+      font-style: italic;
+      color: var(--gold-dim);
+    }
+
+    .about__text p {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--mid);
+      margin-bottom: 18px;
+    }
+
+    .about__text p strong {
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       SECTION: SERVICES
+       ============================================================ */
+    .services {
+      padding: 100px 0;
+      background: var(--dark);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--warm-white);
+      margin-bottom: 16px;
+    }
+
+    .section-header h2 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .section-header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    .services__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .service-card {
+      background: var(--charcoal);
+      padding: 44px 40px;
+      position: relative;
+      transition: background var(--transition);
+      cursor: default;
+    }
+
+    .service-card:hover {
+      background: #2E2A26;
+    }
+
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 40px;
+      right: 40px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .service-card:nth-child(3)::after,
+    .service-card:nth-child(4)::after {
+      display: none;
+    }
+
+    .service-card__icon {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: var(--gold);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .service-card:hover .service-card__icon {
+      background: rgba(201,168,76,0.08);
+      border-color: var(--gold);
+    }
+
+    .service-card__title {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--warm-white);
+      margin-bottom: 12px;
+      letter-spacing: 0.01em;
+    }
+
+    .service-card__desc {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+
+    .service-card__tag {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border-bottom: 1px solid var(--gold-dim);
+      padding-bottom: 2px;
+    }
+
+    /* ============================================================
+       SECTION: WHY JASON
+       ============================================================ */
+    .why {
+      padding: 100px 0;
+      background: var(--warm-white);
+    }
+
+    .why__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .why__left h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--dark);
+      margin-bottom: 24px;
+    }
+
+    .why__left h2 em {
+      font-style: italic;
+      color: var(--gold-dim);
+    }
+
+    .why__left p {
+      font-size: 0.9rem;
+      line-height: 1.85;
+      color: var(--mid);
+      margin-bottom: 16px;
+    }
+
+    .why__points {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .why__point {
+      display: flex;
+      gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid #E7E5E0;
+    }
+
+    .why__point:first-child {
+      border-top: 1px solid #E7E5E0;
+    }
+
+    .why__point-num {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      min-width: 32px;
+      margin-top: 2px;
+    }
+
+    .why__point-body h4 {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .why__point-body p {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       SECTION: SERVICE AREA
+       ============================================================ */
+    .area {
+      padding: 90px 0;
+      background: var(--off-white);
+      border-top: 1px solid #E7E5E0;
+      border-bottom: 1px solid #E7E5E0;
+    }
+
+    .area__inner {
+      text-align: center;
+    }
+
+    .area__inner h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 300;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+
+    .area__inner h2 em {
+      font-style: italic;
+      color: var(--gold-dim);
+    }
+
+    .area__inner > p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 44px;
+    }
+
+    .area__cities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .area__city {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--warm-white);
+      border: 1px solid #D9D5D0;
+      border-radius: 100px;
+      padding: 10px 20px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--dark);
+      letter-spacing: 0.02em;
+    }
+
+    .area__city svg {
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .area__note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ============================================================
+       SECTION: QUOTE INSTRUCTIONS
+       ============================================================ */
+    .quote {
+      padding: 100px 0;
+      background: var(--dark);
+    }
+
+    .quote__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    .quote__header {
+      grid-column: 1 / -1;
+      text-align: center;
+    }
+
+    .quote__header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 300;
+      color: var(--warm-white);
+      margin-bottom: 12px;
+    }
+
+    .quote__header h2 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .quote__header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .quote-card {
+      background: var(--charcoal);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+    }
+
+    .quote-card__type {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .quote-card__type svg {
+      flex-shrink: 0;
+    }
+
+    .quote-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--warm-white);
+      margin-bottom: 20px;
+    }
+
+    .quote-card__list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .quote-card__list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .quote-card__list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .quote-card__list li strong {
+      color: var(--text-light);
+    }
+
+    .quote-card__cta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+    }
+
+    .quote-card__cta svg {
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .quote-card__cta p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .quote-card__cta strong {
+      color: var(--gold);
+      font-size: 0.85rem;
+    }
+
+    /* ============================================================
+       SECTION: FINAL CTA
+       ============================================================ */
+    .cta-section {
+      padding: 110px 0;
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,168,76,0.06) 0%, transparent 70%);
+    }
+
+    .cta-section__inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 300;
+      color: var(--warm-white);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .cta-section h2 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .cta-section p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 440px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+
+    .cta-section__actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .cta-section__note {
+      margin-top: 28px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .footer {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+
+    .footer__inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer__logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--warm-white);
+      letter-spacing: 0.04em;
+    }
+
+    .footer__logo span {
+      color: var(--gold);
+    }
+
+    .footer__copy {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .footer__location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .footer__location svg {
+      color: var(--gold);
+    }
+
+    /* ============================================================
+       MOBILE STICKY CTA
+       ============================================================ */
+    .sticky-cta {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      padding: 12px 20px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+    }
+
+    .sticky-cta a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--gold);
+      color: var(--dark);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .sticky-cta a:hover {
+      background: var(--gold-light);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 900px) {
+      .about__inner,
+      .why__inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .about__visual {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .services__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .service-card:nth-child(3)::after {
+        display: block;
+      }
+
+      .quote__inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .container {
+        padding: 0 20px;
+      }
+
+      .nav__cta {
+        display: none;
+      }
+
+      .hero {
+        min-height: 100svh;
+      }
+
+      .hero__content {
+        padding: 100px 0 100px;
+      }
+
+      .hero__badge {
+        gap: 24px;
+        margin-top: 48px;
+      }
+
+      .trust-bar__inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        padding: 0 24px;
+      }
+
+      .trust-bar__item {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 14px 0;
+        width: 100%;
+      }
+
+      .trust-bar__item:last-child {
+        border-bottom: none;
+      }
+
+      .about,
+      .services,
+      .why,
+      .quote,
+      .cta-section {
+        padding: 72px 0;
+      }
+
+      .area {
+        padding: 64px 0;
+      }
+
+      .service-card {
+        padding: 32px 28px;
+      }
+
+      .why__point {
+        gap: 16px;
+      }
+
+      .sticky-cta {
+        display: block;
+      }
+
+      body {
+        padding-bottom: 76px;
+      }
+
+      .footer__inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .hero__badge {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .hero__actions {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero__actions .btn-primary,
+      .hero__actions .btn-ghost {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* ============================================================
+       FOCUS / ACCESSIBILITY
+       ============================================================ */
+    :focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+      border-radius: var(--radius-sm);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       NAV
+       ============================================================ -->
+  <nav class="nav" id="nav">
+    <div class="container">
+      <div class="nav__inner">
+        <div class="nav__logo">Jason's <span>Glass Tint</span></div>
+        <a href="sms:+1?body=Hi Jason, I'd like to get a quote for window tinting." class="nav__cta" aria-label="Text Jason for a quote">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Text for a Quote
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero__content">
+
+        <div class="hero__eyebrow">
+          San Clemente, California &mdash; Est. 1989
+        </div>
+
+        <h1 class="hero__title">
+          <em>Expert</em>
+          <strong>Window Tinting</strong>
+        </h1>
+
+        <p class="hero__sub">
+          Premium film. Personal craftsmanship. 40 years of experience.
+        </p>
+
+        <div class="hero__actions">
+          <a href="sms:+1?body=Hi Jason, I'd like to get a quote for window tinting." class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Text Jason for a Quote
+          </a>
+          <a href="#services" class="btn-ghost">
+            View Services
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          </a>
+        </div>
+
+        <div class="hero__badge">
+          <div class="hero__badge-item">
+            <span class="hero__badge-num">40</span>
+            <span class="hero__badge-label">Years Experience</span>
+          </div>
+          <div class="hero__badge-item">
+            <span class="hero__badge-num">1989</span>
+            <span class="hero__badge-label">Established</span>
+          </div>
+          <div class="hero__badge-item">
+            <span class="hero__badge-num">4</span>
+            <span class="hero__badge-label">Service Categories</span>
+          </div>
+          <div class="hero__badge-item">
+            <span class="hero__badge-num">1</span>
+            <span class="hero__badge-label">Person. Jason.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="hero__scroll" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TRUST BAR
+       ============================================================ -->
+  <div class="trust-bar">
+    <div class="container">
+      <div class="trust-bar__inner">
+        <div class="trust-bar__item">
+          <svg class="trust-bar__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span class="trust-bar__text">Owner-Installed — Every Job</span>
+        </div>
+        <div class="trust-bar__item">
+          <svg class="trust-bar__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span class="trust-bar__text">Premium-Grade Film Only</span>
+        </div>
+        <div class="trust-bar__item">
+          <svg class="trust-bar__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="trust-bar__text">Serving South OC Since 1989</span>
+        </div>
+        <div class="trust-bar__item">
+          <svg class="trust-bar__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span class="trust-bar__text">Residential · Commercial · Auto · Marine</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ABOUT / EXPERIENCE
+       ============================================================ -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about__inner">
+
+        <div class="about__visual">
+          <div class="about__img-frame">
+            <div class="about__img-placeholder">
+              <!-- Placeholder for Jason's photo -->
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <p>Photo of Jason</p>
+            </div>
+          </div>
+          <div class="about__accent-block">
+            <span class="about__accent-num">40</span>
+            <span class="about__accent-label">Years of<br/>Craft</span>
+          </div>
+        </div>
+
+        <div class="about__text">
+          <span class="section-label">About Jason</span>
+          <span class="gold-line gold-line--left"></span>
+
+          <h2>
+            <em>One craftsman.</em><br />
+            Four decades of<br />flawless installs.
+          </h2>
+
+          <p>
+            Jason has been tinting glass in South Orange County since <strong>1989</strong> — before many of his customers were born. He built his reputation the old-fashioned way: by doing the work himself, using only the best materials, and standing behind every install.
+          </p>
+
+          <p>
+            There are no crews, no subcontractors, no unskilled helpers. When you hire Jason's Glass Tint, <strong>Jason personally installs your film</strong> — every residential window, every commercial pane, every vehicle, every boat.
+          </p>
+
+          <p>
+            He uses <strong>premium-grade window film only</strong>. No good / better / best tiers. No cheap film dressed up with a big markup. Just quality film, properly installed, the first time.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SERVICES
+       ============================================================ -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">What We Do</span>
+        <span class="gold-line"></span>
+        <h2>Every surface.<br /><em>One specialist.</em></h2>
+        <p>From homes and offices to vehicles and boats — Jason brings the same premium film and personal expertise to every project.</p>
+      </div>
+
+      <div class="services__grid">
+
+        <!-- Residential -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="service-card__title">Residential Tinting</div>
+          <p class="service-card__desc">Reduce heat, block UV, and add privacy to your home's windows. Premium film that protects your furniture, floors, and family — installed perfectly by Jason himself.</p>
+          <span class="service-card__tag">Homes &amp; Condos</span>
+        </div>
+
+        <!-- Commercial -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <div class="service-card__title">Commercial Tinting</div>
+          <p class="service-card__desc">Keep your workspace cooler, protect merchandise and interiors, and give your building a clean, professional appearance. Trusted by businesses across South Orange County for over 35 years.</p>
+          <span class="service-card__tag">Offices &amp; Buildings</span>
+        </div>
+
+        <!-- Automotive -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div class="service-card__title">Automotive Tinting</div>
+          <p class="service-card__desc">Precision-cut film for cars, trucks, SUVs, and vans. Significantly reduces interior heat, blocks harmful UV rays, and enhances your vehicle's appearance with clean, bubble-free results.</p>
+          <span class="service-card__tag">Cars, Trucks &amp; SUVs</span>
+        </div>
+
+        <!-- Marine -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1 2.4 2.4 0 0 0 2-1 2.4 2.4 0 0 1 2-1 2.4 2.4 0 0 1 2 1 2.4 2.4 0 0 0 2 1 2.4 2.4 0 0 0 2-1 2.4 2.4 0 0 1 2-1 2.4 2.4 0 0 1 2 1"/><path d="M4 18 3 8l5.5 2L12 4l3.5 6L21 8l-1 10"/></svg>
+          </div>
+          <div class="service-card__title">Marine Tinting</div>
+          <p class="service-card__desc">Protect your boat's interior from the brutal Southern California sun. Marine-grade film applied to portholes, cabin glass, and windshields — built for saltwater environments and coastal conditions.</p>
+          <span class="service-card__tag">Boats &amp; Watercraft</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       WHY JASON
+       ============================================================ -->
+  <section class="why" id="why">
+    <div class="container">
+      <div class="why__inner">
+
+        <div class="why__left">
+          <span class="section-label">Why Choose Jason</span>
+          <span class="gold-line gold-line--left"></span>
+          <h2>
+            The difference is in<br />
+            <em>who does the work.</em>
+          </h2>
+          <p>
+            In an industry full of franchises, fly-by-night crews, and cut-rate materials, Jason's Glass Tint is different. It's a one-man operation built on reputation, skill, and personal accountability.
+          </p>
+          <p>
+            Jason has been doing this since before most local competitors were in business. He doesn't have off days. He doesn't send out helpers. He shows up, he does the work, and he does it right.
+          </p>
+        </div>
+
+        <div class="why__points">
+          <div class="why__point">
+            <div class="why__point-num">01</div>
+            <div class="why__point-body">
+              <h4>Personal Installation — Always</h4>
+              <p>Jason does every install himself. Not a trainee, not a subcontractor. You get 40 years of experience on every single job.</p>
+            </div>
+          </div>
+          <div class="why__point">
+            <div class="why__point-num">02</div>
+            <div class="why__point-body">
+              <h4>Premium Film Only</h4>
+              <p>No tiered product lines. No upsells. Jason uses professional-grade film on every job because anything less isn't worth doing.</p>
+            </div>
+          </div>
+          <div class="why__point">
+            <div class="why__point-num">03</div>
+            <div class="why__point-body">
+              <h4>40 Years of Local Reputation</h4>
+              <p>Since 1989 in San Clemente. His customers come back for every vehicle, every home. His reputation speaks for itself.</p>
+            </div>
+          </div>
+          <div class="why__point">
+            <div class="why__point-num">04</div>
+            <div class="why__point-body">
+              <h4>Honest, Straightforward Pricing</h4>
+              <p>No bait-and-switch packages. Text Jason with your project details and get a clear, fair quote — no surprises.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SERVICE AREA
+       ============================================================ -->
+  <section class="area" id="area">
+    <div class="container">
+      <div class="area__inner">
+        <span class="section-label">Service Area</span>
+        <span class="gold-line"></span>
+        <h2>Proudly serving<br /><em>South Orange County</em></h2>
+        <p>Based in San Clemente, CA. Jason serves the surrounding coastal and inland communities.</p>
+
+        <div class="area__cities">
+          <div class="area__city">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            San Clemente
+          </div>
+          <div class="area__city">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Dana Point
+          </div>
+          <div class="area__city">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            San Juan Capistrano
+          </div>
+          <div class="area__city">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Talega
+          </div>
+          <div class="area__city">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            South Orange County
+          </div>
+        </div>
+
+        <p class="area__note">Not sure if you're in the service area? Just text Jason — he's happy to let you know.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       QUOTE INSTRUCTIONS
+       ============================================================ -->
+  <section class="quote" id="quote">
+    <div class="container">
+      <div class="quote__inner">
+
+        <div class="quote__header">
+          <span class="section-label">Get a Quote</span>
+          <span class="gold-line"></span>
+          <h2>Ready to get started?<br /><em>Text Jason directly.</em></h2>
+          <p>No forms, no call centers, no hassle. Just text Jason with a few quick details and he'll get back to you with a straightforward quote.</p>
+        </div>
+
+        <!-- Home / Commercial / Marine -->
+        <div class="quote-card">
+          <div class="quote-card__type">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Home &bull; Building &bull; Marine
+          </div>
+          <h3>Residential, Commercial<br />&amp; Marine</h3>
+          <ul class="quote-card__list">
+            <li><strong>Your name and location</strong> (city or neighborhood)</li>
+            <li><strong>Type of project</strong> — home, office, storefront, or boat</li>
+            <li><strong>Photos of the windows</strong> you'd like tinted, if possible</li>
+            <li><strong>Measurements</strong> (width × height) for each window, if available</li>
+            <li>Any specific goals — privacy, heat reduction, UV protection, appearance</li>
+          </ul>
+          <div class="quote-card__cta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <strong><a href="sms:+1?body=Hi Jason, I'd like a quote for residential/commercial/marine tinting. My project is:">Text Jason for a Quote</a></strong>
+              <p>Photos and measurements help Jason give you the most accurate quote.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Automotive -->
+        <div class="quote-card">
+          <div class="quote-card__type">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Automotive
+          </div>
+          <h3>Vehicle Tinting</h3>
+          <ul class="quote-card__list">
+            <li><strong>Year, make, and model</strong> of the vehicle</li>
+            <li><strong>Which windows</strong> you'd like tinted (all rear, back half, full car, windshield strip, etc.)</li>
+            <li>Any tint shade preference, or ask Jason for his recommendation</li>
+            <li>Your general location in South Orange County</li>
+          </ul>
+          <div class="quote-card__cta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <strong><a href="sms:+1?body=Hi Jason, I'd like a quote for automotive tinting. My vehicle is:">Text Jason for a Quote</a></strong>
+              <p>Include your year, make, model, and which windows you want done.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FINAL CTA
+       ============================================================ -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-section__inner">
+        <span class="section-label">Ready to Start?</span>
+        <span class="gold-line"></span>
+        <h2>
+          40 years of precision.<br />
+          <em>Available right now.</em>
+        </h2>
+        <p>
+          Text Jason for a quick quote. No pressure, no runaround — just an honest answer from the man who will do the work.
+        </p>
+        <div class="cta-section__actions">
+          <a href="sms:+1?body=Hi Jason, I'd like to get a quote for window tinting." class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Text Jason for a Quote
+          </a>
+        </div>
+        <p class="cta-section__note">
+          San Clemente · Dana Point · San Juan Capistrano · Talega · South Orange County
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__logo">Jason's <span>Glass Tint</span></div>
+        <p class="footer__copy">&copy; 2025 Jason's Glass Tint. San Clemente, CA. Est. 1989.</p>
+        <div class="footer__location">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          San Clemente, CA
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       MOBILE STICKY CTA
+       ============================================================ -->
+  <div class="sticky-cta" aria-label="Mobile quote CTA">
+    <a href="sms:+1?body=Hi Jason, I'd like to get a quote for window tinting.">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Text Jason for a Quote
+    </a>
+  </div>
+
+  <!-- ============================================================
+       JS: NAV SCROLL STATE
+       ============================================================ -->
+  <script>
+    (function () {
+      const nav = document.getElementById('nav');
+      function onScroll() {
+        if (window.scrollY > 40) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+
+</body>
+</html>

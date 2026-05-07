@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Jason's Glass Tint | San Clemente, CA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#FAFAF9;color:#1C1917}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+/* HERO */
+.hero{background:linear-gradient(160deg,#0D0B09 0%,#1C1917 60%,#0D0B09 100%);min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 65% 40%,rgba(201,168,76,.08),transparent 60%)}
+.hero-inner{position:relative;z-index:1;padding:80px 0}
+.eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#C9A84C;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';width:28px;height:1px;background:#C9A84C}
+h1{font-family:Georgia,serif;font-size:clamp(2.6rem,7vw,5.5rem);font-weight:300;line-height:1.05;color:#FAFAF9;margin-bottom:8px}
+h1 em{font-style:italic;color:#E2C47A}
+h1 strong{display:block;font-weight:600}
+.tagline{font-family:Georgia,serif;font-style:italic;font-size:clamp(.95rem,2vw,1.2rem);color:#A8A29E;margin-bottom:36px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:#C9A84C;color:#1C1917;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:15px 30px;border-radius:4px;transition:background .2s,transform .2s}
+.btn:hover{background:#E2C47A;transform:translateY(-2px)}
+.stats{display:flex;gap:36px;margin-top:56px;flex-wrap:wrap}
+.stat-num{font-family:Georgia,serif;font-size:2rem;font-weight:600;color:#C9A84C;line-height:1}
+.stat-lbl{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#78716C;margin-top:3px}
+/* TRUST BAR */
+.trust{background:#1C1917;padding:16px 0;border-top:1px solid #2E2A26;border-bottom:1px solid #2E2A26}
+.trust-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:0}
+.ti{padding:8px 24px;border-right:1px solid #2E2A26;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#E7E5E4}
+.ti:last-child{border-right:none}
+.ti span{color:#C9A84C;margin-right:6px}
+/* SECTIONS */
+section{padding:80px 0}
+.lbl{font-size:.68rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#C9A84C;margin-bottom:10px;display:block}
+.rule{display:block;width:40px;height:2px;background:#C9A84C;margin-bottom:20px}
+h2{font-family:Georgia,serif;font-size:clamp(1.6rem,3vw,2.5rem);font-weight:300;line-height:1.2;margin-bottom:20px}
+h2 em{font-style:italic;color:#8A6F30}
+/* SERVICES */
+.services{background:#1C1917}
+.services h2{color:#FAFAF9}
+.services h2 em{color:#E2C47A}
+.services .sub{color:#A8A29E;font-size:.88rem;line-height:1.8;max-width:500px;margin:0 auto 48px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:#2E2A26;border:1px solid #2E2A26;border-radius:12px;overflow:hidden}
+.card{background:#2C2825;padding:36px 32px;transition:background .2s}
+.card:hover{background:#332E2A}
+.card-icon{width:40px;height:40px;border:1px solid #8A6F30;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;color:#C9A84C}
+.card-title{font-family:Georgia,serif;font-size:1.3rem;color:#FAFAF9;margin-bottom:10px}
+.card-desc{font-size:.82rem;color:#A8A29E;line-height:1.75}
+.card-tag{display:inline-block;margin-top:14px;font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#C9A84C;border-bottom:1px solid #8A6F30;padding-bottom:2px}
+/* WHY */
+.why{background:#FAFAF9}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.why-left p{font-size:.88rem;line-height:1.85;color:#44403C;margin-bottom:14px}
+.points{margin-top:8px}
+.point{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid #E7E5E0}
+.point:first-child{border-top:1px solid #E7E5E0}
+.pnum{font-family:Georgia,serif;font-size:1.3rem;font-weight:300;color:#C9A84C;min-width:28px;line-height:1;margin-top:2px}
+.ptitle{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1C1917;margin-bottom:5px}
+.pdesc{font-size:.82rem;color:#78716C;line-height:1.7}
+/* AREA */
+.area{background:#F5F3F0;text-align:center;border-top:1px solid #E7E5E0;border-bottom:1px solid #E7E5E0}
+.area p{font-size:.88rem;color:#78716C;margin-bottom:36px}
+.cities{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:28px}
+.city{display:flex;align-items:center;gap:7px;background:#FAFAF9;border:1px solid #D9D5D0;border-radius:100px;padding:9px 18px;font-size:.76rem;font-weight:500;color:#1C1917}
+.city svg{color:#C9A84C}
+.area-note{font-size:.78rem;color:#A8A29E;font-style:italic}
+/* CTA */
+.cta-sec{background:#0D0B09;text-align:center;position:relative;overflow:hidden}
+.cta-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,.06),transparent 65%)}
+.cta-inner{position:relative;z-index:1}
+.cta-sec h2{color:#FAFAF9}
+.cta-sec h2 em{color:#E2C47A}
+.cta-sec p{font-size:.88rem;color:#A8A29E;max-width:400px;margin:0 auto 32px;line-height:1.8}
+.cta-note{margin-top:24px;font-size:.7rem;color:#78716C;letter-spacing:.04em}
+/* FOOTER */
+footer{background:#1C1917;border-top:1px solid #2E2A26;padding:32px 0}
+.foot-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.foot-logo{font-family:Georgia,serif;font-size:1.05rem;color:#FAFAF9}
+.foot-logo span{color:#C9A84C}
+.foot-copy{font-size:.7rem;color:#78716C}
+/* MOBILE STICKY */
+.sticky{display:none;position:fixed;bottom:0;left:0;right:0;z-index:99;padding:12px 20px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:#1C1917;border-top:1px solid #2E2A26}
+.sticky a{display:flex;align-items:center;justify-content:center;gap:8px;background:#C9A84C;color:#1C1917;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:15px;border-radius:8px}
+/* RESPONSIVE */
+@media(max-width:760px){
+  .grid,.why-grid{grid-template-columns:1fr}
+  .trust-inner{flex-direction:column;padding:0 20px}
+  .ti{border-right:none;border-bottom:1px solid #2E2A26;padding:12px 0;width:100%}
+  .ti:last-child{border-bottom:none}
+  .stats{gap:20px}
+  .sticky{display:block}
+  body{padding-bottom:72px}
+}
+@media(max-width:440px){
+  .stats{flex-direction:column}
+  .btn{width:100%;justify-content:center}
+}
+:focus-visible{outline:2px solid #C9A84C;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav style="position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:background .2s" id="nav">
+<div class="wrap" style="display:flex;align-items:center;justify-content:space-between">
+  <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:600;color:#FAFAF9">Jason's <span style="color:#C9A84C">Glass Tint</span></div>
+  <a href="sms:+1?body=Hi Jason, I'd like a quote for window tinting." class="btn" style="padding:9px 18px;font-size:.68rem">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Text for a Quote
+  </a>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="wrap"><div class="hero-inner">
+  <div class="eyebrow">San Clemente, California &mdash; Est. 1989</div>
+  <h1><em>Expert</em><strong>Window Tinting</strong></h1>
+  <p class="tagline">Premium film. Personal craftsmanship. 40 years of experience.</p>
+  <a href="sms:+1?body=Hi Jason, I'd like a quote for window tinting." class="btn">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Text Jason for a Quote
+  </a>
+  <div class="stats">
+    <div><div class="stat-num">40</div><div class="stat-lbl">Years Experience</div></div>
+    <div><div class="stat-num">1989</div><div class="stat-lbl">Established</div></div>
+    <div><div class="stat-num">4</div><div class="stat-lbl">Service Types</div></div>
+    <div><div class="stat-num">1</div><div class="stat-lbl">Person. Jason.</div></div>
+  </div>
+</div></div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust"><div class="wrap"><div class="trust-inner">
+  <div class="ti"><span>✓</span>Owner-Installed Every Job</div>
+  <div class="ti"><span>★</span>Premium-Grade Film Only</div>
+  <div class="ti"><span>◎</span>South OC Since 1989</div>
+  <div class="ti"><span>≡</span>Residential · Commercial · Auto · Marine</div>
+</div></div></div>
+
+<!-- SERVICES -->
+<section class="services">
+<div class="wrap" style="text-align:center">
+  <span class="lbl">What We Do</span>
+  <span class="rule" style="margin:0 auto 20px"></span>
+  <h2>Every surface.<br><em>One specialist.</em></h2>
+  <p class="sub">From homes and offices to vehicles and boats — Jason brings the same premium film and personal expertise to every project.</p>
+</div>
+<div class="wrap"><div class="grid">
+  <div class="card">
+    <div class="card-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+    <div class="card-title">Residential Tinting</div>
+    <p class="card-desc">Reduce heat, block UV, and add privacy to your home. Premium film that protects furniture, floors, and family — installed by Jason himself.</p>
+    <span class="card-tag">Homes &amp; Condos</span>
+  </div>
+  <div class="card">
+    <div class="card-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+    <div class="card-title">Commercial Tinting</div>
+    <p class="card-desc">Keep workspaces cooler, protect interiors, and give your building a professional appearance. Trusted by South OC businesses for over 35 years.</p>
+    <span class="card-tag">Offices &amp; Buildings</span>
+  </div>
+  <div class="card">
+    <div class="card-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+    <div class="card-title">Automotive Tinting</div>
+    <p class="card-desc">Precision-cut film for cars, trucks, and SUVs. Reduces heat, blocks UV, and delivers clean bubble-free results on every vehicle.</p>
+    <span class="card-tag">Cars, Trucks &amp; SUVs</span>
+  </div>
+  <div class="card">
+    <div class="card-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1 2.4 2.4 0 0 0 2-1 2.4 2.4 0 0 1 2-1 2.4 2.4 0 0 1 2 1 2.4 2.4 0 0 0 2 1 2.4 2.4 0 0 0 2-1 2.4 2.4 0 0 1 2-1 2.4 2.4 0 0 1 2 1"/><path d="M4 18 3 8l5.5 2L12 4l3.5 6L21 8l-1 10"/></svg></div>
+    <div class="card-title">Marine Tinting</div>
+    <p class="card-desc">Marine-grade film for boats and watercraft. Protects cabin interiors from Southern California sun in saltwater environments.</p>
+    <span class="card-tag">Boats &amp; Watercraft</span>
+  </div>
+</div></div>
+</section>
+
+<!-- WHY JASON -->
+<section class="why">
+<div class="wrap"><div class="why-grid">
+  <div class="why-left">
+    <span class="lbl">Why Choose Jason</span>
+    <span class="rule"></span>
+    <h2>The difference is<br><em>who does the work.</em></h2>
+    <p>In an industry full of franchises and cut-rate crews, Jason's Glass Tint is different. It's a one-man operation built on reputation, skill, and accountability.</p>
+    <p>Jason has been doing this since before most local competitors were in business. He shows up. He does the work. He does it right.</p>
+  </div>
+  <div class="points">
+    <div class="point"><div class="pnum">01</div><div><div class="ptitle">Personal Installation — Always</div><p class="pdesc">Jason does every install himself. Not a trainee, not a subcontractor. 40 years of experience on every job.</p></div></div>
+    <div class="point"><div class="pnum">02</div><div><div class="ptitle">Premium Film Only</div><p class="pdesc">No tiered product lines. No upsells. Professional-grade film on every job, every time.</p></div></div>
+    <div class="point"><div class="pnum">03</div><div><div class="ptitle">40 Years Local Reputation</div><p class="pdesc">Since 1989 in San Clemente. Customers come back for every vehicle, every home.</p></div></div>
+    <div class="point"><div class="pnum">04</div><div><div class="ptitle">Honest, Straight Pricing</div><p class="pdesc">Text Jason your details. Get a clear, fair quote with no surprises.</p></div></div>
+  </div>
+</div></div>
+</section>
+
+<!-- SERVICE AREA -->
+<section class="area">
+<div class="wrap">
+  <span class="lbl">Service Area</span>
+  <span class="rule" style="margin:0 auto 20px"></span>
+  <h2>Proudly serving<br><em>South Orange County</em></h2>
+  <p>Based in San Clemente, CA — serving the surrounding coastal and inland communities.</p>
+  <div class="cities">
+    <div class="city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>San Clemente</div>
+    <div class="city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Dana Point</div>
+    <div class="city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>San Juan Capistrano</div>
+    <div class="city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Talega</div>
+    <div class="city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>South Orange County</div>
+  </div>
+  <p class="area-note">Not sure if you're in the service area? Just text Jason — he'll let you know.</p>
+</div>
+</section>
+
+<!-- QUOTE CTA -->
+<section class="cta-sec">
+<div class="wrap"><div class="cta-inner">
+  <span class="lbl">Get a Quote</span>
+  <span class="rule" style="margin:0 auto 20px"></span>
+  <h2>40 years of precision.<br><em>Available right now.</em></h2>
+  <p>Text Jason directly. No forms, no call centers. Just a straight answer from the man who does the work.</p>
+  <a href="sms:+1?body=Hi Jason, I'd like a quote for window tinting." class="btn">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Text Jason for a Quote
+  </a>
+  <p class="cta-note">Vehicles: include year · make · model · windows &nbsp;|&nbsp; Homes/boats: include photos &amp; measurements if possible</p>
+</div></div>
+</section>
+
+<!-- FOOTER -->
+<footer><div class="wrap"><div class="foot-inner">
+  <div class="foot-logo">Jason's <span>Glass Tint</span></div>
+  <p class="foot-copy">&copy; 2025 Jason's Glass Tint &mdash; San Clemente, CA &mdash; Est. 1989</p>
+</div></div></footer>
+
+<!-- MOBILE STICKY CTA -->
+<div class="sticky">
+  <a href="sms:+1?body=Hi Jason, I'd like a quote for window tinting.">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Text Jason for a Quote
+  </a>
+</div>
+
+<script>
+var n=document.getElementById('nav');
+window.addEventListener('scroll',function(){
+  n.style.background=window.scrollY>40?'rgba(13,11,9,.97)':'transparent';
+},{passive:true});
+</script>
+</body>
+</html>

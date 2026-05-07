@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "updatedAt": "2026-05-07T20:25:25.119Z",
+  "entries": {
+    "memory:memory/2026-04-24.md:64:85": {
+      "key": "memory:memory/2026-04-24.md:64:85",
+      "path": "memory/2026-04-24.md",
+      "startLine": 64,
+      "endLine": 85,
+      "source": "memory",
+      "snippet": "- Vanilla JavaScript for interactivity (filters, lightbox, smooth scroll) - No dependencies - File: `/data/.openclaw/workspace/jasons-glass-tint-premium.html` - Ready to copy as `index.html` ### Business Context - Vance is helping his father Jason build a premium online presence - High-end clientele (luxury vehicles, wealthy homeowners) - Focus on quality > quantity, direct contact (text first) - Established business (30+ years) positioning itself online for the first time - Complements Vance's cleaning business partnership (Orange County operations) ### Key Decisions - Used red Porsche as hero (most eye-catching luxury vehicle) - Cyan accent for premium tech feel (aligns with Tesla market",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-28T15:00:20.448Z",
+      "lastRecalledAt": "2026-04-28T15:00:20.448Z",
+      "queryHashes": [
+        "3c4f7b50705a"
+      ],
+      "recallDays": [
+        "2026-04-28"
+      ],
+      "conceptTags": [
+        "index.html",
+        "high-end",
+        "eye-catching",
+        "vanilla",
+        "javascript",
+        "interactivity",
+        "filters",
+        "lightbox"
+      ]
+    },
+    "memory:memory/2026-04-24.md:1:40": {
+      "key": "memory:memory/2026-04-24.md:1:40",
+      "path": "memory/2026-04-24.md",
+      "startLine": 1,
+      "endLine": 40,
+      "source": "memory",
+      "snippet": "# 2026-04-24 - Jason's Glass Tint Website Project ## Session Work Built a premium, modern website for Jason's Glass Tint (Vance's father's business) in Orange County, CA. ### Project Details - **Business:** Jason's Glass Tint - window tinting specialist - **Phone:** 949-496-8468 - **Service Areas:** San Clemente, Talega, Dana Point, San Juan Capistrano, Laguna Niguel, Orange County - **Specialties:** Tesla & luxury vehicle tinting, residential, commercial, marine tint - **Brand:** 30+ years experience, one-man shop (Jason only), 100,000+ windows tinted, premium film only ### Website Features Delivered 1. **Premium Design** - Dark/light gradient hero with overlay - Cyan accent color",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-05-07T20:25:25.119Z",
+      "lastRecalledAt": "2026-05-07T20:25:25.119Z",
+      "queryHashes": [
+        "951dfc67a112"
+      ],
+      "recallDays": [
+        "2026-05-07"
+      ],
+      "conceptTags": [
+        "949-496-8468",
+        "one-man",
+        "dark/light",
+        "jason's",
+        "glass",
+        "tint",
+        "website",
+        "project"
+      ]
+    }
+  }
+}

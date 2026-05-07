@@ -23,7 +23,7 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --border: #333333;
-            --gold: #FFD700;
+            --gold: #d4af37;
             --green: #10b981;
             --yellow: #fbbf24;
             --orange: #f97316;
@@ -345,6 +345,7 @@
             bottom: 0;
             background-color: rgba(0, 0, 0, 0.7);
             z-index: 1000;
+            align-items: center;
             justify-content: center;
             overflow-y: auto;
         }
@@ -362,8 +363,6 @@
             width: 90%;
             margin: 20px auto;
             position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         .modal-close {
@@ -590,7 +589,7 @@
     <div class="container">
         <div class="header">
             <div>
-                <h1>VTA Lead Dashboard LIVE</h1>
+                <h1>VTS Cleaning Solutions</h1>
                 <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Lead Generation Dashboard</div>
             </div>
             <div class="header-controls">
@@ -609,8 +608,7 @@
                     </div>
                 </div>
                 <button onclick="openAddLeadModal()">+ Add Lead</button>
-                <button onclick="alert('Manual import is not active yet. Use Refresh Leads from Apify.')">Manual Import Coming Soon</button>
-                <button onclick="refreshFromApify()">Refresh Leads from Apify</button>
+                <button onclick="alert('Import feature coming next')">Import Leads</button>
             </div>
         </div>
 
@@ -792,7 +790,6 @@
                 <div class="draft-title">Text Drafts (3 options) - Send from: 949-424-3230</div>
                 <div id="textDrafts"></div>
                 <button style="width: 100%; margin-top: 12px;" onclick="sendText()" id="sendTextBtn">Send Text</button>
-                <button class="secondary" style="width: 100%; margin-top: 8px;" onclick="markAlreadyOutreached()">Already Outreached</button>
             </div>
 
             <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
@@ -927,21 +924,6 @@
             }
             renderAll();
             populateFilters();
-            autoFillLeads();
-        }
-
-        async function autoFillLeads() {
-            const TARGET = 19;
-            const MAX_ATTEMPTS = 5;
-            let attempts = 0;
-
-            while (data.potential.length < TARGET && attempts < MAX_ATTEMPTS) {
-                attempts++;
-                const before = data.potential.length;
-                await refreshFromApify();
-                const after = data.potential.length;
-                if (after <= before) break;
-            }
         }
 
         // Data management
@@ -999,21 +981,9 @@
 
                             <div class="lead-details">
                                 ${lead.website ? `<div class="lead-detail"><div class="lead-label">Website</div><div class="lead-value"><a href="https://${lead.website}" target="_blank">${lead.website}</a></div></div>` : ''}
-                                ${lead.email ? `
-<div class="lead-detail">
-                                    <div class="lead-label">Email</div>
-                                    <div class="lead-value">
-                                        ${
-                                            Array.isArray(lead.email)
-                                            ? lead.email.slice(0, 3).map(e => `<div><a href="mailto:${e}">${e}</a></div>`).join('')
-                                            : `<a href="mailto:${lead.email}">${lead.email}</a>`
-                                        }
-                                    </div>
-                                </div>
-` : ''}
+                                ${lead.email ? `<div class="lead-detail"><div class="lead-label">Email</div><div class="lead-value"><a href="mailto:${lead.email}">${lead.email}</a></div></div>` : ''}
                                 ${lead.phone ? `<div class="lead-detail"><div class="lead-label">Phone</div><div class="lead-value"><a href="tel:${lead.phone}">${lead.phone}</a></div></div>` : ''}
                                 <div class="lead-detail"><div class="lead-label">Location</div><div class="lead-value">${lead.city}</div></div>
-                                <div class="lead-detail"><div class="lead-label">Who to contact</div><div class="lead-value">${lead.contactTarget || "Business owner or office manager"}</div></div>
                             </div>
 
                             <div class="lead-tags">
@@ -1250,16 +1220,14 @@
                 `Hi there,\n\nWe work with ${lead.businessType.toLowerCase()}s throughout Orange County to maintain spotless, professional environments. From routine cleaning to specialized needs, we've got you covered.\n\nAvailable for a quick call this week?\n\nBest regards,\nVTS Cleaning Solutions\n949-424-3230`
             ];
 
-            window._emailDrafts = drafts;
-
             let html = '';
             drafts.forEach((draft, index) => {
                 html += `
                     <div class="draft-item">
                         <div class="draft-number">Draft Option ${index + 1}</div>
-                        <div class="draft-text">${draft.replace(/\n/g, '<br>')}</div>
+                        <div class="draft-text">${draft}</div>
                         <div class="draft-actions">
-                            <button class="secondary" onclick="copyToClipboard(window._emailDrafts[${index}])">Copy</button>
+                            <button class="secondary" onclick="copyToClipboard('${escapeQuotes(draft)}')">Copy</button>
                         </div>
                     </div>
                 `;
@@ -1275,8 +1243,6 @@
                 `Hi, VTS Cleaning Solutions. We work with local ${lead.businessType.toLowerCase()}s. Looking to upgrade your cleaning? Let's discuss. 949-424-3230`
             ];
 
-            window._textDrafts = drafts;
-
             let html = '';
             drafts.forEach((draft, index) => {
                 html += `
@@ -1284,7 +1250,7 @@
                         <div class="draft-number">Draft Option ${index + 1}</div>
                         <div class="draft-text">${draft}</div>
                         <div class="draft-actions">
-                            <button class="secondary" onclick="copyToClipboard(window._textDrafts[${index}])">Copy</button>
+                            <button class="secondary" onclick="copyToClipboard('${escapeQuotes(draft)}')">Copy</button>
                         </div>
                     </div>
                 `;
@@ -1295,49 +1261,41 @@
 
         function sendEmail() {
             const lead = window.currentLead;
-            if (!lead || !lead.email) {
-                alert("No email available for this lead.");
-                return;
+            if (!lead.email) return;
+
+            if (confirm(`Mark "${lead.businessName}" as contacted via email?\n\nThis will move them to "Already Outreached."`)) {
+                const lead_idx = data.potential.findIndex(l => l.id === lead.id);
+                if (lead_idx !== -1) {
+                    const movedLead = data.potential[lead_idx];
+                    data.potential.splice(lead_idx, 1);
+                    movedLead.status = 'outreached';
+                    data.outreached.push(movedLead);
+                    saveData();
+                    renderAll();
+                    populateFilters();
+                    closeDraftModal();
+                    alert('Lead moved to "Already Outreached."');
+                }
             }
-
-            const emailAddress = Array.isArray(lead.email) ? lead.email[0] : lead.email;
-
-            const subject = "Commercial Cleaning Quote";
-
-            const body = `Hi ${lead.businessName},\n\nVTA Cleaning Solutions offers customized commercial cleaning services. I'd love to provide you with a quick quote.\n\nBest,\nVance\nVTA Cleaning Solutions\n949-424-3230`;
-
-            window.location.href = `mailto:${emailAddress}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
 
         function sendText() {
             const lead = window.currentLead;
             if (!lead.phone) return;
 
-            const message = `Hi ${lead.businessName}, this is Vance with VTA Cleaning Solutions. I'm reaching out to see if you're happy with your current commercial cleaning service, or if you'd be open to a quick quote.`;
-
-            const copyText = `${lead.phone}\n${message}`;
-
-            navigator.clipboard.writeText(copyText).then(() => {
-                window.open("https://voice.google.com/u/0/messages", "_blank");
-            }).catch(() => {
-                window.open("https://voice.google.com/u/0/messages", "_blank");
-            });
-        }
-
-        function markAlreadyOutreached() {
-            const lead = window.currentLead;
-            if (!lead) return;
-            const lead_idx = data.potential.findIndex(l => l.id === lead.id);
-            if (lead_idx !== -1) {
-                const movedLead = data.potential[lead_idx];
-                data.potential.splice(lead_idx, 1);
-                movedLead.status = 'outreached';
-                data.outreached.push(movedLead);
-                saveData();
-                renderAll();
-                populateFilters();
-                closeDraftModal();
-                alert('Lead moved to Already Outreached.');
+            if (confirm(`Mark "${lead.businessName}" as contacted via text?\n\nThis will move them to "Already Outreached."`)) {
+                const lead_idx = data.potential.findIndex(l => l.id === lead.id);
+                if (lead_idx !== -1) {
+                    const movedLead = data.potential[lead_idx];
+                    data.potential.splice(lead_idx, 1);
+                    movedLead.status = 'outreached';
+                    data.outreached.push(movedLead);
+                    saveData();
+                    renderAll();
+                    populateFilters();
+                    closeDraftModal();
+                    alert('Lead moved to "Already Outreached."');
+                }
             }
         }
 
@@ -1347,175 +1305,14 @@
         }
 
         function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
-            }).catch(() => {
-                const el = document.createElement('textarea');
-                el.value = text;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
+            const decoded = text.replace(/\\n/g, '\n');
+            navigator.clipboard.writeText(decoded).then(() => {
                 alert('Copied to clipboard!');
             });
         }
 
         function escapeQuotes(text) {
             return text.replace(/'/g, "\\'").replace(/"/g, '\\"');
-        }
-
-        async function refreshFromApify() {
-            try {
-                alert("Fetching 5 Apify leads...");
-
-                const response = await fetch("https://api.allorigins.win/raw?url=https://api.apify.com/v2/datasets/yBWXoHE0muxuQamZk/items?token=apify_api_fvpKxtT3JkteKyW6tcxs5f921GYQG52NPa05&format=json&clean=true&limit=5");
-                const apifyData = await response.json();
-
-                console.log("Apify data:", apifyData);
-
-                if (!apifyData || apifyData.length === 0) {
-                    alert("No leads found from Apify.");
-                    return;
-                }
-
-                const item = apifyData[Math.floor(Math.random() * apifyData.length)];
-
-                const businessName = item.title || item.name || "Unknown Business";
-                const phone = item.phone || "";
-                const website = item.website || "";
-                const city = item.city || item.address || "Unknown";
-
-                const allLeads = [
-                    ...(data.potential || []),
-                    ...(data.outreached || []),
-                    ...(data.notNow || [])
-                ];
-
-                const duplicate = allLeads.some(lead =>
-                    (lead.businessName && lead.businessName === businessName) ||
-                    (lead.phone && phone && lead.phone === phone) ||
-                    (lead.website && website && lead.website === website)
-                );
-
-                if (duplicate) {
-                    alert("Lead already exists.");
-                    return;
-                }
-
-                const leadText = `${businessName} ${website} ${city}`.toLowerCase();
-
-                let needScore = 6;
-
-                if (
-                    leadText.includes("dentist") ||
-                    leadText.includes("dental") ||
-                    leadText.includes("orthodontist") ||
-                    leadText.includes("oral") ||
-                    leadText.includes("clinic") ||
-                    leadText.includes("medical") ||
-                    leadText.includes("med spa") ||
-                    leadText.includes("chiropractor") ||
-                    leadText.includes("physical therapy") ||
-                    leadText.includes("optometry") ||
-                    leadText.includes("vision") ||
-                    leadText.includes("urgent care") ||
-                    leadText.includes("dermatology")
-                ) {
-                    needScore = 9;
-                }
-                let decisionScore = 7;
-
-                if (
-                    leadText.includes("corporate") ||
-                    leadText.includes("franchise") ||
-                    leadText.includes("group") ||
-                    leadText.includes("national") ||
-                    leadText.includes("chain")
-                ) {
-                    decisionScore = 4;
-                }
-                let contactTarget = "Business owner or office manager";
-
-                if (
-                    leadText.includes("corporate") ||
-                    leadText.includes("franchise") ||
-                    leadText.includes("group") ||
-                    leadText.includes("national") ||
-                    leadText.includes("chain")
-                ) {
-                    contactTarget = "Front desk or location manager";
-                }
-
-                if (
-                    leadText.includes("property") ||
-                    leadText.includes("management") ||
-                    leadText.includes("building")
-                ) {
-                    contactTarget = "Property manager or building owner";
-                }
-                let sizeScore = 5;
-
-                if (
-                    leadText.includes("clinic") ||
-                    leadText.includes("medical") ||
-                    leadText.includes("dental") ||
-                    leadText.includes("office") ||
-                    leadText.includes("center")
-                ) {
-                    sizeScore = 7;
-                }
-                let urgencyScore = 5;
-
-                if (
-                    leadText.includes("urgent care") ||
-                    leadText.includes("clinic") ||
-                    leadText.includes("medical") ||
-                    leadText.includes("dental") ||
-                    leadText.includes("med spa") ||
-                    leadText.includes("dermatology")
-                ) {
-                    urgencyScore = 8;
-                }
-                const totalScore = needScore + decisionScore + sizeScore + urgencyScore;
-
-                const newLead = {
-                    id: nextId++,
-                    businessName: businessName,
-                    email: "",
-                    phone: phone,
-                    website: website,
-                    city: city,
-                    businessType: "Dentist",
-                    newBuild: "Maybe",
-                    propertyType: "Tenant",
-                    hasCleaner: "Maybe",
-                    needScore: needScore,
-                    decisionScore: decisionScore,
-                    sizeScore: sizeScore,
-                    urgencyScore: urgencyScore,
-                    totalScore: totalScore,
-                    scoreTier: getScoreTier(totalScore),
-                    status: "potential",
-                    contactTarget: contactTarget
-                };
-
-                data.potential.unshift(newLead);
-                data.potential.sort((a, b) => b.totalScore - a.totalScore);
-
-                if (data.potential.length > 50) {
-                    data.potential = data.potential.slice(0, 50);
-                }
-
-                saveData();
-                renderAll();
-                populateFilters();
-
-                alert("1 Apify lead added to Potential Leads.");
-
-            } catch (error) {
-                console.error(error);
-                alert("Failed to load lead from Apify.");
-            }
         }
 
         // Start
