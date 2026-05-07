@@ -44,6 +44,7 @@
       scroll-behavior: smooth;
       font-size: 16px;
       overflow-x: hidden; /* prevent horizontal scroll on all devices */
+      scroll-padding-top: 80px; /* account for fixed nav height */
     }
 
     body {
@@ -1564,6 +1565,7 @@
        RESPONSIVE - TABLET
     ================================================================ */
     @media (max-width: 1024px) {
+      html { scroll-padding-top: 70px; }
       nav { padding: 1.2rem 2rem; }
       nav.scrolled { padding: 0.8rem 2rem; }
       .section-inner { padding: 0 2rem; }
@@ -1603,6 +1605,7 @@
        RESPONSIVE - MOBILE
     ================================================================ */
     @media (max-width: 640px) {
+      html { scroll-padding-top: 60px; }
       nav { padding: 1rem 1.2rem; }
       .section-inner { padding: 0 1.2rem; }
 
