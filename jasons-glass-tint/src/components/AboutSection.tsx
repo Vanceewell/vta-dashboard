@@ -90,8 +90,7 @@ export default function AboutSection() {
             {/* Quote */}
             <blockquote className="mt-8 border-l-2 border-jgt-gold pl-6">
               <p className="font-display italic text-jgt-text text-lg lg:text-xl leading-relaxed">
-                "I don't have employees because I don't want you to wonder who's going to show up.
-                I show up. That's the promise."
+                “Anybody can sell window tint. The difference is who’s installing it.”
               </p>
               <footer className="mt-3 font-sans text-xs tracking-[0.14em] uppercase text-jgt-gold">
                 — Jason, Owner & Installer

@@ -2,18 +2,18 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-// AI-EDITABLE: service areas
+// AI-EDITABLE: service areas — 6 boxes, clean 3×2 grid
 const AREAS = [
   {
     name:    'San Clemente',
     slug:    '/san-clemente-window-tint',
-    desc:    "Home base. Jason has served San Clemente's residential, commercial, and automotive tinting needs since 1989. Local knowledge, community trust.",
+    desc:    "Home base. Jason has served San Clemente\u2019s residential, commercial, and automotive tinting needs since 1989. Local knowledge, community trust.",
     note:    'Primary Service Area',
   },
   {
     name:    'Talega',
     slug:    '/talega-window-tint',
-    desc:    "Talega's hillside homes and coastal views deserve premium protection. Jason regularly serves Talega homeowners seeking energy efficiency and UV protection.",
+    desc:    "Talega\u2019s hillside homes and coastal views deserve premium protection. Jason regularly serves Talega homeowners seeking energy efficiency and UV protection.",
     note:    'Residential Focus',
   },
   {
@@ -25,14 +25,20 @@ const AREAS = [
   {
     name:    'San Juan Capistrano',
     slug:    '/san-juan-capistrano-window-tint',
-    desc:    "San Juan Capistrano's mix of historic properties and modern homes all benefit from professional tint. Jason serves both residential and commercial clients here.",
+    desc:    "San Juan Capistrano\u2019s mix of historic properties and modern homes benefit from professional tint. Jason serves both residential and commercial clients here.",
     note:    'Residential & Commercial',
   },
   {
-    name:    'South Orange County',
+    name:    'Ladera Ranch',
     slug:    '#contact',
-    desc:    "Jason's service area extends throughout South Orange County. If you're within range and want the best install in the region, text Jason directly.",
-    note:    'Broader Service Area',
+    desc:    "Ladera Ranch\u2019s newer communities and well-maintained homes are a natural fit for premium residential and automotive window film. Jason serves the area directly.",
+    note:    'Residential & Automotive',
+  },
+  {
+    name:    'Camp Pendleton',
+    slug:    '#contact',
+    desc:    "Jason proudly serves the Marines and military families at Camp Pendleton. Straightforward pricing, no runaround, and quality work done right \u2014 every time.",
+    note:    'Military Welcome',
   },
 ];
 
