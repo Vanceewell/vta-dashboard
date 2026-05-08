@@ -52,7 +52,8 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-block mb-1"
+          className="inline-block"
+          style={{ marginBottom: '0.2rem' }}
         >
           <div className="flex items-center justify-center gap-4">
             <div className="w-8 h-[1px] bg-jgt-gold/60" />
@@ -77,8 +78,8 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.55 }}
-          className="font-display italic font-light text-jgt-gold/90 mb-2"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', marginTop: '-4px' }}
+          className="font-display italic font-light text-jgt-gold/90"
+          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', marginTop: '-6px', marginBottom: '0.35rem' }}
         >
           Since 1989
         </motion.p>
@@ -88,8 +89,8 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
-          className="font-sans font-light text-jgt-muted max-w-2xl mx-auto mb-5 leading-relaxed"
-          style={{ fontSize: 'clamp(0.85rem, 1.4vw, 1rem)' }}
+          className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
+          style={{ fontSize: 'clamp(0.85rem, 1.4vw, 1rem)', marginBottom: '1rem' }}
         >
           Premium window tint installation for automotive, residential, commercial, RV,
           marine, frost, and safety film projects throughout San Clemente and South Orange County.
@@ -101,6 +102,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.85 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          style={{ marginBottom: '0' }}
         >
           <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
             <PhoneIcon />
@@ -116,7 +118,8 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
-          className="flex flex-wrap items-center justify-center gap-8 mt-7 pt-6 border-t border-white/10"
+          className="flex flex-wrap items-center justify-center gap-8 pt-4 border-t border-white/10"
+          style={{ marginTop: '1rem' }}
         >
           {[
             { value: '40+',     label: 'Years Experience' },
