@@ -1041,7 +1041,6 @@ function GalleryImageCard({
   const replaceRef     = useRef<HTMLInputElement>(null);
   const [editingTitle, setEditingTitle] = useState(false);
   const [draftTitle,   setDraftTitle]   = useState(image.title);
-  const [showCatMenu,  setShowCatMenu]  = useState(false);
   const [replacing,    setReplacing]    = useState(false);
   const [imgBroken,    setImgBroken]    = useState(false);
 
@@ -1146,91 +1145,43 @@ function GalleryImageCard({
           )}
         </div>
 
-        {/* Category selector */}
+        {/* Category selector — inline checklist (always visible, no dropdown) */}
         <div>
-          <label className="text-[9px] tracking-[0.18em] uppercase text-white/30 mb-1.5 block">Categories</label>
-
-          {/* Active categories pills */}
-          <div className="flex flex-wrap gap-1.5 mb-2">
-            {image.categories.map((cat) => (
-              <span
-                key={cat}
-                className="flex items-center gap-1 text-[9px] tracking-widest uppercase px-2 py-1 rounded"
-                style={{
-                  background: cat === 'All Projects' ? 'rgba(197,160,86,0.15)' : 'rgba(255,255,255,0.08)',
-                  color:      cat === 'All Projects' ? '#C5A056'               : 'rgba(255,255,255,0.6)',
-                  border:     `1px solid ${cat === 'All Projects' ? 'rgba(197,160,86,0.4)' : 'rgba(255,255,255,0.12)'}`,
-                }}
-              >
-                {cat}
-                {cat !== 'All Projects' && (
-                  <button
-                    onClick={() => toggleCategory(cat)}
-                    className="ml-0.5 text-white/40 hover:text-white/80 transition-colors leading-none"
-                    title={`Remove ${cat}`}
-                  >
-                    ×
-                  </button>
-                )}
-              </span>
-            ))}
-          </div>
-
-          {/* Add category dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setShowCatMenu((v) => !v)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded border text-[10px] tracking-widest uppercase transition-colors"
-              style={{ borderColor: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.45)', background: 'rgba(255,255,255,0.04)' }}
-            >
-              <span>+ Add Category</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            {showCatMenu && (
-              <>
-                {/* Backdrop */}
-                <div className="fixed inset-0 z-10" onClick={() => setShowCatMenu(false)} />
-                <div
-                  className="absolute left-0 top-full mt-1 z-20 rounded-lg border overflow-hidden shadow-2xl"
-                  style={{ background: '#1a1a1a', borderColor: 'rgba(255,255,255,0.12)', minWidth: '180px' }}
+          <label className="text-[9px] tracking-[0.18em] uppercase text-white/30 mb-2 block">Category</label>
+          <div className="grid grid-cols-2 gap-1.5">
+            {GALLERY_CATEGORIES.map((cat) => {
+              const selected = image.categories.includes(cat);
+              const isAll    = cat === 'All Projects';
+              return (
+                <button
+                  key={cat}
+                  onClick={() => { if (!isAll) toggleCategory(cat); }}
+                  disabled={isAll}
+                  className="flex items-center gap-2 px-2.5 py-2 rounded border text-left text-[10px] tracking-wide transition-all"
+                  style={{
+                    background:  selected ? (isAll ? 'rgba(197,160,86,0.18)' : 'rgba(197,160,86,0.14)') : 'rgba(255,255,255,0.03)',
+                    borderColor: selected ? (isAll ? 'rgba(197,160,86,0.6)'  : 'rgba(197,160,86,0.5)') : 'rgba(255,255,255,0.1)',
+                    color:       selected ? (isAll ? '#C5A056'               : 'rgba(255,255,255,0.85)') : 'rgba(255,255,255,0.4)',
+                    cursor:      isAll ? 'default' : 'pointer',
+                  }}
                 >
-                  {GALLERY_CATEGORIES.map((cat) => {
-                    const selected = image.categories.includes(cat);
-                    const isAll    = cat === 'All Projects';
-                    return (
-                      <button
-                        key={cat}
-                        onClick={() => { if (!isAll) toggleCategory(cat); }}
-                        disabled={isAll}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-[11px] transition-colors"
-                        style={{
-                          color:      isAll ? '#C5A056' : selected ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.45)',
-                          background: 'transparent',
-                          cursor:     isAll ? 'default' : 'pointer',
-                        }}
-                        onMouseEnter={(e) => { if (!isAll) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
-                      >
-                        <span
-                          className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0"
-                          style={{
-                            background: selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.8)') : 'rgba(255,255,255,0.08)',
-                            border: `1px solid ${selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.8)') : 'rgba(255,255,255,0.15)'}`,
-                          }}
-                        >
-                          {selected && (
-                            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke={isAll ? '#000' : '#000'} strokeWidth="3.5"><polyline points="20 6 9 17 4 12"/></svg>
-                          )}
-                        </span>
-                        {cat}
-                        {isAll && <span className="ml-auto text-[9px] text-yellow-400/40">Always</span>}
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
+                  <span
+                    className="w-3.5 h-3.5 rounded-sm flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background:  selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.9)') : 'rgba(255,255,255,0.07)',
+                      border:      `1px solid ${selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.8)') : 'rgba(255,255,255,0.15)'}`,
+                    }}
+                  >
+                    {selected && (
+                      <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    )}
+                  </span>
+                  <span className="truncate">{cat}</span>
+                </button>
+              );
+            })}
           </div>
+          <p className="text-[9px] text-white/20 mt-1.5">"All Projects" is always included automatically.</p>
         </div>
 
         {/* Replace button */}

@@ -51,7 +51,7 @@ export default function AboutSection() {
             </div>
 
             {/* Year badge */}
-            <div className="absolute -bottom-4 -right-4 lg:-right-8 glass p-6 text-center">
+            <div className="absolute -top-4 -right-4 lg:-right-8 glass p-6 text-center">
               <div className="font-display text-5xl text-jgt-gold font-light">1989</div>
               <div className="font-sans text-[10px] tracking-[0.2em] uppercase text-jgt-muted mt-1">Est.</div>
             </div>

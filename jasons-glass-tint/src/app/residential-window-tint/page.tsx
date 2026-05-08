@@ -51,10 +51,6 @@ export default function Page() {
           a: "No — quality solar control film is engineered to maintain high visible light transmission while blocking heat and UV. From the inside, the view is virtually unchanged. From the outside, the film gives a subtle, uniform appearance that many homeowners prefer to untreated glass.",
         },
         {
-          q: 'How much does residential window tinting cost?',
-          a: "Residential tinting is priced by square footage and film type. Solar control film typically runs $8–$18 per square foot installed. An average 2,000 sq ft home with tinting on 20–30 windows is usually $1,200–$3,500 depending on scope. Jason provides detailed free estimates.",
-        },
-        {
           q: 'Can I tint just a few windows instead of the whole house?',
           a: "Absolutely. Many San Clemente homeowners start with the most problematic windows — typically west-facing living areas and bedrooms — and expand later. Jason can prioritize based on where you're experiencing the most heat or UV issues.",
         },
