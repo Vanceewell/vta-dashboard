@@ -7,26 +7,31 @@ import { loadHeroConfig, DEFAULT_CONFIG, type HeroConfig } from '@/lib/heroConfi
 const LOGO_SRC = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png';
 
 /**
- * HeroSection — reads layout config from localStorage (written by /admin-hero-layout).
- * Falls back to DEFAULT_CONFIG for first-time visitors / SSR.
- * Accepts an optional `config` prop so the admin editor can pass live values
- * and render a real-time preview without touching localStorage.
+ * HeroSection
+ * - Reads saved layout from localStorage on mount (your browser sees your saved values).
+ * - Accepts an optional `config` prop for the admin editor's live preview.
+ *
+ * gap*     controls → marginBottom (spacing / scale flow)
+ * yOffset* controls → translateY   (position up/down, never affects other elements)
  */
 export default function HeroSection({ config: propConfig }: { config?: HeroConfig }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const bgY   = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const bgY  = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
   const fade  = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // Read saved layout from localStorage on mount (client-side only to avoid SSR mismatch).
-  // Admin editor can pass propConfig directly for instant live preview.
   const [storedCfg, setStoredCfg] = useState<HeroConfig>(DEFAULT_CONFIG);
   useEffect(() => { setStoredCfg(loadHeroConfig()); }, []);
-  const layout = propConfig ?? storedCfg;
+  const L = propConfig ?? storedCfg; // "L" = active layout
 
-  // Clamp helper: mobile value ≈ 60% of desktop value
-  const mb = (desktop: number) => `clamp(${Math.round(desktop * 0.60)}px, ${(desktop / 10).toFixed(1)}vw, ${desktop}px)`;
+  // Responsive marginBottom: mobile ≈ 60% of desktop value
+  const mb = (desktop: number) =>
+    `clamp(${Math.round(desktop * 0.6)}px, ${(desktop / 10).toFixed(1)}vw, ${desktop}px)`;
+
+  // translateY helper — pure positional shift, does not affect flow
+  const ty = (offset: number) =>
+    offset !== 0 ? `translateY(${offset}px)` : undefined;
 
   return (
     <section
@@ -34,7 +39,7 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-jgt-black"
     >
-      {/* Parallax Background */}
+      {/* Parallax background */}
       <motion.div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -42,12 +47,8 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
           backgroundImage: `url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80')`,
         }}
       />
-
-      {/* Dark overlay layers */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/80" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
-
-      {/* Subtle gold vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(197,160,86,0.04)_0%,transparent_70%)]" />
 
       {/* Content */}
@@ -62,7 +63,10 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ marginBottom: mb(layout.gapSanClementeLogo) }}
+            style={{
+              marginBottom: mb(L.gapSanClementeLogo),
+              transform: ty(L.yOffsetSanClemente),
+            }}
           >
             <div className="flex items-center justify-center gap-4">
               <div className="w-8 h-[1px] bg-jgt-gold/60" />
@@ -83,8 +87,9 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
             transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
             className="relative w-full mx-auto"
             style={{
-              maxWidth: `${layout.logoWidth}px`,
-              marginBottom: mb(layout.gapLogoSince),
+              maxWidth: `${L.logoWidth}px`,
+              marginBottom: mb(L.gapLogoSince),
+              transform: ty(L.yOffsetLogo),
             }}
           >
             <HeroLogoImage />
@@ -98,7 +103,8 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
             className="font-display italic font-light text-jgt-gold/90"
             style={{
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-              marginBottom: mb(layout.gapSinceParagraph),
+              marginBottom: mb(L.gapSinceParagraph),
+              transform: ty(L.yOffsetSince),
             }}
           >
             Since 1989
@@ -112,7 +118,8 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
             className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
             style={{
               fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
-              marginBottom: mb(layout.gapParagraphButtons),
+              marginBottom: mb(L.gapParagraphButtons),
+              transform: ty(L.yOffsetParagraph),
             }}
           >
             Premium window tint installation for automotive, residential, commercial, RV,
@@ -125,7 +132,10 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.85 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            style={{ marginBottom: mb(layout.gapButtonsStats) }}
+            style={{
+              marginBottom: mb(L.gapButtonsStats),
+              transform: ty(L.yOffsetButtons),
+            }}
           >
             <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
               <PhoneIcon />
@@ -142,6 +152,7 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.1 }}
             className="flex flex-wrap items-center justify-center gap-8 pt-5 border-t border-white/10 w-full"
+            style={{ transform: ty(L.yOffsetStats) }}
           >
             {[
               { value: '40+',     label: 'Years Experience' },
