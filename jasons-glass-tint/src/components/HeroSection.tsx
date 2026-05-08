@@ -47,51 +47,52 @@ export default function HeroSection() {
         className="relative z-10 text-center px-6 max-w-5xl mx-auto w-full"
         style={{ y: textY, opacity: fade }}
       >
-        {/* Location badge — pulled DOWN ~100px toward logo via translateY */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-block"
-          style={{
-            transform: 'translateY(clamp(48px, 8vw, 100px))',
-            marginBottom: 0,
-          }}
-        >
-          <div className="flex items-center justify-center gap-4">
-            <div className="w-8 h-[1px] bg-jgt-gold/60" />
-            <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2rem)' }}>San Clemente</span>
-            <div className="w-8 h-[1px] bg-jgt-gold/60" />
-          </div>
-        </motion.div>
+        {/* ── Logo cluster: San Clemente / Logo / Since 1989 tightly grouped ── */}
+        <div className="flex flex-col items-center" style={{ gap: 0 }}>
 
-        {/* Logo — anchor, untouched */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
-          className="relative w-full mx-auto"
-          style={{ maxWidth: LOGO_WIDTH, marginBottom: 0 }}
-        >
-          <HeroLogoImage />
-        </motion.div>
+          {/* Location badge — 12px above the logo */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ marginBottom: '12px' }}
+          >
+            <div className="flex items-center justify-center gap-4">
+              <div className="w-8 h-[1px] bg-jgt-gold/60" />
+              <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2rem)' }}>San Clemente</span>
+              <div className="w-8 h-[1px] bg-jgt-gold/60" />
+            </div>
+          </motion.div>
 
-        {/* Tagline — pulled UP ~100px toward logo via negative margin */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.55 }}
-          className="font-display italic font-light text-jgt-gold/90"
-          style={{
-            fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-            marginTop: 'clamp(-80px, -8vw, -60px)',
-            marginBottom: '0.5rem',
-          }}
-        >
-          Since 1989
-        </motion.p>
+          {/* Logo — anchor, completely untouched */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
+            className="relative w-full mx-auto"
+            style={{ maxWidth: LOGO_WIDTH }}
+          >
+            <HeroLogoImage />
+          </motion.div>
 
-        {/* Supporting text — pulled UP ~80px via negative margin */}
+          {/* Tagline — 8px below the logo */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.55 }}
+            className="font-display italic font-light text-jgt-gold/90"
+            style={{
+              fontSize: 'clamp(1.8rem, 4vw, 3rem)',
+              marginTop: '8px',
+              marginBottom: 0,
+            }}
+          >
+            Since 1989
+          </motion.p>
+
+        </div>{/* end logo cluster */}
+
+        {/* Supporting text — 28px below logo cluster */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -99,24 +100,20 @@ export default function HeroSection() {
           className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
           style={{
             fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
-            marginTop: 'clamp(-60px, -6vw, -40px)',
-            marginBottom: '0.75rem',
+            marginTop: '28px',
+            marginBottom: '28px',
           }}
         >
           Premium window tint installation for automotive, residential, commercial, RV,
           marine, frost, and safety film projects throughout San Clemente and South Orange County.
         </motion.p>
 
-        {/* CTA Buttons — pulled UP ~80px via negative margin */}
+        {/* CTA Buttons — natural gap below paragraph */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.85 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          style={{
-            marginTop: 'clamp(-60px, -6vw, -40px)',
-            marginBottom: 0,
-          }}
         >
           <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
             <PhoneIcon />
@@ -127,13 +124,13 @@ export default function HeroSection() {
           </a>
         </motion.div>
 
-        {/* Stats Row — pulled UP ~60px via negative margin */}
+        {/* Stats Row — comfortable gap below buttons */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
-          className="flex flex-wrap items-center justify-center gap-8 pt-4 border-t border-white/10"
-          style={{ marginTop: 'clamp(-40px, -4vw, -20px)' }}
+          className="flex flex-wrap items-center justify-center gap-8 pt-5 border-t border-white/10"
+          style={{ marginTop: '32px' }}
         >
           {[
             { value: '40+',     label: 'Years Experience' },
