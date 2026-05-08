@@ -12,11 +12,16 @@ import {
   GALLERY_CATEGORIES,
   type GalleryCategory,
   type GalleryItem,
+  type GalleryMeta,
   loadGallery,
-  saveGallery,
+  addGalleryImage,
+  replaceGalleryImage,
+  updateGalleryMeta,
+  deleteGalleryImage,
   clearGallery,
-  exportGalleryJSON,
-  importGalleryJSON,
+  cleanBrokenGalleryData,
+  exportGalleryMetaJSON,
+  getGalleryMeta,
   processImageForGallery,
 } from '@/lib/galleryStorage';
 
@@ -272,15 +277,31 @@ export default function AdminHeroLayout() {
   const [imgSaved, setImgSaved]         = useState(false);
 
   /* ── Gallery state ── */
-  const [galleryImages, setGalleryImages] = useState<GalleryItem[]>([]);
-  const [gallerySaved, setGallerySaved]   = useState(false);
-  const [galleryError, setGalleryError]   = useState<string | null>(null);
+  const [galleryItems,  setGalleryItems]  = useState<GalleryItem[]>([]);
+  const [gallerySaved,  setGallerySaved]  = useState(false);
+  const [galleryError,  setGalleryError]  = useState<string | null>(null);
+  const [galleryLoading, setGalleryLoading] = useState(false);
+  const galleryObjectUrls = useRef<string[]>([]);
 
   /* ── Load on mount ── */
   useEffect(() => {
     try { setCfg(loadHeroConfig()); } catch { /* fall back to DEFAULT_CONFIG */ }
     setImgOverrides(loadImageOverrides());
-    setGalleryImages(loadGallery());
+    // Load gallery from IndexedDB
+    setGalleryLoading(true);
+    loadGallery().then((items) => {
+      galleryObjectUrls.current = items.map((i) => i.objectUrl);
+      setGalleryItems(items);
+    }).catch(() => {
+      setGalleryError('Failed to load gallery from IndexedDB.');
+    }).finally(() => setGalleryLoading(false));
+  }, []);
+
+  /* Revoke object URLs when component unmounts */
+  useEffect(() => {
+    return () => {
+      galleryObjectUrls.current.forEach((u) => URL.revokeObjectURL(u));
+    };
   }, []);
 
   /* ── Positioning handlers ── */
@@ -336,42 +357,98 @@ export default function AdminHeroLayout() {
     }
   };
 
-  /* ── Gallery handlers ── */
-  const handleGalleryUpdate = useCallback((updated: GalleryItem[]) => {
-    setGalleryImages(updated);
-    const result = saveGallery(updated);
-    if (!result.ok) {
-      setGalleryError(result.error ?? 'Failed to save gallery.');
-    } else {
-      setGalleryError(null);
-      setGallerySaved(true);
-      setTimeout(() => setGallerySaved(false), 2500);
-    }
+  /* ── Gallery: show save toast helper ── */
+  const showGallerySaved = useCallback(() => {
+    setGalleryError(null);
+    setGallerySaved(true);
+    setTimeout(() => setGallerySaved(false), 2500);
   }, []);
 
-  const handleResetGallery = () => {
-    if (!window.confirm('Reset gallery? This will delete ALL gallery images from this browser. This cannot be undone.')) return;
-    clearGallery();
-    setGalleryImages([]);
-    setGalleryError(null);
-  };
+  /* ── Gallery: add image ── */
+  const handleGalleryAdd = useCallback(async (blob: Blob, title: string, categories: GalleryCategory[]) => {
+    const result = await addGalleryImage(blob, title, categories);
+    if (!result.ok || !result.item) {
+      setGalleryError(result.error ?? 'Failed to save image.');
+      return;
+    }
+    galleryObjectUrls.current.push(result.item.objectUrl);
+    setGalleryItems((prev) => [result.item!, ...prev]);
+    showGallerySaved();
+  }, [showGallerySaved]);
 
-  /* ── Unified save ── */
+  /* ── Gallery: replace image blob ── */
+  const handleGalleryReplace = useCallback(async (id: string, blob: Blob) => {
+    const result = await replaceGalleryImage(id, blob);
+    if (!result.ok || !result.objectUrl) {
+      setGalleryError(result.error ?? 'Failed to replace image.');
+      return null;
+    }
+    // Revoke old object URL for this id
+    setGalleryItems((prev) =>
+      prev.map((img) => {
+        if (img.id !== id) return img;
+        URL.revokeObjectURL(img.objectUrl);
+        return { ...img, objectUrl: result.objectUrl!, updatedAt: Date.now() };
+      }),
+    );
+    showGallerySaved();
+    return result.objectUrl;
+  }, [showGallerySaved]);
+
+  /* ── Gallery: update metadata only ── */
+  const handleGalleryMeta = useCallback((id: string, patch: Partial<Pick<GalleryMeta, 'title' | 'categories'>>) => {
+    updateGalleryMeta(id, patch);
+    setGalleryItems((prev) =>
+      prev.map((img) => {
+        if (img.id !== id) return img;
+        const cats = patch.categories ?? img.categories;
+        if (!cats.includes('All Projects')) cats.unshift('All Projects');
+        return { ...img, title: patch.title ?? img.title, categories: cats, updatedAt: Date.now() };
+      }),
+    );
+    showGallerySaved();
+  }, [showGallerySaved]);
+
+  /* ── Gallery: delete image ── */
+  const handleGalleryDelete = useCallback(async (id: string) => {
+    await deleteGalleryImage(id);
+    setGalleryItems((prev) => {
+      const item = prev.find((i) => i.id === id);
+      if (item) URL.revokeObjectURL(item.objectUrl);
+      return prev.filter((i) => i.id !== id);
+    });
+    showGallerySaved();
+  }, [showGallerySaved]);
+
+  /* ── Gallery: reset all ── */
+  const handleResetGallery = useCallback(async () => {
+    if (!window.confirm('Reset gallery? This will permanently delete ALL gallery images from this browser.')) return;
+    await clearGallery();
+    galleryObjectUrls.current.forEach((u) => URL.revokeObjectURL(u));
+    galleryObjectUrls.current = [];
+    setGalleryItems([]);
+    setGalleryError(null);
+  }, []);
+
+  /* ── Gallery: clean broken data ── */
+  const handleCleanBroken = useCallback(async () => {
+    const removed = await cleanBrokenGalleryData();
+    if (removed > 0) {
+      // Reload after cleanup
+      const items = await loadGallery();
+      setGalleryItems(items);
+    }
+    alert(removed > 0 ? `Removed ${removed} broken entr${removed === 1 ? 'y' : 'ies'}.` : 'No broken entries found.');
+  }, []);
+
+  /* ── Unified save button ── */
   const handleSave = () => {
     if (activeTab === 'positioning') handleSaveLayout();
     else if (activeTab === 'images') handleSaveImages();
-    // Gallery auto-saves on every change; button still gives visual feedback
-    else {
-      const result = saveGallery(galleryImages);
-      if (!result.ok) {
-        setGalleryError(result.error ?? 'Failed to save gallery.');
-      } else {
-        setGalleryError(null);
-        setGallerySaved(true);
-        setTimeout(() => setGallerySaved(false), 2500);
-      }
-    }
+    // Gallery auto-saves; this just triggers visible feedback
+    else showGallerySaved();
   };
+
   const isSaved =
     activeTab === 'positioning' ? layoutSaved :
     activeTab === 'images'      ? imgSaved :
@@ -509,10 +586,15 @@ export default function AdminHeroLayout() {
           {activeTab === 'gallery' && (
             <div className="flex-1 overflow-y-auto" style={{ background: '#0e0e0e' }}>
               <GalleryPanel
-                images={galleryImages}
+                items={galleryItems}
+                loading={galleryLoading}
                 storageError={galleryError}
-                onUpdate={handleGalleryUpdate}
+                onAdd={handleGalleryAdd}
+                onReplace={handleGalleryReplace}
+                onMeta={handleGalleryMeta}
+                onDelete={handleGalleryDelete}
                 onReset={handleResetGallery}
+                onCleanBroken={handleCleanBroken}
               />
             </div>
           )}
@@ -817,35 +899,40 @@ function ImageCard({
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   GALLERY PANEL — full-width custom gallery management
-   Uses shared galleryStorage.ts (key: jgt_gallery_items)
+   GALLERY PANEL — IndexedDB-backed gallery management
 ───────────────────────────────────────────────────────────────────────────── */
 function GalleryPanel({
-  images,
+  items,
+  loading,
   storageError,
-  onUpdate,
+  onAdd,
+  onReplace,
+  onMeta,
+  onDelete,
   onReset,
+  onCleanBroken,
 }: {
-  images: GalleryItem[];
+  items:        GalleryItem[];
+  loading:      boolean;
   storageError: string | null;
-  onUpdate: (updated: GalleryItem[]) => void;
-  onReset:  () => void;
+  onAdd:        (blob: Blob, title: string, categories: GalleryCategory[]) => Promise<void>;
+  onReplace:    (id: string, blob: Blob) => Promise<string | null>;
+  onMeta:       (id: string, patch: Partial<Pick<GalleryMeta, 'title' | 'categories'>>) => void;
+  onDelete:     (id: string) => Promise<void>;
+  onReset:      () => Promise<void>;
+  onCleanBroken:() => Promise<void>;
 }) {
-  const fileRef    = useRef<HTMLInputElement>(null);
-  const importRef  = useRef<HTMLInputElement>(null);
-  const [uploading,    setUploading]    = useState(false);
-  const [uploadError,  setUploadError]  = useState<string | null>(null);
-  const [savedToast,   setSavedToast]   = useState(false);
-  const [importErrors, setImportErrors] = useState<string[]>([]);
+  const fileRef   = useRef<HTMLInputElement>(null);
+  const [uploading,   setUploading]   = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [savedToast,  setSavedToast]  = useState(false);
 
-  /* Show save-success toast whenever storageError clears after a save */
-  useEffect(() => {
-    if (!storageError && images.length >= 0) {
-      // storageError being null signals a successful save
-    }
-  }, [storageError, images.length]);
+  const triggerSavedToast = () => {
+    setSavedToast(true);
+    setTimeout(() => setSavedToast(false), 2500);
+  };
 
-  /* ── Upload new image ── */
+  /* ── Upload new image to IndexedDB ── */
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -853,81 +940,32 @@ function GalleryPanel({
     setUploadError(null);
     setUploading(true);
     try {
-      const dataUrl = await processImageForGallery(file);
-      const newItem: GalleryItem = {
-        id:         `gci-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        title:      file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
-        src:        dataUrl,
-        categories: ['All Projects'],
-        createdAt:  Date.now(),
-      };
-      const updated = [newItem, ...images];
-      onUpdate(updated);
-      setSavedToast(true);
-      setTimeout(() => setSavedToast(false), 3000);
+      const blob  = await processImageForGallery(file);
+      const title = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+      await onAdd(blob, title, ['All Projects']);
+      triggerSavedToast();
     } catch (err: unknown) {
-      setUploadError(err instanceof Error ? err.message : 'Failed to process image.');
+      setUploadError(
+        err instanceof Error
+          ? err.message
+          : 'Gallery storage is full. Delete older images or use smaller files.',
+      );
     } finally {
       setUploading(false);
     }
   };
 
-  /* ── Update a single image ── */
-  const updateImage = (id: string, patch: Partial<GalleryItem>) => {
-    onUpdate(images.map((img) => img.id === id ? { ...img, ...patch } : img));
-  };
-
-  /* ── Delete an image ── */
-  const deleteImage = (id: string) => {
-    onUpdate(images.filter((img) => img.id !== id));
-  };
-
-  /* ── Replace image src ── */
-  const replaceImageSrc = async (id: string, file: File) => {
-    try {
-      const dataUrl = await processImageForGallery(file);
-      updateImage(id, { src: dataUrl });
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Failed to replace image.');
-    }
-  };
-
-  /* ── Export gallery as JSON ── */
+  /* ── Export metadata JSON ── */
   const handleExport = () => {
-    const json = exportGalleryJSON(images);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = `jgt-gallery-${new Date().toISOString().slice(0, 10)}.json`;
+    const metas  = getGalleryMeta();
+    const json   = exportGalleryMetaJSON(metas);
+    const blob   = new Blob([json], { type: 'application/json' });
+    const url    = URL.createObjectURL(blob);
+    const a      = document.createElement('a');
+    a.href       = url;
+    a.download   = `jgt-gallery-meta-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  /* ── Import gallery from JSON ── */
-  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file) return;
-    setImportErrors([]);
-    try {
-      const text = await file.text();
-      const { items, errors } = importGalleryJSON(text);
-      if (items.length === 0 && errors.length > 0) {
-        setImportErrors(errors);
-        return;
-      }
-      // Merge: add imported items, skip duplicates by id
-      const existingIds = new Set(images.map((img) => img.id));
-      const newItems = items.filter((item) => !existingIds.has(item.id));
-      const merged = [...newItems, ...images];
-      onUpdate(merged);
-      setImportErrors(errors); // may have partial warnings
-      setSavedToast(true);
-      setTimeout(() => setSavedToast(false), 3000);
-    } catch {
-      setImportErrors(['Failed to read file.']);
-    }
   };
 
   return (
@@ -938,9 +976,8 @@ function GalleryPanel({
         <div className="flex flex-wrap items-center gap-3 mb-1">
           <h2 className="text-lg font-semibold tracking-wide text-white/90">Project Gallery</h2>
           <span className="text-[10px] tracking-widest uppercase text-white/30 bg-white/5 border border-white/10 px-2 py-0.5 rounded">
-            {images.length} image{images.length !== 1 ? 's' : ''}
+            {loading ? '…' : `${items.length} image${items.length !== 1 ? 's' : ''}`}
           </span>
-          {/* Save success toast */}
           {savedToast && (
             <span className="text-[11px] text-emerald-400 bg-emerald-400/10 border border-emerald-400/30 px-3 py-0.5 rounded-full">
               ✓ Gallery saved to this browser.
@@ -948,12 +985,12 @@ function GalleryPanel({
           )}
         </div>
         <p className="text-[11px] text-white/35">
-          Add and manage project photos shown in the public gallery.
-          Changes save automatically. Every image includes &quot;All Projects&quot; automatically.
+          Images are stored in IndexedDB — no size limits. Changes persist after refresh.
+          Every image includes &quot;All Projects&quot; automatically.
         </p>
       </div>
 
-      {/* ── Storage quota error ── */}
+      {/* ── Storage error ── */}
       {storageError && (
         <div className="mb-5 px-4 py-3 rounded-lg border border-red-500/50 bg-red-500/10">
           <p className="text-[12px] text-red-400 leading-relaxed">⚠ {storageError}</p>
@@ -962,79 +999,68 @@ function GalleryPanel({
 
       {/* ── Action toolbar ── */}
       <div className="mb-6 flex flex-wrap gap-2">
+        {/* Add image */}
         <button
           onClick={() => { if (!uploading) { setUploadError(null); fileRef.current?.click(); } }}
-          disabled={uploading}
+          disabled={uploading || loading}
           className="flex items-center gap-2 px-4 py-2 rounded border text-[11px] tracking-widest uppercase font-medium transition-all"
           style={{
-            background:  uploading ? 'rgba(197,160,86,0.3)' : '#C5A056',
-            color:       uploading ? 'rgba(0,0,0,0.4)'       : '#0a0a0a',
-            borderColor: uploading ? 'rgba(197,160,86,0.3)' : '#C5A056',
-            cursor:      uploading ? 'not-allowed' : 'pointer',
+            background:  (uploading || loading) ? 'rgba(197,160,86,0.3)' : '#C5A056',
+            color:       (uploading || loading) ? 'rgba(0,0,0,0.4)' : '#0a0a0a',
+            borderColor: (uploading || loading) ? 'rgba(197,160,86,0.3)' : '#C5A056',
+            cursor:      (uploading || loading) ? 'not-allowed' : 'pointer',
           }}
         >
-          {uploading ? (
-            <><div className="w-3.5 h-3.5 border border-black/30 border-t-black rounded-full animate-spin" /> Processing…</>
-          ) : (
-            <>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Add Image
-            </>
-          )}
+          {uploading
+            ? <><div className="w-3.5 h-3.5 border border-black/30 border-t-black rounded-full animate-spin" /> Processing…</>
+            : <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Add Image</>}
         </button>
         <input ref={fileRef} type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" className="hidden" onChange={handleFileChange} />
 
+        {/* Export metadata */}
         <button
           onClick={handleExport}
-          disabled={images.length === 0}
+          disabled={items.length === 0}
           className="flex items-center gap-2 px-4 py-2 rounded border text-[11px] tracking-widest uppercase transition-all"
           style={{
-            borderColor: images.length === 0 ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.2)',
-            color:       images.length === 0 ? 'rgba(255,255,255,0.2)'  : 'rgba(255,255,255,0.6)',
-            cursor:      images.length === 0 ? 'not-allowed' : 'pointer',
+            borderColor: items.length === 0 ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.2)',
+            color:       items.length === 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.6)',
+            cursor:      items.length === 0 ? 'not-allowed' : 'pointer',
           }}
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8" transform="rotate(180 12 10)"/></svg>
-          Export JSON
+          Export Metadata
         </button>
 
+        {/* Clean broken */}
         <button
-          onClick={() => { setImportErrors([]); importRef.current?.click(); }}
+          onClick={onCleanBroken}
           className="flex items-center gap-2 px-4 py-2 rounded border text-[11px] tracking-widest uppercase transition-all"
-          style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}
+          style={{ borderColor: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.45)', cursor: 'pointer' }}
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Import JSON
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          Clear Broken Data
         </button>
-        <input ref={importRef} type="file" accept=".json,application/json" className="hidden" onChange={handleImportFile} />
 
+        {/* Reset gallery */}
         <button
           onClick={onReset}
-          disabled={images.length === 0}
+          disabled={items.length === 0}
           className="flex items-center gap-2 px-4 py-2 rounded border text-[11px] tracking-widest uppercase transition-all ml-auto"
           style={{
-            borderColor: images.length === 0 ? 'rgba(220,38,38,0.15)' : 'rgba(220,38,38,0.35)',
-            color:       images.length === 0 ? 'rgba(220,38,38,0.3)'  : 'rgba(220,38,38,0.8)',
-            cursor:      images.length === 0 ? 'not-allowed' : 'pointer',
+            borderColor: items.length === 0 ? 'rgba(220,38,38,0.15)' : 'rgba(220,38,38,0.4)',
+            color:       items.length === 0 ? 'rgba(220,38,38,0.3)' : 'rgba(220,38,38,0.85)',
+            cursor:      items.length === 0 ? 'not-allowed' : 'pointer',
           }}
         >
-          Reset All
+          Reset Gallery
         </button>
       </div>
 
       {/* Upload error */}
       {uploadError && (
-        <div className="mb-5 px-4 py-3 rounded-lg border border-red-500/40 bg-red-500/8">
-          <p className="text-[12px] text-red-400">⚠ {uploadError}</p>
-        </div>
-      )}
-
-      {/* Import errors/warnings */}
-      {importErrors.length > 0 && (
-        <div className="mb-5 px-4 py-3 rounded-lg border border-amber-500/40 bg-amber-500/8">
-          {importErrors.map((err, i) => (
-            <p key={i} className="text-[12px] text-amber-400">⚠ {err}</p>
-          ))}
+        <div className="mb-5 px-4 py-3 rounded-lg border border-red-500/40 bg-red-500/10">
+          <p className="text-[12px] text-red-400 leading-relaxed">⚠ {uploadError}</p>
         </div>
       )}
 
@@ -1055,28 +1081,42 @@ function GalleryPanel({
         ))}
       </div>
 
-      {/* ── Gallery management grid ── */}
-      {images.length === 0 ? (
+      {/* Loading skeleton */}
+      {loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-xl overflow-hidden border border-white/8" style={{ background: '#131313', aspectRatio: '4/3' }}>
+              <div className="w-full h-full bg-white/5 animate-pulse" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!loading && items.length === 0 && (
         <div className="text-center py-20 border border-white/8 rounded-xl">
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(255,255,255,0.04)' }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
               <circle cx="8.5" cy="8.5" r="1.5"/>
               <polyline points="21 15 16 10 5 21"/>
             </svg>
           </div>
           <p className="text-[13px] text-white/30 tracking-wide">No gallery images yet</p>
-          <p className="text-[11px] text-white/20 mt-1">Click &quot;Add Image&quot; above to get started</p>
+          <p className="text-[11px] text-white/20 mt-1">Click &quot;Add Image&quot; to get started. Images store in IndexedDB — no size limit.</p>
         </div>
-      ) : (
+      )}
+
+      {/* Gallery grid */}
+      {!loading && items.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {images.map((img) => (
+          {items.map((img) => (
             <GalleryImageCard
               key={img.id}
               image={img}
-              onUpdate={(patch) => updateImage(img.id, patch)}
-              onDelete={() => deleteImage(img.id)}
-              onReplace={(file) => replaceImageSrc(img.id, file)}
+              onMeta={(patch) => onMeta(img.id, patch)}
+              onDelete={() => onDelete(img.id)}
+              onReplace={(blob) => onReplace(img.id, blob)}
             />
           ))}
         </div>
@@ -1092,50 +1132,59 @@ function GalleryPanel({
 ───────────────────────────────────────────────────────────────────────────── */
 function GalleryImageCard({
   image,
-  onUpdate,
+  onMeta,
   onDelete,
   onReplace,
 }: {
-  image: GalleryItem;
-  onUpdate:  (patch: Partial<GalleryItem>) => void;
+  image:     GalleryItem;
+  onMeta:    (patch: Partial<Pick<GalleryMeta, 'title' | 'categories'>>) => void;
   onDelete:  () => void;
-  onReplace: (file: File) => void;
+  onReplace: (blob: Blob) => Promise<string | null>;
 }) {
   const replaceRef     = useRef<HTMLInputElement>(null);
   const [editingTitle, setEditingTitle] = useState(false);
   const [draftTitle,   setDraftTitle]   = useState(image.title);
   const [replacing,    setReplacing]    = useState(false);
+  const [replaceErr,   setReplaceErr]   = useState<string | null>(null);
   const [imgBroken,    setImgBroken]    = useState(false);
+  const [localUrl,     setLocalUrl]     = useState(image.objectUrl);
 
-  /* Keep draftTitle in sync if parent updates title */
   useEffect(() => { setDraftTitle(image.title); }, [image.title]);
+  useEffect(() => { setLocalUrl(image.objectUrl); }, [image.objectUrl]);
 
   const commitTitle = () => {
     const trimmed = draftTitle.trim();
-    if (trimmed && trimmed !== image.title) onUpdate({ title: trimmed });
-    else setDraftTitle(image.title); // revert if empty
+    if (trimmed && trimmed !== image.title) onMeta({ title: trimmed });
+    else setDraftTitle(image.title);
     setEditingTitle(false);
   };
 
   const toggleCategory = (cat: GalleryCategory) => {
-    if (cat === 'All Projects') return; // always included, never removable
-    const has = image.categories.includes(cat);
+    if (cat === 'All Projects') return;
+    const has  = image.categories.includes(cat);
     const next: GalleryCategory[] = has
       ? image.categories.filter((c) => c !== cat)
       : [...image.categories, cat];
-    // Always ensure 'All Projects' is present
     if (!next.includes('All Projects')) next.unshift('All Projects');
-    onUpdate({ categories: next });
+    onMeta({ categories: next });
   };
 
   const handleReplaceFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
+    setReplaceErr(null);
     setReplacing(true);
-    await onReplace(file);
-    setReplacing(false);
-    setImgBroken(false);
+    try {
+      const blob   = await processImageForGallery(file);
+      const newUrl = await onReplace(blob);
+      if (newUrl) { setLocalUrl(newUrl); setImgBroken(false); }
+      else setReplaceErr('Failed to replace image.');
+    } catch (err: unknown) {
+      setReplaceErr(err instanceof Error ? err.message : 'Gallery storage is full.');
+    } finally {
+      setReplacing(false);
+    }
   };
 
   const confirmDelete = () => {
@@ -1151,64 +1200,68 @@ function GalleryImageCard({
       <div className="relative bg-black/40" style={{ aspectRatio: '4/3' }}>
         {imgBroken ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>
+            </svg>
             <span className="text-[10px] text-white/25">Image unavailable</span>
           </div>
         ) : (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={image.src}
-            alt={image.title}
-            className="w-full h-full object-cover"
-            onError={() => setImgBroken(true)}
-          />
+          <img src={localUrl} alt={image.title} className="w-full h-full object-cover" onError={() => setImgBroken(true)} />
         )}
         {replacing && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/70">
             <div className="w-7 h-7 border-2 border-yellow-400/40 border-t-yellow-400 rounded-full animate-spin" />
           </div>
         )}
-        {/* Delete button */}
         <button
           onClick={confirmDelete}
-          className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full transition-all"
+          className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full"
           style={{ background: 'rgba(220,38,38,0.85)', color: 'white' }}
           title="Remove image"
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
         </button>
       </div>
 
-      <div className="flex-1 p-4 flex flex-col gap-4">
+      {replaceErr && (
+        <div className="mx-3 mt-2 px-3 py-2 rounded border border-red-500/40 bg-red-500/10">
+          <p className="text-[11px] text-red-400">⚠ {replaceErr}</p>
+        </div>
+      )}
 
-        {/* Title editing */}
+      <div className="flex-1 p-4 flex flex-col gap-4">
+        {/* Title */}
         <div>
           <label className="text-[9px] tracking-[0.18em] uppercase text-white/30 mb-1.5 block">Project Title</label>
           {editingTitle ? (
-            <div className="flex gap-2">
-              <input
-                autoFocus
-                value={draftTitle}
-                onChange={(e) => setDraftTitle(e.target.value)}
-                onBlur={commitTitle}
-                onKeyDown={(e) => { if (e.key === 'Enter') commitTitle(); if (e.key === 'Escape') { setDraftTitle(image.title); setEditingTitle(false); } }}
-                className="flex-1 bg-white/8 border border-yellow-400/50 rounded px-3 py-2 text-[13px] text-white outline-none"
-                maxLength={80}
-              />
-            </div>
+            <input
+              autoFocus
+              value={draftTitle}
+              onChange={(e) => setDraftTitle(e.target.value)}
+              onBlur={commitTitle}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') commitTitle();
+                if (e.key === 'Escape') { setDraftTitle(image.title); setEditingTitle(false); }
+              }}
+              className="w-full bg-white/8 border border-yellow-400/50 rounded px-3 py-2 text-[13px] text-white outline-none"
+              maxLength={80}
+            />
           ) : (
             <button
               onClick={() => setEditingTitle(true)}
               className="w-full text-left px-3 py-2 rounded border border-white/10 hover:border-yellow-400/40 transition-colors group"
               style={{ background: 'rgba(255,255,255,0.03)' }}
             >
-              <span className="text-[13px] text-white/80 group-hover:text-white transition-colors">{image.title}</span>
-              <span className="ml-2 text-[10px] text-white/25 group-hover:text-yellow-400/60 transition-colors">✎</span>
+              <span className="text-[13px] text-white/80 group-hover:text-white">{image.title}</span>
+              <span className="ml-2 text-[10px] text-white/25 group-hover:text-yellow-400/60">✎</span>
             </button>
           )}
         </div>
 
-        {/* Category selector — inline checklist (always visible, no dropdown) */}
+        {/* Categories */}
         <div>
           <label className="text-[9px] tracking-[0.18em] uppercase text-white/30 mb-2 block">Category</label>
           <div className="grid grid-cols-2 gap-1.5">
@@ -1223,31 +1276,29 @@ function GalleryImageCard({
                   className="flex items-center gap-2 px-2.5 py-2 rounded border text-left text-[10px] tracking-wide transition-all"
                   style={{
                     background:  selected ? (isAll ? 'rgba(197,160,86,0.18)' : 'rgba(197,160,86,0.14)') : 'rgba(255,255,255,0.03)',
-                    borderColor: selected ? (isAll ? 'rgba(197,160,86,0.6)'  : 'rgba(197,160,86,0.5)') : 'rgba(255,255,255,0.1)',
-                    color:       selected ? (isAll ? '#C5A056'               : 'rgba(255,255,255,0.85)') : 'rgba(255,255,255,0.4)',
+                    borderColor: selected ? (isAll ? 'rgba(197,160,86,0.6)' : 'rgba(197,160,86,0.5)') : 'rgba(255,255,255,0.1)',
+                    color:       selected ? (isAll ? '#C5A056' : 'rgba(255,255,255,0.85)') : 'rgba(255,255,255,0.4)',
                     cursor:      isAll ? 'default' : 'pointer',
                   }}
                 >
                   <span
                     className="w-3.5 h-3.5 rounded-sm flex items-center justify-center flex-shrink-0"
                     style={{
-                      background:  selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.9)') : 'rgba(255,255,255,0.07)',
-                      border:      `1px solid ${selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.8)') : 'rgba(255,255,255,0.15)'}`,
+                      background: selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.9)') : 'rgba(255,255,255,0.07)',
+                      border: `1px solid ${selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.8)') : 'rgba(255,255,255,0.15)'}`,
                     }}
                   >
-                    {selected && (
-                      <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="3.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    )}
+                    {selected && <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="3.5"><polyline points="20 6 9 17 4 12"/></svg>}
                   </span>
                   <span className="truncate">{cat}</span>
                 </button>
               );
             })}
           </div>
-          <p className="text-[9px] text-white/20 mt-1.5">"All Projects" is always included automatically.</p>
+          <p className="text-[9px] text-white/20 mt-1.5">&quot;All Projects&quot; is always included automatically.</p>
         </div>
 
-        {/* Replace button */}
+        {/* Replace */}
         <div className="mt-auto pt-2 border-t border-white/8">
           <button
             onClick={() => { if (!replacing) replaceRef.current?.click(); }}
@@ -1256,11 +1307,10 @@ function GalleryImageCard({
             style={{
               borderColor: replacing ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)',
               color:       replacing ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.55)',
-              background:  'transparent',
               cursor:      replacing ? 'not-allowed' : 'pointer',
             }}
-            onMouseEnter={(e) => { if (!replacing) { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(197,160,86,0.5)'; (e.currentTarget as HTMLButtonElement).style.color = '#C5A056'; } }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.2)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.55)'; }}
+            onMouseEnter={(e) => { if (!replacing) { (e.currentTarget as HTMLButtonElement).style.borderColor='rgba(197,160,86,0.5)'; (e.currentTarget as HTMLButtonElement).style.color='#C5A056'; } }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor='rgba(255,255,255,0.2)'; (e.currentTarget as HTMLButtonElement).style.color='rgba(255,255,255,0.55)'; }}
           >
             ↑ Replace Image
           </button>

@@ -1,16 +1,34 @@
 /**
  * galleryStorage.ts
- * ─────────────────
+ * ─────────────────────────────────────────────────────────────────────────────
  * Single source of truth for gallery data.
- * Both the admin editor and the public GallerySection MUST import from here.
+ * Both the admin editor and the public GallerySection import from here.
  *
- * localStorage key: jgt_gallery_items
+ * Storage strategy:
+ *   • IndexedDB  — image blobs (no size limit, handles full-size photos)
+ *   • localStorage — metadata only (ids, titles, categories, timestamps)
+ *
+ * IndexedDB DB name : jgt_gallery
+ * IndexedDB store   : images          (key: id, value: Blob)
+ * localStorage key  : jgt_gallery_meta
+ *
+ * Migration: any old base64 data URLs stored in jgt_gallery_items or
+ * jgt_custom_gallery_v1 are silently dropped (they bloated localStorage).
  */
 
-// ── Canonical storage key ────────────────────────────────────────────────────
-export const GALLERY_KEY = 'jgt_gallery_items';
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────────────────────────────────────
 
-// ── Category types ───────────────────────────────────────────────────────────
+const DB_NAME      = 'jgt_gallery';
+const DB_VERSION   = 1;
+const STORE_NAME   = 'images';
+const META_KEY     = 'jgt_gallery_meta';  // localStorage key for metadata array
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Category types
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const GALLERY_CATEGORIES = [
   'All Projects',
   'Automotive',
@@ -22,137 +40,367 @@ export const GALLERY_CATEGORIES = [
   'Safety Film',
 ] as const;
 
-export type GalleryCategory = typeof GALLERY_CATEGORIES[number];
+export type GalleryCategory = (typeof GALLERY_CATEGORIES)[number];
 
-// ── Data model ───────────────────────────────────────────────────────────────
-export interface GalleryItem {
-  id:         string;   // unique, never changes after creation
+// ─────────────────────────────────────────────────────────────────────────────
+// Data models
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Metadata stored in localStorage (small, serialisable). */
+export interface GalleryMeta {
+  id:         string;
   title:      string;
-  src:        string;   // compressed base64 data URL (data:image/...)
-  categories: GalleryCategory[];  // always contains 'All Projects'
-  createdAt:  number;  // ms timestamp
+  categories: GalleryCategory[];
+  createdAt:  number;
+  updatedAt:  number;
 }
 
-// ── Validate a single item ───────────────────────────────────────────────────
-function isValidItem(x: unknown): x is GalleryItem {
-  if (typeof x !== 'object' || x === null) return false;
-  const item = x as Record<string, unknown>;
-  return (
-    typeof item.id         === 'string' && item.id !== '' &&
-    typeof item.title      === 'string' &&
-    typeof item.src        === 'string' && (item.src as string).startsWith('data:image/') &&
-    Array.isArray(item.categories) &&
-    (typeof item.createdAt === 'number' || typeof item.addedAt === 'number')
-  );
+/** Full item = metadata + an object URL ready for <img src>. */
+export interface GalleryItem extends GalleryMeta {
+  /** Object URL created from the blob — revoke when done, or reuse. */
+  objectUrl: string;
 }
 
-// ── Normalize item from any stored shape ─────────────────────────────────────
-function normalizeItem(x: Record<string, unknown>): GalleryItem {
-  const cats = (Array.isArray(x.categories) ? x.categories : []) as GalleryCategory[];
-  if (!cats.includes('All Projects')) cats.unshift('All Projects');
-  return {
-    id:         String(x.id),
-    title:      String(x.title ?? ''),
-    src:        String(x.src),
-    categories: cats,
-    createdAt:  typeof x.createdAt === 'number'
-      ? x.createdAt
-      : typeof x.addedAt === 'number'
-        ? x.addedAt
-        : Date.now(),
-  };
+// ─────────────────────────────────────────────────────────────────────────────
+// IndexedDB helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+function openDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains(STORE_NAME)) {
+        req.result.createObjectStore(STORE_NAME);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
 }
 
-// ── Load ─────────────────────────────────────────────────────────────────────
-export function loadGallery(): GalleryItem[] {
+async function idbPut(id: string, blob: Blob): Promise<void> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req   = store.put(blob, id);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+    tx.oncomplete  = () => db.close();
+  });
+}
+
+async function idbGet(id: string): Promise<Blob | undefined> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req   = store.get(id);
+    req.onsuccess = () => { db.close(); resolve(req.result as Blob | undefined); };
+    req.onerror   = () => { db.close(); reject(req.error); };
+  });
+}
+
+async function idbDelete(id: string): Promise<void> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req   = store.delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+    tx.oncomplete  = () => db.close();
+  });
+}
+
+async function idbGetAllKeys(): Promise<string[]> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req   = store.getAllKeys();
+    req.onsuccess = () => { db.close(); resolve(req.result as string[]); };
+    req.onerror   = () => { db.close(); reject(req.error); };
+  });
+}
+
+async function idbClear(): Promise<void> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req   = store.clear();
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+    tx.oncomplete  = () => db.close();
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Metadata helpers (localStorage — only the small fields)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function loadMeta(): GalleryMeta[] {
   if (typeof window === 'undefined') return [];
   try {
-    // Also migrate from old key if new key is absent
-    let raw = localStorage.getItem(GALLERY_KEY);
-    if (!raw) {
-      raw = localStorage.getItem('jgt_custom_gallery_v1');
-      if (raw) {
-        // migrate: write to new key, leave old key alone (remove later if needed)
-        try { localStorage.setItem(GALLERY_KEY, raw); } catch { /* ignore */ }
-      }
-    }
+    const raw = localStorage.getItem(META_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed
-      .filter(isValidItem)
-      .map((item) => normalizeItem(item as unknown as Record<string, unknown>));
+    return parsed.filter(isValidMeta).map(normalizeMeta);
   } catch {
     return [];
   }
 }
 
-// ── Save — returns true on success, false on quota error ─────────────────────
-export function saveGallery(items: GalleryItem[]): { ok: boolean; error?: string } {
+function saveMeta(items: GalleryMeta[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(META_KEY, JSON.stringify(items));
+  } catch {
+    // Metadata is tiny; this almost never fails.
+    // If it does, the image is still in IndexedDB.
+  }
+}
+
+function clearMeta(): void {
+  if (typeof window === 'undefined') return;
+  try { localStorage.removeItem(META_KEY); } catch { /* noop */ }
+  // Also remove old localStorage blob keys so we don't accumulate junk
+  try { localStorage.removeItem('jgt_gallery_items'); } catch { /* noop */ }
+  try { localStorage.removeItem('jgt_custom_gallery_v1'); } catch { /* noop */ }
+}
+
+function isValidMeta(x: unknown): boolean {
+  if (typeof x !== 'object' || x === null) return false;
+  const m = x as Record<string, unknown>;
+  return (
+    typeof m.id    === 'string' && m.id !== '' &&
+    typeof m.title === 'string' &&
+    Array.isArray(m.categories)
+  );
+}
+
+function normalizeMeta(x: Record<string, unknown>): GalleryMeta {
+  const cats = (Array.isArray(x.categories) ? [...x.categories] : []) as GalleryCategory[];
+  if (!cats.includes('All Projects')) cats.unshift('All Projects');
+  return {
+    id:         String(x.id),
+    title:      String(x.title ?? ''),
+    categories: cats,
+    createdAt:  typeof x.createdAt === 'number' ? x.createdAt
+               : typeof x.addedAt  === 'number' ? x.addedAt : Date.now(),
+    updatedAt:  typeof x.updatedAt === 'number' ? x.updatedAt : Date.now(),
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Public API
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Load all gallery items.
+ * Returns GalleryItem[] where each item has an objectUrl ready to use in <img>.
+ * Call URL.revokeObjectURL(item.objectUrl) when the component unmounts.
+ */
+export async function loadGallery(): Promise<GalleryItem[]> {
+  if (typeof window === 'undefined') return [];
+  const metas = loadMeta();
+  if (metas.length === 0) return [];
+
+  // Load blobs from IndexedDB in parallel
+  const items = await Promise.all(
+    metas.map(async (meta): Promise<GalleryItem | null> => {
+      try {
+        const blob = await idbGet(meta.id);
+        if (!blob) return null; // blob missing — orphaned metadata
+        return { ...meta, objectUrl: URL.createObjectURL(blob) };
+      } catch {
+        return null;
+      }
+    }),
+  );
+  return items.filter((item): item is GalleryItem => item !== null);
+}
+
+/**
+ * Add a new image to the gallery.
+ * Accepts a File or Blob (already compressed by processImageForGallery).
+ */
+export async function addGalleryImage(
+  blob:       Blob,
+  title:      string,
+  categories: GalleryCategory[],
+): Promise<{ ok: boolean; item?: GalleryItem; error?: string }> {
+  if (typeof window === 'undefined') return { ok: false, error: 'Not in browser.' };
+  const id = `gci-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const cats: GalleryCategory[] = categories.includes('All Projects')
+    ? categories
+    : ['All Projects', ...categories];
+
+  try {
+    await idbPut(id, blob);
+  } catch (err) {
+    return {
+      ok: false,
+      error: 'Gallery storage is full. Delete older images or use smaller files.',
+    };
+  }
+
+  const now  = Date.now();
+  const meta: GalleryMeta = { id, title, categories: cats, createdAt: now, updatedAt: now };
+  const metas = [meta, ...loadMeta()];
+  saveMeta(metas);
+
+  return {
+    ok:   true,
+    item: { ...meta, objectUrl: URL.createObjectURL(blob) },
+  };
+}
+
+/**
+ * Replace the image blob for an existing gallery item.
+ */
+export async function replaceGalleryImage(
+  id:   string,
+  blob: Blob,
+): Promise<{ ok: boolean; objectUrl?: string; error?: string }> {
   if (typeof window === 'undefined') return { ok: false, error: 'Not in browser.' };
   try {
-    localStorage.setItem(GALLERY_KEY, JSON.stringify(items));
-    return { ok: true };
-  } catch (err) {
-    const msg =
-      err instanceof DOMException && err.name === 'QuotaExceededError'
-        ? 'Browser storage is full. Try fewer/smaller images or export your gallery backup.'
-        : 'Failed to save gallery.';
-    return { ok: false, error: msg };
-  }
-}
-
-// ── Clear ────────────────────────────────────────────────────────────────────
-export function clearGallery(): void {
-  if (typeof window === 'undefined') return;
-  try { localStorage.removeItem(GALLERY_KEY); } catch { /* noop */ }
-}
-
-// ── Export to JSON string (for download) ─────────────────────────────────────
-export function exportGalleryJSON(items: GalleryItem[]): string {
-  return JSON.stringify(items, null, 2);
-}
-
-// ── Import from JSON string — validates each item ────────────────────────────
-export function importGalleryJSON(json: string): { items: GalleryItem[]; errors: string[] } {
-  const errors: string[] = [];
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(json);
+    await idbPut(id, blob);
+    // Update updatedAt in metadata
+    const metas = loadMeta().map((m) =>
+      m.id === id ? { ...m, updatedAt: Date.now() } : m,
+    );
+    saveMeta(metas);
+    return { ok: true, objectUrl: URL.createObjectURL(blob) };
   } catch {
-    return { items: [], errors: ['Invalid JSON file.'] };
+    return {
+      ok: false,
+      error: 'Gallery storage is full. Delete older images or use smaller files.',
+    };
   }
-  if (!Array.isArray(parsed)) {
-    return { items: [], errors: ['Expected a JSON array of gallery items.'] };
-  }
-  const items: GalleryItem[] = [];
-  for (let i = 0; i < parsed.length; i++) {
-    if (isValidItem(parsed[i])) {
-      items.push(normalizeItem(parsed[i] as Record<string, unknown>));
-    } else {
-      errors.push(`Item ${i + 1} skipped: invalid format.`);
-    }
-  }
-  return { items, errors };
 }
 
-// ── Image compression helpers (shared) ───────────────────────────────────────
+/**
+ * Update only metadata fields (title, categories) for an existing item.
+ * Does not touch the blob.
+ */
+export function updateGalleryMeta(
+  id:    string,
+  patch: Partial<Pick<GalleryMeta, 'title' | 'categories'>>,
+): void {
+  if (typeof window === 'undefined') return;
+  const metas = loadMeta().map((m) => {
+    if (m.id !== id) return m;
+    const cats = patch.categories ?? m.categories;
+    if (!cats.includes('All Projects')) cats.unshift('All Projects');
+    return {
+      ...m,
+      title:      patch.title ?? m.title,
+      categories: cats,
+      updatedAt:  Date.now(),
+    };
+  });
+  saveMeta(metas);
+}
 
-const MAX_STORED_BYTES = 4 * 1024 * 1024; // 4 MB safety cap per image
+/**
+ * Delete an image (blob + metadata).
+ */
+export async function deleteGalleryImage(id: string): Promise<void> {
+  if (typeof window === 'undefined') return;
+  try { await idbDelete(id); } catch { /* ignore */ }
+  saveMeta(loadMeta().filter((m) => m.id !== id));
+}
+
+/**
+ * Clear ALL gallery data (blobs + metadata).
+ */
+export async function clearGallery(): Promise<void> {
+  if (typeof window === 'undefined') return;
+  try { await idbClear(); } catch { /* ignore */ }
+  clearMeta();
+}
+
+/**
+ * Remove metadata entries whose blobs are missing in IndexedDB (orphan cleanup).
+ * Returns number of entries removed.
+ */
+export async function cleanBrokenGalleryData(): Promise<number> {
+  if (typeof window === 'undefined') return 0;
+  let keys: string[] = [];
+  try { keys = await idbGetAllKeys(); } catch { return 0; }
+  const keySet = new Set(keys);
+  const metas  = loadMeta();
+  const clean  = metas.filter((m) => keySet.has(m.id));
+  const removed = metas.length - clean.length;
+  if (removed > 0) saveMeta(clean);
+  return removed;
+}
+
+/**
+ * Export gallery metadata as a downloadable JSON (no blobs — just structure).
+ * Images can be re-imported later from JSON, but blobs must be re-uploaded.
+ */
+export function exportGalleryMetaJSON(metas: GalleryMeta[]): string {
+  return JSON.stringify(
+    metas.map(({ id, title, categories, createdAt, updatedAt }) => ({
+      id, title, categories, createdAt, updatedAt,
+    })),
+    null, 2,
+  );
+}
+
+/**
+ * Get current metadata list (synchronous, no blobs).
+ */
+export function getGalleryMeta(): GalleryMeta[] {
+  return loadMeta();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Image compression
+// ─────────────────────────────────────────────────────────────────────────────
 
 const ACCEPTED_EXT  = ['.jpg', '.jpeg', '.png', '.webp'];
 const ACCEPTED_MIME = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-function compressImageFile(
-  file: File,
-  maxWidth: number,
+/**
+ * Validate, compress, and return a Blob suitable for IndexedDB storage.
+ * Max 1600×1600 px, WebP at 0.78 quality (PNG for transparency).
+ */
+export async function processImageForGallery(file: File): Promise<Blob> {
+  const mime = file.type.toLowerCase();
+  const name = file.name.toLowerCase();
+  const extOk  = ACCEPTED_EXT.some((e) => name.endsWith(e));
+  const mimeOk = ACCEPTED_MIME.includes(mime);
+
+  if (!extOk && !mimeOk) {
+    if (name.endsWith('.heic') || name.endsWith('.heif'))
+      throw new Error('HEIC is not supported. Convert to JPG or PNG first.');
+    if (name.endsWith('.tiff') || name.endsWith('.tif'))
+      throw new Error('TIFF is not supported. Use JPG, PNG, or WebP.');
+    if (['.raw', '.cr2', '.nef', '.arw', '.dng'].some((e) => name.endsWith(e)))
+      throw new Error('RAW camera files are not supported. Export as JPG/PNG first.');
+    throw new Error('Unsupported file type. Upload JPG, PNG, or WebP.');
+  }
+
+  const hasAlpha = mime === 'image/png' || name.endsWith('.png');
+  return compressToBlob(file, 1600, 1600, 0.78, hasAlpha);
+}
+
+function compressToBlob(
+  file:      File,
+  maxWidth:  number,
   maxHeight: number,
-  quality: number,
-  hasAlpha: boolean,
-): Promise<string> {
+  quality:   number,
+  hasAlpha:  boolean,
+): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
-    const img  = new Image();
+    const img = new Image();
+
     img.onload = () => {
       URL.revokeObjectURL(url);
       try {
@@ -162,40 +410,37 @@ function compressImageFile(
           width  = Math.round(width  * ratio);
           height = Math.round(height * ratio);
         }
+
         const canvas = document.createElement('canvas');
         canvas.width  = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         if (!ctx) { reject(new Error('Canvas context unavailable.')); return; }
+
         if (!hasAlpha) {
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, width, height);
         }
         ctx.drawImage(img, 0, 0, width, height);
-        const dataUrl = canvas.toDataURL('image/webp', quality);
-        resolve(dataUrl);
-      } catch (e) { reject(e); }
+
+        const outputMime = hasAlpha ? 'image/png' : 'image/webp';
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) { reject(new Error('Canvas toBlob returned null.')); return; }
+            resolve(blob);
+          },
+          outputMime,
+          hasAlpha ? undefined : quality,
+        );
+      } catch (e) {
+        reject(e);
+      }
     };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Failed to load image.')); };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Failed to load image.'));
+    };
     img.src = url;
   });
-}
-
-export async function processImageForGallery(file: File): Promise<string> {
-  const mime = file.type.toLowerCase();
-  const name = file.name.toLowerCase();
-  const extOk  = ACCEPTED_EXT.some((e)  => name.endsWith(e));
-  const mimeOk = ACCEPTED_MIME.includes(mime);
-  if (!extOk && !mimeOk) {
-    if (name.endsWith('.heic') || name.endsWith('.heif')) throw new Error('HEIC files are not supported. Convert to JPG/PNG first.');
-    if (name.endsWith('.tiff') || name.endsWith('.tif'))  throw new Error('TIFF files are not supported. Use JPG, PNG, or WebP.');
-    if (['.raw', '.cr2', '.nef', '.arw', '.dng'].some((e) => name.endsWith(e))) throw new Error('RAW files are not supported. Export as JPG/PNG first.');
-    throw new Error('Unsupported file type. Upload JPG, PNG, or WebP.');
-  }
-  const hasAlpha = mime === 'image/png' || name.endsWith('.png');
-  const dataUrl  = await compressImageFile(file, 1800, 1800, 0.82, hasAlpha);
-  if (dataUrl.length > MAX_STORED_BYTES) {
-    throw new Error('Image is too large after compression. Try a smaller/lower-res image.');
-  }
-  return dataUrl;
 }

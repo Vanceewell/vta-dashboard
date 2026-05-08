@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   GALLERY_CATEGORIES,
@@ -10,9 +10,9 @@ import {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    PUBLIC GALLERY SECTION
-   Reads from the shared localStorage key `jgt_gallery_items`.
-   If no items are saved, shows a premium empty-state — never shows
-   broken placeholder images.
+   Reads from IndexedDB via galleryStorage.ts.
+   • If no items saved → premium empty state (no broken placeholders ever).
+   • Revokes object URLs on unmount to avoid memory leaks.
 ───────────────────────────────────────────────────────────────────────────── */
 
 interface RenderItem extends GalleryItem {
@@ -24,19 +24,32 @@ export default function GallerySection() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [items,    setItems]    = useState<RenderItem[]>([]);
   const [loaded,   setLoaded]   = useState(false);
+  const objectUrls = useRef<string[]>([]);
 
-  /* Load gallery from localStorage (client only) */
   useEffect(() => {
-    const saved = loadGallery();
-    const renderItems: RenderItem[] = saved.map((item, i) => ({
-      ...item,
-      tall: i % 3 === 0,
-    }));
-    setItems(renderItems);
-    setLoaded(true);
+    let cancelled = false;
+
+    loadGallery().then((saved) => {
+      if (cancelled) {
+        saved.forEach((i) => URL.revokeObjectURL(i.objectUrl));
+        return;
+      }
+      // Track URLs so we can revoke on unmount
+      objectUrls.current = saved.map((i) => i.objectUrl);
+      setItems(
+        saved.map((item, i) => ({ ...item, tall: i % 3 === 0 })),
+      );
+      setLoaded(true);
+    }).catch(() => {
+      if (!cancelled) setLoaded(true);
+    });
+
+    return () => {
+      cancelled = true;
+      objectUrls.current.forEach((u) => URL.revokeObjectURL(u));
+    };
   }, []);
 
-  /* Filter by active tab */
   const filtered =
     active === 'All Projects'
       ? items
@@ -80,7 +93,7 @@ export default function GallerySection() {
           ))}
         </div>
 
-        {/* No gallery items saved → premium empty state */}
+        {/* No items saved — premium empty state */}
         {loaded && items.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -95,17 +108,14 @@ export default function GallerySection() {
             <p className="font-sans text-jgt-muted text-sm max-w-sm mx-auto">
               Jason&apos;s project photos are on the way. In the meantime, text him directly for examples of past work.
             </p>
-            <a
-              href="sms:9494968468"
-              className="btn-gold inline-flex mt-8 text-xs px-8 py-4"
-            >
+            <a href="sms:9494968468" className="btn-gold inline-flex mt-8 text-xs px-8 py-4">
               Text Jason for Examples
             </a>
             <div className="w-12 h-[1px] bg-jgt-gold mx-auto mt-8" />
           </motion.div>
         )}
 
-        {/* Has items but none match active category */}
+        {/* Has items but none in this category */}
         {loaded && items.length > 0 && filtered.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -134,18 +144,17 @@ export default function GallerySection() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: i * 0.05 }}
                   className="masonry-item group relative overflow-hidden cursor-pointer"
-                  onClick={() => setLightbox(img.src)}
+                  onClick={() => setLightbox(img.objectUrl)}
                 >
                   <div className={`relative overflow-hidden ${img.tall ? 'aspect-[3/4]' : 'aspect-[4/3]'}`}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={img.src}
+                      src={img.objectUrl}
                       alt={img.title}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       loading="lazy"
                       onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.1'; }}
                     />
-                    {/* Hover overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                       <div>
                         <p className="font-display text-jgt-text text-sm">{img.title}</p>
