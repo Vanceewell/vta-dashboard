@@ -44,15 +44,21 @@ export default function HeroSection() {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 text-center px-6 max-w-5xl mx-auto"
-        style={{ y: textY, opacity: fade }}
+        className="relative z-10 text-center px-6 max-w-5xl mx-auto w-full"
+        style={{
+          y: textY,
+          opacity: fade,
+          // Shift entire content block down: ~2in desktop, scales to ~1in tablet, 0 mobile
+          paddingTop: 'clamp(0px, 6vw, 112px)',
+        }}
       >
-        {/* Location badge — more prominent */}
+        {/* Location badge — shifted down ~2in on desktop */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="inline-block mb-6"
+          style={{ marginTop: 'clamp(0px, 4vw, 80px)' }}
         >
           <div className="flex items-center justify-center gap-4">
             <div className="w-8 h-[1px] bg-jgt-gold/60" />
@@ -61,13 +67,16 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Main headline — uploaded logo image with SVG text fallback */}
+        {/* Main headline — logo image, shifted down ~1in additional on desktop */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
           className={`relative w-full mx-auto ${LOGO_MARGIN_B}`}
-          style={{ maxWidth: LOGO_WIDTH }}
+          style={{
+            maxWidth: LOGO_WIDTH,
+            marginTop: 'clamp(0px, 2.5vw, 48px)',
+          }}
         >
           <HeroLogoImage />
         </motion.div>
