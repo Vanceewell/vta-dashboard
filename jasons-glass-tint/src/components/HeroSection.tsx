@@ -93,10 +93,6 @@ export default function HeroSection() {
             <PhoneIcon />
             Text Jason Now
           </a>
-          <a href="sms:9494968468" className="btn-outline text-xs px-8 py-4 w-full sm:w-auto justify-center">
-            <MessageIcon />
-            Send a Text
-          </a>
           <a href="#gallery" className="btn-outline text-xs px-8 py-4 w-full sm:w-auto justify-center">
             View Projects
           </a>
