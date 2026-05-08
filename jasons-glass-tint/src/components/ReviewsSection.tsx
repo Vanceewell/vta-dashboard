@@ -5,52 +5,40 @@ import { motion, AnimatePresence } from 'framer-motion';
 // AI-EDITABLE: reviews
 const REVIEWS = [
   {
-    name:     'Mark T.',
+    name:     'Brandon C.',
     location: 'San Clemente, CA',
     stars:    5,
-    date:     'November 2024',
-    text:     "I've had my cars tinted at a few different places over the years, but Jason is on a completely different level. He took his time, explained exactly what film he was using and why, and the install came out absolutely perfect — no bubbles, no edges lifting, factory-clean look. This is the only place I'll go from now on.",
-    service:  'Automotive Tint',
+    text:     "We have had 3 of our cars' tint done by Jason, and every single one has been perfectly done. Jason is a true professional and we won't go anywhere else for our tint!",
   },
   {
-    name:     'Sarah K.',
-    location: 'Talega, CA',
-    stars:    5,
-    date:     'September 2024',
-    text:     "We had Jason tint the west-facing windows throughout our home in Talega. The difference is remarkable — the living room stays so much cooler in the afternoon and our floors have stopped fading. He was incredibly easy to work with, the pricing was honest, and the results look beautiful. Highly recommend.",
-    service:  'Residential Tint',
-  },
-  {
-    name:     'David M.',
-    location: 'Dana Point, CA',
-    stars:    5,
-    date:     'July 2024',
-    text:     "Jason did the tint on my Porsche 911 and I couldn't be happier. He spent extra time making sure the rear window came out perfectly — which I know isn't easy. Zero shortcuts. He clearly cares about his work in a way that most service people just don't anymore. Worth every dollar.",
-    service:  'Automotive Tint',
-  },
-  {
-    name:     'Jennifer L.',
-    location: 'San Juan Capistrano, CA',
-    stars:    5,
-    date:     'May 2024',
-    text:     "We've used Jason for two homes now — our previous house in San Clemente and now our place in SJC. Every time, it's the same experience: he shows up on time, he's professional, the work is pristine, and he doesn't try to oversell you. Honest, skilled, and local. That's all you really want.",
-    service:  'Residential Tint',
-  },
-  {
-    name:     'Robert C.',
+    name:     'Zack J.',
     location: 'San Clemente, CA',
     stars:    5,
-    date:     'February 2024',
-    text:     "Had Jason do the commercial tint on our new office building on El Camino Real. He handled every window himself — no rushing, no shortcuts. The solar control film has genuinely cut our cooling costs and the building looks more polished. Several neighboring businesses have already asked who did the work.",
-    service:  'Commercial Tint',
+    text:     'Amazing in every way! Thank you, Jason for the communication and quality work! I will never go anywhere else',
   },
   {
-    name:     'Mike P.',
-    location: 'Dana Point, CA',
+    name:     'Rob M.',
+    location: 'Glendale, CA',
     stars:    5,
-    date:     'March 2024',
-    text:     "Jason tinted the cabin windows on my 34-foot sport fisher and the results are exceptional. Marine installations are tricky — curved glass, irregular shapes — but you'd never know it looking at his work. Smooth, clean, and holding up perfectly after months of sun and salt spray.",
-    service:  'Marine Tint',
+    text:     "Never had any tinting done before but I'm happy with the UV protection and looks. Jason is a solid self made, positive guy, and a good communicator.",
+  },
+  {
+    name:     'Kevin S.',
+    location: 'San Clemente, CA',
+    stars:    5,
+    text:     'Jason tinted front 2 windows on my Tesla. Super clean job, quick. Jason is also a great person, I enjoyed talking to him whilst he was installing the window tints. Thanks',
+  },
+  {
+    name:     'Marla C.',
+    location: 'Mission Viejo, CA',
+    stars:    5,
+    text:     'Jason did a great job! Super fast response and turnaround. My sister has brought several cars to him and recommended to me. Highly recommend!!',
+  },
+  {
+    name:     'Jessica G.',
+    location: 'Laguna Beach, CA',
+    stars:    5,
+    text:     'Highly recommend. Jason tinted our corporate conference room that gets a lot of sun. These are exterior facing, floor-to-ceiling windows. He had great attention to detail, no visible seams, and the product he used was top of the line. We noticed an immediate difference in the temperature of the conference room. It was important because it\'s the space in our office that our business partners use and see the most. I have recommended him to friends after seeing his work. Very pleased!',
   },
 ];
 
@@ -122,10 +110,7 @@ export default function ReviewsSection() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-sans text-jgt-text text-sm font-500">{r.name}</div>
-                  <div className="font-sans text-jgt-muted text-xs">{r.location} · {r.date}</div>
-                </div>
-                <div className="font-sans text-jgt-gold text-xs tracking-[0.14em] uppercase border border-jgt-gold/30 px-3 py-1">
-                  {r.service}
+                  <div className="font-sans text-jgt-muted text-xs">{r.location}</div>
                 </div>
               </div>
             </motion.div>
