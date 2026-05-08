@@ -1,17 +1,15 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import HeroLogo from './HeroLogo';
 
 /**
  * LOGO CONFIGURATION — easy to adjust
- * --hero-logo-width  : max width of uploaded logo on desktop
- * --hero-logo-mobile : max width on mobile
- * To swap the logo: drop a PNG/WebP/SVG into /public/images/hero-logo.png
- * (transparent background recommended)
+ * LOGO_WIDTH  : max width of logo on desktop
+ * LOGO_MARGIN_B : Tailwind class for bottom spacing
+ * To swap to a PNG: replace <HeroLogo> with <img src="/images/hero-logo.png" ...>
  */
-const LOGO_SRC        = '/images/hero-logo.png';
-const LOGO_WIDTH      = 'clamp(220px, 48vw, 560px)'; // desktop responsive width
+const LOGO_WIDTH      = 'clamp(260px, 52vw, 640px)'; // desktop responsive width
 const LOGO_MARGIN_B   = 'mb-2';                        // Tailwind class for bottom spacing
 
 export default function HeroSection() {
@@ -62,7 +60,7 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Main headline — uploaded logo image with SVG text fallback */}
+        {/* Main headline — SVG typographic logo, white on transparent */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -70,7 +68,10 @@ export default function HeroSection() {
           className={`relative w-full mx-auto ${LOGO_MARGIN_B}`}
           style={{ maxWidth: LOGO_WIDTH }}
         >
-          <HeroLogoImage />
+          <HeroLogo
+            className="w-full h-auto drop-shadow-[0_4px_32px_rgba(0,0,0,0.65)]"
+            aria-label="Jason's Glass Tint"
+          />
         </motion.div>
 
         {/* Tagline */}
@@ -148,36 +149,6 @@ export default function HeroSection() {
         />
       </motion.div>
     </section>
-  );
-}
-
-/**
- * HeroLogoImage
- * Shows /public/images/hero-logo.png when it exists.
- * Falls back silently to the SVG text logo if the image 404s.
- */
-function HeroLogoImage() {
-  const [imgError, setImgError] = useState(false);
-
-  if (imgError) {
-    // Fallback: original SVG typographic logo
-    return (
-      <HeroLogo
-        className="w-full h-auto drop-shadow-[0_2px_24px_rgba(0,0,0,0.55)]"
-        aria-label="Jason's Glass Tint"
-      />
-    );
-  }
-
-  return (
-    <img
-      src={LOGO_SRC}
-      alt="Jason's Glass Tint"
-      onError={() => setImgError(true)}
-      className="w-full h-auto object-contain drop-shadow-[0_4px_32px_rgba(0,0,0,0.6)]"
-      style={{ maxWidth: '100%', display: 'block', margin: '0 auto' }}
-      draggable={false}
-    />
   );
 }
 
