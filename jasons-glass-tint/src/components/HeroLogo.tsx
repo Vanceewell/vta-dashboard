@@ -16,9 +16,10 @@
 
 interface HeroLogoProps {
   className?: string;
+  'aria-label'?: string;
 }
 
-export default function HeroLogo({ className = '' }: HeroLogoProps) {
+export default function HeroLogo({ className = '', 'aria-label': ariaLabel = "Jason's Glass Tint" }: HeroLogoProps) {
   /*
    * ViewBox: 600 × 340
    *   JASON'S  → y≈110  font-size≈108
@@ -32,7 +33,7 @@ export default function HeroLogo({ className = '' }: HeroLogoProps) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 600 340"
-      aria-label="Jason's Glass Tint"
+      aria-label={ariaLabel}
       role="img"
       className={className}
       style={{ overflow: 'visible' }}
