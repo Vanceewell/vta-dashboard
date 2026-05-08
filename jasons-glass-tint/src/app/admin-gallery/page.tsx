@@ -2,41 +2,38 @@
 import { useState, useEffect, useRef, useCallback, DragEvent } from 'react';
 import Link from 'next/link';
 import {
-  fetchGalleryImages,
-  uploadGalleryImage,
+  GALLERY_CATEGORIES,
+  type GalleryCategory,
+  type GalleryItem,
+  loadGallery,
+  addGalleryImage,
+  updateGalleryMeta,
   deleteGalleryImage,
-  compressImage,
-  GalleryImage,
-} from '@/lib/supabase';
-
-// AI-EDITABLE: gallery categories
-const CATEGORIES = ['automotive', 'residential', 'commercial', 'marine', 'rv', 'frost', 'safety film'];
+  processImageForGallery,
+} from '@/lib/galleryStorage';
 
 interface QueueItem {
-  id:       string;
-  file:     File;
-  preview:  string;
-  category: string;
-  title:    string;
-  status:   'pending' | 'uploading' | 'done' | 'error';
-  progress: number;
+  id:         string;
+  file:       File;
+  preview:    string;
+  categories: GalleryCategory[];
+  title:      string;
+  status:     'pending' | 'uploading' | 'done' | 'error';
+  progress:   number;
+  error?:     string;
 }
 
 export default function AdminGalleryPage() {
-  const [images,    setImages]    = useState<GalleryImage[]>([]);
+  const [items,     setItems]     = useState<GalleryItem[]>([]);
   const [queue,     setQueue]     = useState<QueueItem[]>([]);
   const [dragging,  setDragging]  = useState(false);
   const [loading,   setLoading]   = useState(true);
-  const [connected, setConnected] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Check Supabase connection and load images
+  // Load gallery from IndexedDB on mount
   useEffect(() => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    setConnected(Boolean(supabaseUrl && supabaseUrl !== 'https://your-project-id.supabase.co'));
-
-    fetchGalleryImages().then((imgs) => {
-      setImages(imgs);
+    loadGallery().then((loaded) => {
+      setItems(loaded);
       setLoading(false);
     });
   }, []);
@@ -50,13 +47,13 @@ export default function AdminGalleryPage() {
         setQueue((prev) => [
           ...prev,
           {
-            id:       Math.random().toString(36).slice(2),
+            id:         Math.random().toString(36).slice(2),
             file,
-            preview:  e.target?.result as string,
-            category: 'automotive',
-            title:    file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
-            status:   'pending',
-            progress: 0,
+            preview:    e.target?.result as string,
+            categories: ['All Projects', 'Automotive'],
+            title:      file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
+            status:     'pending',
+            progress:   0,
           },
         ]);
       };
@@ -77,19 +74,23 @@ export default function AdminGalleryPage() {
     setQueue((prev) => prev.map((q) => q.id === id ? { ...q, ...patch } : q));
 
   const uploadItem = async (item: QueueItem) => {
-    if (!connected) {
-      alert('Supabase is not configured. See .env.local setup instructions in README.md.');
-      return;
-    }
     updateQueue(item.id, { status: 'uploading', progress: 30 });
-    const compressed = await compressImage(item.file);
-    updateQueue(item.id, { progress: 60 });
-    const result = await uploadGalleryImage(item.file, item.category, item.title, compressed);
-    if (result) {
-      updateQueue(item.id, { status: 'done', progress: 100 });
-      setImages((prev) => [result, ...prev]);
-    } else {
-      updateQueue(item.id, { status: 'error', progress: 0 });
+    try {
+      // Compress the image
+      const compressed = await processImageForGallery(item.file);
+      updateQueue(item.id, { progress: 60 });
+
+      // Add to IndexedDB
+      const result = await addGalleryImage(compressed, item.title, item.categories);
+      if (result.ok && result.item) {
+        updateQueue(item.id, { status: 'done', progress: 100 });
+        setItems((prev) => [result.item!, ...prev]);
+      } else {
+        updateQueue(item.id, { status: 'error', progress: 0, error: result.error });
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err.message : 'Upload failed';
+      updateQueue(item.id, { status: 'error', progress: 0, error });
     }
   };
 
@@ -106,10 +107,12 @@ export default function AdminGalleryPage() {
     });
   };
 
-  const deleteImage = async (img: GalleryImage) => {
-    if (!confirm(`Delete "${img.filename}"? This cannot be undone.`)) return;
-    await deleteGalleryImage(img);
-    setImages((prev) => prev.filter((i) => i.id !== img.id));
+  const deleteImage = async (img: GalleryItem) => {
+    if (!confirm(`Delete "${img.title}"? This cannot be undone.`)) return;
+    // Revoke object URL first
+    URL.revokeObjectURL(img.objectUrl);
+    await deleteGalleryImage(img.id);
+    setItems((prev) => prev.filter((i) => i.id !== img.id));
   };
 
   return (
@@ -124,27 +127,24 @@ export default function AdminGalleryPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-12">
-        {/* Connection status */}
-        {!connected && (
-          <div className="mb-8 p-5 border border-amber-500/30 bg-amber-500/5">
-            <div className="flex items-start gap-3">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" className="mt-0.5 flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <div>
-                <p className="font-sans text-amber-400 text-sm font-500 mb-1">Supabase Not Configured</p>
-                <p className="font-sans text-amber-400/70 text-xs leading-relaxed">
-                  Copy <code className="bg-white/10 px-1">.env.example</code> to <code className="bg-white/10 px-1">.env.local</code> and add your Supabase credentials to enable image uploads.
-                  See <strong>README.md</strong> for full setup instructions.
-                </p>
-              </div>
+        {/* Info note */}
+        <div className="mb-8 p-5 border border-blue-500/30 bg-blue-500/5">
+          <div className="flex items-start gap-3">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" className="mt-0.5 flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div>
+              <p className="font-sans text-blue-400 text-sm font-500 mb-1">IndexedDB Storage</p>
+              <p className="font-sans text-blue-400/70 text-xs leading-relaxed">
+                Images are stored locally in your browser's IndexedDB. They persist across sessions and are synced with the public Gallery automatically.
+              </p>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Page title */}
         <div className="mb-10">
           <h1 className="font-display text-4xl text-jgt-text mb-2">Gallery Manager</h1>
           <p className="font-sans text-jgt-muted text-sm">
-            Drag and drop photos to upload them to your gallery. Images are automatically compressed before upload.
+            Drag and drop photos to add them to your gallery. Images are automatically compressed to 1600×1600px before storage.
           </p>
         </div>
 
@@ -169,7 +169,7 @@ export default function AdminGalleryPage() {
                 Drop photos here or click to browse
               </p>
               <p className="font-sans text-jgt-muted text-xs">
-                JPG, PNG, WEBP — auto-compressed to 1200px max width, 85% quality
+                JPG, PNG, WebP — auto-compressed to 1600px max, stored locally in IndexedDB
               </p>
             </div>
           </div>
@@ -236,15 +236,24 @@ export default function AdminGalleryPage() {
                       placeholder="Image title"
                       className="w-full bg-transparent border border-jgt-border px-3 py-2 font-sans text-xs text-jgt-text placeholder:text-jgt-muted/50 focus:outline-none focus:border-jgt-gold transition-colors"
                     />
-                    <select
-                      value={item.category}
-                      onChange={(e) => updateQueue(item.id, { category: e.target.value })}
-                      className="w-full bg-jgt-surface border border-jgt-border px-3 py-2 font-sans text-xs text-jgt-text focus:outline-none focus:border-jgt-gold transition-colors cursor-pointer"
-                    >
-                      {CATEGORIES.map((c) => (
-                        <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                    <div className="space-y-2">
+                      {GALLERY_CATEGORIES.filter((c) => c !== 'All Projects').map((cat) => (
+                        <label key={cat} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={item.categories.includes(cat)}
+                            onChange={(e) => {
+                              const cats = e.target.checked
+                                ? [...item.categories, cat]
+                                : item.categories.filter((c) => c !== cat);
+                              updateQueue(item.id, { categories: cats });
+                            }}
+                            className="w-3 h-3 accent-jgt-gold cursor-pointer"
+                          />
+                          <span className="font-sans text-xs text-jgt-text">{cat}</span>
+                        </label>
                       ))}
-                    </select>
+                    </div>
                     {item.status === 'pending' && (
                       <button onClick={() => uploadItem(item)} className="w-full btn-gold text-xs py-2">
                         Upload
@@ -260,7 +269,7 @@ export default function AdminGalleryPage() {
         {/* ── UPLOADED IMAGES LIBRARY ──────────────────── */}
         <div>
           <h2 className="font-display text-2xl text-jgt-text mb-6">
-            Gallery Library {images.length > 0 && <span className="text-jgt-muted text-lg">({images.length})</span>}
+            Gallery Library {items.length > 0 && <span className="text-jgt-muted text-lg">({items.length})</span>}
           </h2>
 
           {loading ? (
@@ -269,20 +278,20 @@ export default function AdminGalleryPage() {
                 <div key={i} className="aspect-video bg-jgt-surface animate-pulse" />
               ))}
             </div>
-          ) : images.length === 0 ? (
+          ) : items.length === 0 ? (
             <div className="text-center py-16 border border-jgt-border/30">
-              <p className="font-sans text-jgt-muted text-sm">No images uploaded yet.</p>
+              <p className="font-sans text-jgt-muted text-sm">No images in gallery yet.</p>
               <p className="font-sans text-jgt-muted/50 text-xs mt-2">Drop photos above to get started.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {images.map((img) => (
+              {items.map((img) => (
                 <div key={img.id} className="group relative overflow-hidden">
                   <div className="aspect-video overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={img.public_url}
-                      alt={img.title ?? img.filename}
+                      src={img.objectUrl}
+                      alt={img.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
@@ -290,8 +299,10 @@ export default function AdminGalleryPage() {
 
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-3">
-                    <p className="font-sans text-jgt-text text-xs text-center line-clamp-2">{img.title ?? img.filename}</p>
-                    <span className="font-sans text-jgt-gold text-[10px] tracking-[0.14em] uppercase">{img.category}</span>
+                    <p className="font-sans text-jgt-text text-xs text-center line-clamp-2">{img.title}</p>
+                    <span className="font-sans text-jgt-gold text-[10px] tracking-[0.14em] uppercase">
+                      {img.categories.filter((c) => c !== 'All Projects').join(', ') || 'All Projects'}
+                    </span>
                     <button
                       onClick={() => deleteImage(img)}
                       className="mt-2 flex items-center gap-1.5 font-sans text-xs text-red-400 hover:text-red-300 border border-red-400/30 px-3 py-1.5 transition-colors cursor-pointer"
@@ -310,8 +321,7 @@ export default function AdminGalleryPage() {
         <div className="mt-12 p-5 border border-jgt-border/30">
           <p className="font-sans text-jgt-muted text-xs leading-relaxed">
             <strong className="text-jgt-text">Security note:</strong> This admin page has no authentication in the current build.
-            To secure it, add a simple password check in <code>src/app/admin-gallery/page.tsx</code> or enable Supabase Row Level Security
-            with an auth policy. See README.md for details.
+            Gallery data is stored locally in IndexedDB — to secure access, add a password check in <code>src/app/admin-gallery/page.tsx</code>.
           </p>
         </div>
       </div>
