@@ -75,19 +75,17 @@ export default function GallerySection() {
           <div className="w-12 h-[1px] bg-jgt-gold mt-6" />
         </motion.div>
 
-        {/* Filter Tabs */}
-        <div className="flex flex-wrap gap-2 mb-10">
+        {/* Filter Tiles */}
+        <div className="gallery-filter-row mb-10">
           {GALLERY_CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setActive(cat)}
-              className={`font-sans text-xs tracking-[0.14em] uppercase px-4 py-2 border transition-all duration-200 cursor-pointer ${
-                active === cat
-                  ? 'bg-jgt-gold text-[#080808] border-jgt-gold'
-                  : 'border-jgt-border text-jgt-muted hover:border-jgt-gold/50 hover:text-jgt-text'
+              className={`gallery-filter-tile ${
+                active === cat ? 'gallery-filter-tile--active' : 'gallery-filter-tile--inactive'
               }`}
             >
-              {cat}
+              <span className="gallery-filter-tile__label">{cat}</span>
             </button>
           ))}
         </div>

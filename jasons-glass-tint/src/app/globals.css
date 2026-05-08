@@ -173,6 +173,117 @@ h1, h2, h3, h4 {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   GALLERY FILTER TILES
+═══════════════════════════════════════════════════════════ */
+
+/* Desktop: 8 equal-width tiles in one horizontal row */
+.gallery-filter-row {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+/* Base tile */
+.gallery-filter-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.18s ease;
+  overflow: hidden;
+}
+
+/* Shimmer pseudo-element on hover */
+.gallery-filter-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    rgba(197, 160, 86, 0.06) 50%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-filter-tile:hover::before {
+  opacity: 1;
+}
+
+.gallery-filter-tile__label {
+  font-family: var(--font-outfit, sans-serif);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* Inactive state */
+.gallery-filter-tile--inactive {
+  color: var(--muted);
+}
+.gallery-filter-tile--inactive:hover {
+  border-color: rgba(197, 160, 86, 0.55);
+  color: var(--text);
+  box-shadow: 0 0 18px rgba(197, 160, 86, 0.12), inset 0 0 0 1px rgba(197, 160, 86, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Active state */
+.gallery-filter-tile--active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #080808;
+  box-shadow: 0 4px 20px rgba(197, 160, 86, 0.35);
+}
+.gallery-filter-tile--active .gallery-filter-tile__label {
+  font-weight: 600;
+}
+
+/* Tablet: 4 columns × 2 rows */
+@media (max-width: 1024px) {
+  .gallery-filter-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .gallery-filter-tile {
+    padding: 16px 8px;
+  }
+  .gallery-filter-tile__label {
+    font-size: 0.6rem;
+  }
+}
+
+/* Mobile: 2 columns × 4 rows, horizontally scrollable if tight */
+@media (max-width: 480px) {
+  .gallery-filter-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .gallery-filter-tile {
+    padding: 14px 6px;
+  }
+  .gallery-filter-tile__label {
+    font-size: 0.58rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
    MASONRY GALLERY
 ═══════════════════════════════════════════════════════════ */
 .masonry-grid {
