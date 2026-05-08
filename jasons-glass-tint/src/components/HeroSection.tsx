@@ -1,14 +1,15 @@
 'use client';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import HeroLogo from './HeroLogo';
 
 /**
  * LOGO CONFIGURATION — easy to adjust
+ * LOGO_SRC    : path to the PNG/WebP logo (white on transparent background)
  * LOGO_WIDTH  : max width of logo on desktop
  * LOGO_MARGIN_B : Tailwind class for bottom spacing
- * To swap to a PNG: replace <HeroLogo> with <img src="/images/hero-logo.png" ...>
  */
+const LOGO_SRC        = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png';
 const LOGO_WIDTH      = 'clamp(260px, 52vw, 640px)'; // desktop responsive width
 const LOGO_MARGIN_B   = 'mb-2';                        // Tailwind class for bottom spacing
 
@@ -60,7 +61,7 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Main headline — SVG typographic logo, white on transparent */}
+        {/* Main headline — uploaded logo image with SVG text fallback */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,10 +69,7 @@ export default function HeroSection() {
           className={`relative w-full mx-auto ${LOGO_MARGIN_B}`}
           style={{ maxWidth: LOGO_WIDTH }}
         >
-          <HeroLogo
-            className="w-full h-auto drop-shadow-[0_4px_32px_rgba(0,0,0,0.65)]"
-            aria-label="Jason's Glass Tint"
-          />
+          <HeroLogoImage />
         </motion.div>
 
         {/* Tagline */}
@@ -149,6 +147,35 @@ export default function HeroSection() {
         />
       </motion.div>
     </section>
+  );
+}
+
+/**
+ * HeroLogoImage
+ * Renders the uploaded PNG logo (white on transparent).
+ * Falls back silently to the SVG text logo if the image 404s.
+ */
+function HeroLogoImage() {
+  const [imgError, setImgError] = useState(false);
+
+  if (imgError) {
+    return (
+      <HeroLogo
+        className="w-full h-auto drop-shadow-[0_2px_24px_rgba(0,0,0,0.55)]"
+        aria-label="Jason's Glass Tint"
+      />
+    );
+  }
+
+  return (
+    <img
+      src={LOGO_SRC}
+      alt="Jason's Glass Tint"
+      onError={() => setImgError(true)}
+      className="w-full h-auto object-contain drop-shadow-[0_4px_40px_rgba(0,0,0,0.7)]"
+      style={{ maxWidth: '100%', display: 'block', margin: '0 auto' }}
+      draggable={false}
+    />
   );
 }
 
