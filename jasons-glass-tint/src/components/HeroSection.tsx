@@ -48,14 +48,25 @@ export default function HeroSection() {
         style={{ y: textY, opacity: fade }}
       >
         {/* ── Logo cluster: San Clemente / Logo / Since 1989 tightly grouped ── */}
-        <div className="flex flex-col items-center" style={{ gap: 0 }}>
+        {/*
+         * Layout strategy:
+         * - Hero is min-h-screen flex items-center, so the whole content block
+         *   is vertically centered in the viewport.
+         * - We use a negative marginTop on the content block to shift it
+         *   slightly upward from dead-center, giving the cinematic feel.
+         * - San Clemente sits 40–50px above the logo top edge.
+         * - Since 1989 sits 35–45px below the logo bottom edge.
+         * - Lower content (paragraph → buttons → stats) is shifted up as one
+         *   block by reducing the marginTop on the paragraph.
+         */}
+        <div className="flex flex-col items-center" style={{ gap: 0, marginTop: '-40px' }}>
 
-          {/* Location badge — 12px above the logo */}
+          {/* Location badge — ~48px above the logo */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ marginBottom: '12px' }}
+            style={{ marginBottom: 'clamp(32px, 4vw, 50px)' }}
           >
             <div className="flex items-center justify-center gap-4">
               <div className="w-8 h-[1px] bg-jgt-gold/60" />
@@ -75,7 +86,7 @@ export default function HeroSection() {
             <HeroLogoImage />
           </motion.div>
 
-          {/* Tagline — 8px below the logo */}
+          {/* Tagline — ~40px below the logo */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -83,7 +94,7 @@ export default function HeroSection() {
             className="font-display italic font-light text-jgt-gold/90"
             style={{
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-              marginTop: '8px',
+              marginTop: 'clamp(28px, 3.5vw, 42px)',
               marginBottom: 0,
             }}
           >
@@ -92,7 +103,7 @@ export default function HeroSection() {
 
         </div>{/* end logo cluster */}
 
-        {/* Supporting text — 28px below logo cluster */}
+        {/* Supporting text — tight gap below "Since 1989" */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -100,8 +111,8 @@ export default function HeroSection() {
           className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
           style={{
             fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
-            marginTop: '28px',
-            marginBottom: '28px',
+            marginTop: 'clamp(16px, 2vw, 22px)',
+            marginBottom: '20px',
           }}
         >
           Premium window tint installation for automotive, residential, commercial, RV,
@@ -130,7 +141,7 @@ export default function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
           className="flex flex-wrap items-center justify-center gap-8 pt-5 border-t border-white/10"
-          style={{ marginTop: '32px' }}
+          style={{ marginTop: '24px' }}
         >
           {[
             { value: '40+',     label: 'Years Experience' },
