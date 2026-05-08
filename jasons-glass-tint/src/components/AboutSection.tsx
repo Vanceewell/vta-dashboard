@@ -1,5 +1,9 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+
+const IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
+const ABOUT_PORTRAIT_DEFAULT = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80';
 
 // AI-EDITABLE: about content
 const COMMITMENTS = [
@@ -10,6 +14,16 @@ const COMMITMENTS = [
 ];
 
 export default function AboutSection() {
+  const [portraitSrc, setPortraitSrc] = useState(ABOUT_PORTRAIT_DEFAULT);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(IMAGE_STORAGE_KEY);
+      if (raw) {
+        const overrides = JSON.parse(raw) as Record<string, string>;
+        if (overrides['about-portrait']) setPortraitSrc(overrides['about-portrait']);
+      }
+    } catch { /* ignore */ }
+  }, []);
   return (
     <section id="about" className="py-24 lg:py-32 bg-jgt-surface relative overflow-hidden">
       {/* Background accent */}
@@ -30,7 +44,7 @@ export default function AboutSection() {
             <div className="relative overflow-hidden" style={{ aspectRatio: '4/5' }}>
               <div
                 className="w-full h-full bg-cover bg-center"
-                style={{ backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80')` }}
+                style={{ backgroundImage: `url('${portraitSrc}')` }}
               />
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />

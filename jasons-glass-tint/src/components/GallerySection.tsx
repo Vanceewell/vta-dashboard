@@ -1,21 +1,24 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
+
 // AI-EDITABLE: placeholder gallery images (replaced when Supabase is connected)
-const PLACEHOLDER_IMAGES = [
-  { id: '1',  src: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80', cat: 'automotive',  title: 'Luxury Sedan — Ceramic Tint',       tall: true  },
-  { id: '2',  src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80', cat: 'automotive',  title: 'Porsche 911 — Carbon Series',        tall: false },
-  { id: '3',  src: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80', cat: 'residential', title: 'Modern Home — Privacy Film',          tall: true  },
-  { id: '4',  src: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80', cat: 'automotive',  title: 'BMW — Full Ceramic Package',           tall: false },
-  { id: '5',  src: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80', cat: 'commercial',  title: 'Office Complex — Solar Control',      tall: false },
-  { id: '6',  src: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80', cat: 'marine',      title: 'Luxury Yacht — Marine Series',        tall: true  },
-  { id: '7',  src: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&q=80', cat: 'automotive',  title: 'McLaren — Premium Film Install',       tall: false },
-  { id: '8',  src: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', cat: 'residential', title: 'Talega Estate — Full Home Package',   tall: false },
-  { id: '9',  src: 'https://images.unsplash.com/photo-1600298882525-26ffb3a3d31f?w=800&q=80', cat: 'rv',          title: 'Class A Motorhome — Full Wrap',       tall: true  },
-  { id: '10', src: 'https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=800&q=80', cat: 'automotive',  title: 'Maserati — Ceramic Tint Package',     tall: false },
-  { id: '11', src: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', cat: 'commercial',  title: 'Retail Storefront — Privacy & Solar',  tall: false },
-  { id: '12', src: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80', cat: 'frost',       title: 'Office Glass — Architectural Frost',  tall: true  },
+// overrideId maps to the admin image registry ids (gallery-1 … gallery-12)
+const PLACEHOLDER_IMAGES_DEFAULT = [
+  { id: '1',  overrideId: 'gallery-1',  src: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80', cat: 'automotive',  title: 'Luxury Sedan — Ceramic Tint',       tall: true  },
+  { id: '2',  overrideId: 'gallery-2',  src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80', cat: 'automotive',  title: 'Porsche 911 — Carbon Series',        tall: false },
+  { id: '3',  overrideId: 'gallery-3',  src: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80', cat: 'residential', title: 'Modern Home — Privacy Film',          tall: true  },
+  { id: '4',  overrideId: 'gallery-4',  src: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80', cat: 'automotive',  title: 'BMW — Full Ceramic Package',           tall: false },
+  { id: '5',  overrideId: 'gallery-5',  src: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80', cat: 'commercial',  title: 'Office Complex — Solar Control',      tall: false },
+  { id: '6',  overrideId: 'gallery-6',  src: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80', cat: 'marine',      title: 'Luxury Yacht — Marine Series',        tall: true  },
+  { id: '7',  overrideId: 'gallery-7',  src: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&q=80', cat: 'automotive',  title: 'McLaren — Premium Film Install',       tall: false },
+  { id: '8',  overrideId: 'gallery-8',  src: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', cat: 'residential', title: 'Talega Estate — Full Home Package',   tall: false },
+  { id: '9',  overrideId: 'gallery-9',  src: 'https://images.unsplash.com/photo-1600298882525-26ffb3a3d31f?w=800&q=80', cat: 'rv',          title: 'Class A Motorhome — Full Wrap',       tall: true  },
+  { id: '10', overrideId: 'gallery-10', src: 'https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=800&q=80', cat: 'automotive',  title: 'Maserati — Ceramic Tint Package',     tall: false },
+  { id: '11', overrideId: 'gallery-11', src: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', cat: 'commercial',  title: 'Retail Storefront — Privacy & Solar',  tall: false },
+  { id: '12', overrideId: 'gallery-12', src: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80', cat: 'frost',       title: 'Office Glass — Architectural Frost',  tall: true  },
 ];
 
 const CATEGORIES = ['all', 'automotive', 'residential', 'commercial', 'marine', 'rv', 'frost', 'safety film'];
@@ -23,6 +26,20 @@ const CATEGORIES = ['all', 'automotive', 'residential', 'commercial', 'marine', 
 export default function GallerySection() {
   const [active, setActive] = useState('all');
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [imgOverrides, setImgOverrides] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(IMAGE_STORAGE_KEY);
+      if (raw) setImgOverrides(JSON.parse(raw));
+    } catch { /* ignore */ }
+  }, []);
+
+  // Apply saved overrides
+  const PLACEHOLDER_IMAGES = PLACEHOLDER_IMAGES_DEFAULT.map((img) => ({
+    ...img,
+    src: imgOverrides[img.overrideId] ?? img.src,
+  }));
 
   const filtered = active === 'all'
     ? PLACEHOLDER_IMAGES

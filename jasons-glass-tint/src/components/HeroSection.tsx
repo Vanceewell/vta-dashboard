@@ -4,7 +4,9 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import HeroLogo from './HeroLogo';
 import { loadHeroConfig, DEFAULT_CONFIG, type HeroConfig } from '@/lib/heroConfig';
 
-const LOGO_SRC = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png';
+const LOGO_SRC_DEFAULT = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png';
+const HERO_BG_DEFAULT   = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80';
+export const HERO_IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
 
 /**
  * HeroSection
@@ -17,16 +19,32 @@ const LOGO_SRC = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM
  * Stats row already worked because its motion.div had no `y` in initial/animate;
  * all other elements now use the same pattern.
  */
-export default function HeroSection({ config: propConfig }: { config?: HeroConfig }) {
+export default function HeroSection({
+  config: propConfig,
+  imageOverrides: propOverrides,
+}: {
+  config?: HeroConfig;
+  imageOverrides?: Record<string, string>;
+}) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const bgY   = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
   const fade  = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  const [storedCfg, setStoredCfg] = useState<HeroConfig>(DEFAULT_CONFIG);
-  useEffect(() => { setStoredCfg(loadHeroConfig()); }, []);
-  const L = propConfig ?? storedCfg;
+  const [storedCfg, setStoredCfg]     = useState<HeroConfig>(DEFAULT_CONFIG);
+  const [storedImgs, setStoredImgs]   = useState<Record<string, string>>({});
+  useEffect(() => {
+    setStoredCfg(loadHeroConfig());
+    try {
+      const raw = localStorage.getItem('jgt_image_overrides_v1');
+      if (raw) setStoredImgs(JSON.parse(raw));
+    } catch { /* ignore */ }
+  }, []);
+  const L    = propConfig   ?? storedCfg;
+  const imgs = propOverrides ?? storedImgs;
+  const heroBg   = imgs['hero-bg']   ?? HERO_BG_DEFAULT;
+  const heroLogo = imgs['hero-logo'] ?? LOGO_SRC_DEFAULT;
 
   // Responsive marginBottom: mobile ≈ 60% of desktop value
   const mb = (desktop: number) =>
@@ -43,7 +61,7 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           y: bgY,
-          backgroundImage: `url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80')`,
+          backgroundImage: `url('${heroBg}')`,  // admin-overridable
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/80" />
@@ -94,7 +112,7 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
               transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
               className="relative w-full mx-auto"
             >
-              <HeroLogoImage />
+              <HeroLogoImage src={heroLogo} />
             </motion.div>
           </div>
 
@@ -197,7 +215,7 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
   );
 }
 
-function HeroLogoImage() {
+function HeroLogoImage({ src }: { src: string }) {
   const [imgError, setImgError] = useState(false);
   if (imgError) {
     return (
@@ -209,7 +227,7 @@ function HeroLogoImage() {
   }
   return (
     <img
-      src={LOGO_SRC}
+      src={src}
       alt="Jason's Glass Tint"
       onError={() => setImgError(true)}
       className="w-full h-auto object-contain drop-shadow-[0_4px_40px_rgba(0,0,0,0.7)]"

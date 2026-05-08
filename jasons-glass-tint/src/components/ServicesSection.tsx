@@ -1,46 +1,65 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+
+const IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
+function useImageOverrides() {
+  const [imgs, setImgs] = useState<Record<string, string>>({});
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(IMAGE_STORAGE_KEY);
+      if (raw) setImgs(JSON.parse(raw));
+    } catch { /* ignore */ }
+  }, []);
+  return imgs;
+}
 
 // AI-EDITABLE: services list (6 cards — 3×2 grid)
 const SERVICES = [
   {
-    slug:  '/automotive-window-tint',
+    slug:       '/automotive-window-tint',
+    overrideId: 'service-automotive',
     title: 'Automotive Tint',
     desc:  'Factory-precise installation on sedans, trucks, SUVs, and sports cars. Premium ceramic and carbon film for heat rejection and UV protection.',
     img:   'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80',
     icon:  <CarIcon />,
   },
   {
-    slug:  '/residential-window-tint',
+    slug:       '/residential-window-tint',
+    overrideId: 'service-residential',
     title: 'Residential Tint',
     desc:  'Keep your home cooler, protect furnishings from UV fade, and add privacy — without blocking natural light or your ocean view.',
     img:   'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
     icon:  <HomeIcon />,
   },
   {
-    slug:  '/commercial-window-tint',
+    slug:       '/commercial-window-tint',
+    overrideId: 'service-commercial',
     title: 'Commercial Tint',
     desc:  'Reduce energy costs, enhance storefront appearance, and protect employees and inventory with professional commercial film installation.',
     img:   'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80',
     icon:  <BuildingIcon />,
   },
   {
-    slug:  '/marine-window-tint',
+    slug:       '/marine-window-tint',
+    overrideId: 'service-marine',
     title: 'Marine Tint',
     desc:  'Salt air, intense UV reflection, and coastal sun require specialized marine-grade film. Protect your cabin and keep passengers comfortable.',
     img:   'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80',
     icon:  <AnchorIcon />,
   },
   {
-    slug:  '#contact',
+    slug:       '#contact',
+    overrideId: 'service-frost',
     title: 'Frost Film',
     desc:  'Elegant frosted privacy film for bathroom windows, office partitions, and interior glass. Professional aesthetics with zero permanent commitment.',
     img:   'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
     icon:  <FrostIcon />,
   },
   {
-    slug:  '#contact',
+    slug:       '#contact',
+    overrideId: 'service-safety',
     title: 'Safety Film',
     desc:  'Shatter-resistant safety film holds glass together on impact — essential for homes, schools, storefronts, and vehicles. Code-compliant options available.',
     img:   'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
@@ -49,6 +68,12 @@ const SERVICES = [
 ];
 
 export default function ServicesSection() {
+  const imgs = useImageOverrides();
+  // Apply any saved image overrides to service cards
+  const services = SERVICES.map((s) => ({
+    ...s,
+    img: imgs[s.overrideId] ?? s.img,
+  }));
   return (
     <section id="services" className="py-24 lg:py-32 bg-jgt-bg">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -76,7 +101,7 @@ export default function ServicesSection() {
         {/* Service Cards Grid */}
         {/* 6 cards: perfectly balanced 3×2 grid on desktop, 2×3 on tablet, 1×6 on mobile */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-          {SERVICES.map((s, i) => (
+          {services.map((s, i) => (
             <motion.div
               key={s.title}
               initial={{ opacity: 0, y: 32 }}
