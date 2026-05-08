@@ -41,9 +41,13 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-block mb-8"
+          className="inline-block mb-6"
         >
-          <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(2rem, 6vw, 4.5rem)' }}>San Clemente</span>
+          <div className="flex items-center justify-center gap-4">
+            <div className="w-8 h-[1px] bg-jgt-gold/60" />
+            <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)' }}>San Clemente</span>
+            <div className="w-8 h-[1px] bg-jgt-gold/60" />
+          </div>
         </motion.div>
 
         {/* Main headline */}

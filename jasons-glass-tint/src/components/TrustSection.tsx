@@ -7,7 +7,7 @@ const STATS = [
   { value: 40,       suffix: '+',  label: 'Years Experience',          sub: 'Hands-on since 1989'               },
   { value: 100000,   suffix: '+',  label: 'Windows Tinted',            sub: 'Across San Clemente & OC'          },
   { value: 0,        suffix: '',   label: 'Subcontractors',            sub: 'Jason installs every job himself'   },
-  { value: 100,      suffix: '%',  label: 'Premium Film',              sub: 'No cheap film, ever'                },
+  { value: 5,        suffix: '-Star Reviews', label: '',              sub: 'From satisfied customers'           },
   { value: 1989,     suffix: '',   label: 'Serving Since',             sub: "San Clemente's trusted choice"      },
   { value: 1,        suffix: '',   label: 'Installer',                 sub: 'No rotating crews, no surprises'   },
 ];
