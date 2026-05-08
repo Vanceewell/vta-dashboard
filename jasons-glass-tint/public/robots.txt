@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Exclude admin
+Disallow: /admin-gallery
+
+Sitemap: https://jasonsglasstint.com/sitemap.xml

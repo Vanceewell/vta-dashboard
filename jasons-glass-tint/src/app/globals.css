@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@200;300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════
+   BASE RESET & GLOBALS
+═══════════════════════════════════════════════════════════ */
+:root {
+  --gold:         #C5A056;
+  --gold-light:   #D4B470;
+  --bg:           #0F0F0F;
+  --surface:      #1A1A1A;
+  --border:       #2A2A2A;
+  --text:         #F0EDE8;
+  --muted:        #8A8880;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--gold);
+  color: #080808;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════════════════ */
+.font-display {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ═══════════════════════════════════════════════════════════
+   GLASSMORPHISM UTILITY
+═══════════════════════════════════════════════════════════ */
+.glass {
+  background: rgba(26, 26, 26, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(197, 160, 86, 0.12);
+}
+
+.glass-light {
+  background: rgba(240, 237, 232, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(240, 237, 232, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GOLD LINE DIVIDER
+═══════════════════════════════════════════════════════════ */
+.gold-line {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BUTTON STYLES
+═══════════════════════════════════════════════════════════ */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold);
+  color: #080808;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-gold:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 13px 31px;
+  border: 1px solid rgba(240, 237, 232, 0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION PATTERN
+═══════════════════════════════════════════════════════════ */
+.section-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NOISE TEXTURE OVERLAY
+═══════════════════════════════════════════════════════════ */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.04;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MASONRY GALLERY
+═══════════════════════════════════════════════════════════ */
+.masonry-grid {
+  columns: 3;
+  gap: 16px;
+}
+@media (max-width: 1024px) {
+  .masonry-grid { columns: 2; }
+}
+@media (max-width: 640px) {
+  .masonry-grid { columns: 1; }
+}
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CUSTOM RANGE INPUT
+═══════════════════════════════════════════════════════════ */
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 2px;
+  background: var(--border);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN DRAG DROP
+═══════════════════════════════════════════════════════════ */
+.drop-zone {
+  transition: all 0.2s ease;
+}
+.drop-zone.drag-active {
+  border-color: var(--gold) !important;
+  background: rgba(197, 160, 86, 0.06) !important;
+}
