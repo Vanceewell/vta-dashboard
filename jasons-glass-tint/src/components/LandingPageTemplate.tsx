@@ -39,7 +39,7 @@ export default function LandingPageTemplate({ hero, intro, sections, benefits, f
               {hero.sub}
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4">Text Jason for a Quote</a>
+              <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4">Text Jason Now</a>
               <a href="tel:9494968468"  className="btn-outline text-xs px-8 py-4">Call (949) 496-8468</a>
             </div>
           </motion.div>
@@ -103,7 +103,7 @@ export default function LandingPageTemplate({ hero, intro, sections, benefits, f
             <div className="space-y-6">
               {/* Contact card */}
               <div className="glass p-6">
-                <h3 className="font-display text-jgt-text text-xl mb-4">Get a Quote</h3>
+                <h3 className="font-display text-jgt-text text-xl mb-4">Text Jason Directly</h3>
                 <p className="font-sans text-jgt-muted text-xs leading-relaxed mb-5">
                   Text Jason directly for the fastest response. He'll reply personally with a recommendation and price.
                 </p>
