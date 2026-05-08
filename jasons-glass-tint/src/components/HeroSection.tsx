@@ -55,8 +55,8 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
-          className="font-display font-light text-jgt-text leading-none mb-4"
-          style={{ fontSize: 'clamp(3.5rem, 9vw, 8rem)' }}
+          className="font-condensed text-jgt-text leading-none mb-4"
+          style={{ fontSize: 'clamp(4rem, 11vw, 9.5rem)', letterSpacing: '0.06em' }}
         >
           Jason's Glass Tint
         </motion.h1>
