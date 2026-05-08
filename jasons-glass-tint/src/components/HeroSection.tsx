@@ -8,30 +8,29 @@ const LOGO_SRC = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM
 
 /**
  * HeroSection
- * - Reads saved layout from localStorage on mount (your browser sees your saved values).
- * - Accepts an optional `config` prop for the admin editor's live preview.
  *
- * gap*     controls → marginBottom (spacing / scale flow)
- * yOffset* controls → translateY   (position up/down, never affects other elements)
+ * gap*     → marginBottom on a plain wrapper div  (spacing / size)
+ * yOffset* → translateY   on a plain wrapper div  (position only)
+ *
+ * The plain wrapper div sits OUTSIDE the motion.* element so Framer's own
+ * y-animation (entrance effect) never conflicts with the admin Y-offset.
+ * Stats row already worked because its motion.div had no `y` in initial/animate;
+ * all other elements now use the same pattern.
  */
 export default function HeroSection({ config: propConfig }: { config?: HeroConfig }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const bgY  = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const bgY   = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
   const fade  = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   const [storedCfg, setStoredCfg] = useState<HeroConfig>(DEFAULT_CONFIG);
   useEffect(() => { setStoredCfg(loadHeroConfig()); }, []);
-  const L = propConfig ?? storedCfg; // "L" = active layout
+  const L = propConfig ?? storedCfg;
 
   // Responsive marginBottom: mobile ≈ 60% of desktop value
   const mb = (desktop: number) =>
     `clamp(${Math.round(desktop * 0.6)}px, ${(desktop / 10).toFixed(1)}vw, ${desktop}px)`;
-
-  // translateY helper — pure positional shift, does not affect flow
-  const ty = (offset: number) =>
-    offset !== 0 ? `translateY(${offset}px)` : undefined;
 
   return (
     <section
@@ -58,114 +57,123 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
       >
         <div className="flex flex-col items-center">
 
-          {/* 1. San Clemente */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{
-              marginBottom: mb(L.gapSanClementeLogo),
-              transform: ty(L.yOffsetSanClemente),
-            }}
-          >
-            <div className="flex items-center justify-center gap-4">
-              <div className="w-8 h-[1px] bg-jgt-gold/60" />
-              <span
-                className="font-display font-light text-jgt-gold tracking-wide"
-                style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2rem)' }}
-              >
-                San Clemente
-              </span>
-              <div className="w-8 h-[1px] bg-jgt-gold/60" />
-            </div>
-          </motion.div>
-
-          {/* 2. Logo */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
-            className="relative w-full mx-auto"
-            style={{
-              maxWidth: `${L.logoWidth}px`,
-              marginBottom: mb(L.gapLogoSince),
-              transform: ty(L.yOffsetLogo),
-            }}
-          >
-            <HeroLogoImage />
-          </motion.div>
-
-          {/* 3. Since 1989 */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.55 }}
-            className="font-display italic font-light text-jgt-gold/90"
-            style={{
-              fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-              marginBottom: mb(L.gapSinceParagraph),
-              transform: ty(L.yOffsetSince),
-            }}
-          >
-            Since 1989
-          </motion.p>
-
-          {/* 4. Paragraph */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
-            style={{
-              fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
-              marginBottom: mb(L.gapParagraphButtons),
-              transform: ty(L.yOffsetParagraph),
-            }}
-          >
-            Premium window tint installation for automotive, residential, commercial, RV,
-            marine, frost, and safety film projects throughout San Clemente and South Orange County.
-          </motion.p>
-
-          {/* 5. CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.85 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            style={{
-              marginBottom: mb(L.gapButtonsStats),
-              transform: ty(L.yOffsetButtons),
-            }}
-          >
-            <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
-              <PhoneIcon />
-              Text Jason Now
-            </a>
-            <a href="#gallery" className="btn-outline text-xs px-8 py-4 w-full sm:w-auto justify-center">
-              View Projects
-            </a>
-          </motion.div>
-
-          {/* 6. Stats Row */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.1 }}
-            className="flex flex-wrap items-center justify-center gap-8 pt-5 border-t border-white/10 w-full"
-            style={{ transform: ty(L.yOffsetStats) }}
-          >
-            {[
-              { value: '40+',     label: 'Years Experience' },
-              { value: '100K+',   label: 'Windows Tinted'   },
-              { value: 'Zero',    label: 'Subcontractors'   },
-              { value: 'Premium', label: 'Film Only'         },
-            ].map((stat) => (
-              <div key={stat.value} className="text-center">
-                <div className="font-display text-2xl text-jgt-gold">{stat.value}</div>
-                <div className="font-sans text-[10px] tracking-[0.18em] uppercase text-jgt-muted">{stat.label}</div>
+          {/* ── 1. San Clemente ── */}
+          {/* Outer div owns marginBottom + translateY. Inner motion.div owns entrance animation only. */}
+          <div style={{
+            marginBottom: mb(L.gapSanClementeLogo),
+            transform: `translateY(${L.yOffsetSanClemente}px)`,
+          }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <div className="flex items-center justify-center gap-4">
+                <div className="w-8 h-[1px] bg-jgt-gold/60" />
+                <span
+                  className="font-display font-light text-jgt-gold tracking-wide"
+                  style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2rem)' }}
+                >
+                  San Clemente
+                </span>
+                <div className="w-8 h-[1px] bg-jgt-gold/60" />
               </div>
-            ))}
-          </motion.div>
+            </motion.div>
+          </div>
+
+          {/* ── 2. Logo ── */}
+          <div style={{
+            width: '100%',
+            maxWidth: `${L.logoWidth}px`,
+            marginBottom: mb(L.gapLogoSince),
+            transform: `translateY(${L.yOffsetLogo}px)`,
+          }}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
+              className="relative w-full mx-auto"
+            >
+              <HeroLogoImage />
+            </motion.div>
+          </div>
+
+          {/* ── 3. Since 1989 ── */}
+          <div style={{
+            marginBottom: mb(L.gapSinceParagraph),
+            transform: `translateY(${L.yOffsetSince}px)`,
+          }}>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.55 }}
+              className="font-display italic font-light text-jgt-gold/90"
+              style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
+            >
+              Since 1989
+            </motion.p>
+          </div>
+
+          {/* ── 4. Paragraph ── */}
+          <div style={{
+            marginBottom: mb(L.gapParagraphButtons),
+            transform: `translateY(${L.yOffsetParagraph}px)`,
+          }}>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
+              style={{ fontSize: 'clamp(0.85rem, 1.4vw, 1rem)' }}
+            >
+              Premium window tint installation for automotive, residential, commercial, RV,
+              marine, frost, and safety film projects throughout San Clemente and South Orange County.
+            </motion.p>
+          </div>
+
+          {/* ── 5. CTA Buttons ── */}
+          <div style={{
+            marginBottom: mb(L.gapButtonsStats),
+            transform: `translateY(${L.yOffsetButtons}px)`,
+          }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.85 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            >
+              <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
+                <PhoneIcon />
+                Text Jason Now
+              </a>
+              <a href="#gallery" className="btn-outline text-xs px-8 py-4 w-full sm:w-auto justify-center">
+                View Projects
+              </a>
+            </motion.div>
+          </div>
+
+          {/* ── 6. Stats Row ── */}
+          {/* No y in initial/animate — same pattern that already worked, now consistent */}
+          <div style={{ transform: `translateY(${L.yOffsetStats}px)`, width: '100%' }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 1.1 }}
+              className="flex flex-wrap items-center justify-center gap-8 pt-5 border-t border-white/10 w-full"
+            >
+              {[
+                { value: '40+',     label: 'Years Experience' },
+                { value: '100K+',   label: 'Windows Tinted'   },
+                { value: 'Zero',    label: 'Subcontractors'   },
+                { value: 'Premium', label: 'Film Only'         },
+              ].map((stat) => (
+                <div key={stat.value} className="text-center">
+                  <div className="font-display text-2xl text-jgt-gold">{stat.value}</div>
+                  <div className="font-sans text-[10px] tracking-[0.18em] uppercase text-jgt-muted">{stat.label}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
 
         </div>
       </motion.div>
