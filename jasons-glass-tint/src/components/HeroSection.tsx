@@ -47,26 +47,24 @@ export default function HeroSection() {
         className="relative z-10 text-center px-6 max-w-5xl mx-auto w-full"
         style={{ y: textY, opacity: fade }}
       >
-        {/* ── Logo cluster: San Clemente / Logo / Since 1989 tightly grouped ── */}
         {/*
-         * Layout strategy:
-         * - Hero is min-h-screen flex items-center, so the whole content block
-         *   is vertically centered in the viewport.
-         * - We use a negative marginTop on the content block to shift it
-         *   slightly upward from dead-center, giving the cinematic feel.
-         * - San Clemente sits 40–50px above the logo top edge.
-         * - Since 1989 sits 35–45px below the logo bottom edge.
-         * - Lower content (paragraph → buttons → stats) is shifted up as one
-         *   block by reducing the marginTop on the paragraph.
+         * Clean flex-column vertical stack — no absolute positioning, no manual offsets.
+         * Desktop spacing (margin-bottom on each item):
+         *   San Clemente → logo:        32px
+         *   logo → Since 1989:          28px
+         *   Since 1989 → paragraph:     36px
+         *   paragraph → buttons:        28px
+         *   buttons → stats:            60px
+         * Mobile (≤640px): proportional values via clamp.
          */}
-        <div className="flex flex-col items-center" style={{ gap: 0, marginTop: '-40px' }}>
+        <div className="flex flex-col items-center">
 
-          {/* Location badge — ~48px above the logo */}
+          {/* 1. San Clemente */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ marginBottom: 'clamp(32px, 4vw, 50px)' }}
+            style={{ marginBottom: 'clamp(20px, 3vw, 32px)' }}
           >
             <div className="flex items-center justify-center gap-4">
               <div className="w-8 h-[1px] bg-jgt-gold/60" />
@@ -75,18 +73,18 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Logo — anchor, completely untouched */}
+          {/* 2. Logo */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
             className="relative w-full mx-auto"
-            style={{ maxWidth: LOGO_WIDTH }}
+            style={{ maxWidth: LOGO_WIDTH, marginBottom: 'clamp(18px, 2.5vw, 28px)' }}
           >
             <HeroLogoImage />
           </motion.div>
 
-          {/* Tagline — ~40px below the logo */}
+          {/* 3. Since 1989 */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -94,67 +92,65 @@ export default function HeroSection() {
             className="font-display italic font-light text-jgt-gold/90"
             style={{
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-              marginTop: 'clamp(28px, 3.5vw, 42px)',
-              marginBottom: 0,
+              marginBottom: 'clamp(24px, 3vw, 36px)',
             }}
           >
             Since 1989
           </motion.p>
 
-        </div>{/* end logo cluster */}
+          {/* 4. Paragraph */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
+            style={{
+              fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
+              marginBottom: 'clamp(20px, 2.5vw, 28px)',
+            }}
+          >
+            Premium window tint installation for automotive, residential, commercial, RV,
+            marine, frost, and safety film projects throughout San Clemente and South Orange County.
+          </motion.p>
 
-        {/* Supporting text — tight gap below "Since 1989" */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
-          style={{
-            fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
-            marginTop: 'clamp(16px, 2vw, 22px)',
-            marginBottom: '20px',
-          }}
-        >
-          Premium window tint installation for automotive, residential, commercial, RV,
-          marine, frost, and safety film projects throughout San Clemente and South Orange County.
-        </motion.p>
+          {/* 5. CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.85 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            style={{ marginBottom: 'clamp(36px, 5vw, 60px)' }}
+          >
+            <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
+              <PhoneIcon />
+              Text Jason Now
+            </a>
+            <a href="#gallery" className="btn-outline text-xs px-8 py-4 w-full sm:w-auto justify-center">
+              View Projects
+            </a>
+          </motion.div>
 
-        {/* CTA Buttons — natural gap below paragraph */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.85 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-        >
-          <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
-            <PhoneIcon />
-            Text Jason Now
-          </a>
-          <a href="#gallery" className="btn-outline text-xs px-8 py-4 w-full sm:w-auto justify-center">
-            View Projects
-          </a>
-        </motion.div>
+          {/* 6. Stats Row */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.1 }}
+            className="flex flex-wrap items-center justify-center gap-8 pt-5 border-t border-white/10 w-full"
+          >
+            {[
+              { value: '40+',     label: 'Years Experience' },
+              { value: '100K+',   label: 'Windows Tinted'   },
+              { value: 'Zero',    label: 'Subcontractors'   },
+              { value: 'Premium', label: 'Film Only'         },
+            ].map((stat) => (
+              <div key={stat.value} className="text-center">
+                <div className="font-display text-2xl text-jgt-gold">{stat.value}</div>
+                <div className="font-sans text-[10px] tracking-[0.18em] uppercase text-jgt-muted">{stat.label}</div>
+              </div>
+            ))}
+          </motion.div>
 
-        {/* Stats Row — comfortable gap below buttons */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.1 }}
-          className="flex flex-wrap items-center justify-center gap-8 pt-5 border-t border-white/10"
-          style={{ marginTop: '24px' }}
-        >
-          {[
-            { value: '40+',     label: 'Years Experience' },
-            { value: '100K+',   label: 'Windows Tinted'   },
-            { value: 'Zero',    label: 'Subcontractors'   },
-            { value: 'Premium', label: 'Film Only'         },
-          ].map((stat) => (
-            <div key={stat.value} className="text-center">
-              <div className="font-display text-2xl text-jgt-gold">{stat.value}</div>
-              <div className="font-sans text-[10px] tracking-[0.18em] uppercase text-jgt-muted">{stat.label}</div>
-            </div>
-          ))}
-        </motion.div>
+        </div>{/* end hero stack */}
       </motion.div>
 
       {/* Scroll indicator */}
