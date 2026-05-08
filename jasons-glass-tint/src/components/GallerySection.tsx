@@ -50,10 +50,9 @@ export default function GallerySection() {
     };
   }, []);
 
-  const filtered =
-    active === 'All Projects'
-      ? items
-      : items.filter((item) => item.categories.includes(active));
+  // Each filter tab shows only items that have that category selected.
+  // 'All Projects' is no longer a catch-all — it shows only images explicitly tagged with it.
+  const filtered = items.filter((item) => item.categories.includes(active));
 
   return (
     <section id="gallery" className="py-24 lg:py-32 bg-jgt-bg">
@@ -159,7 +158,7 @@ export default function GallerySection() {
                       <div>
                         <p className="font-display text-jgt-text text-sm">{img.title}</p>
                         <span className="font-sans text-jgt-gold text-[10px] tracking-[0.18em] uppercase">
-                          {img.categories.filter((c) => c !== 'All Projects').join(', ') || 'All Projects'}
+                          {img.categories.length > 0 ? img.categories.join(', ') : 'No categories'}
                         </span>
                       </div>
                     </div>

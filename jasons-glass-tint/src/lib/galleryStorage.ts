@@ -183,7 +183,7 @@ function isValidMeta(x: unknown): boolean {
 
 function normalizeMeta(x: Record<string, unknown>): GalleryMeta {
   const cats = (Array.isArray(x.categories) ? [...x.categories] : []) as GalleryCategory[];
-  if (!cats.includes('All Projects')) cats.unshift('All Projects');
+  // Do NOT auto-inject 'All Projects' — user controls that category manually
   return {
     id:         String(x.id),
     title:      String(x.title ?? ''),
@@ -234,9 +234,8 @@ export async function addGalleryImage(
 ): Promise<{ ok: boolean; item?: GalleryItem; error?: string }> {
   if (typeof window === 'undefined') return { ok: false, error: 'Not in browser.' };
   const id = `gci-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  const cats: GalleryCategory[] = categories.includes('All Projects')
-    ? categories
-    : ['All Projects', ...categories];
+  // Use exactly the categories the user selected — do NOT auto-add 'All Projects'
+  const cats: GalleryCategory[] = [...categories];
 
   try {
     await idbPut(id, blob);
@@ -293,8 +292,8 @@ export function updateGalleryMeta(
   if (typeof window === 'undefined') return;
   const metas = loadMeta().map((m) => {
     if (m.id !== id) return m;
+    // Use exactly what the user chose — no auto-injection of 'All Projects'
     const cats = patch.categories ?? m.categories;
-    if (!cats.includes('All Projects')) cats.unshift('All Projects');
     return {
       ...m,
       title:      patch.title ?? m.title,
