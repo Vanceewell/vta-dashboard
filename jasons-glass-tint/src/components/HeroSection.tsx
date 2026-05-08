@@ -47,13 +47,16 @@ export default function HeroSection() {
         className="relative z-10 text-center px-6 max-w-5xl mx-auto w-full"
         style={{ y: textY, opacity: fade }}
       >
-        {/* Location badge */}
+        {/* Location badge — pulled DOWN ~100px toward logo via translateY */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="inline-block"
-          style={{ marginBottom: '0.2rem' }}
+          style={{
+            transform: 'translateY(clamp(48px, 8vw, 100px))',
+            marginBottom: 0,
+          }}
         >
           <div className="flex items-center justify-center gap-4">
             <div className="w-8 h-[1px] bg-jgt-gold/60" />
@@ -62,47 +65,58 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Logo */}
+        {/* Logo — anchor, untouched */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
-          className="relative w-full mx-auto mb-0"
-          style={{ maxWidth: LOGO_WIDTH }}
+          className="relative w-full mx-auto"
+          style={{ maxWidth: LOGO_WIDTH, marginBottom: 0 }}
         >
           <HeroLogoImage />
         </motion.div>
 
-        {/* Tagline */}
+        {/* Tagline — pulled UP ~100px toward logo via negative margin */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.55 }}
           className="font-display italic font-light text-jgt-gold/90"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', marginTop: '-6px', marginBottom: '0.35rem' }}
+          style={{
+            fontSize: 'clamp(1.8rem, 4vw, 3rem)',
+            marginTop: 'clamp(-80px, -8vw, -60px)',
+            marginBottom: '0.5rem',
+          }}
         >
           Since 1989
         </motion.p>
 
-        {/* Supporting text */}
+        {/* Supporting text — pulled UP ~80px via negative margin */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
           className="font-sans font-light text-jgt-muted max-w-2xl mx-auto leading-relaxed"
-          style={{ fontSize: 'clamp(0.85rem, 1.4vw, 1rem)', marginBottom: '1rem' }}
+          style={{
+            fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
+            marginTop: 'clamp(-60px, -6vw, -40px)',
+            marginBottom: '0.75rem',
+          }}
         >
           Premium window tint installation for automotive, residential, commercial, RV,
           marine, frost, and safety film projects throughout San Clemente and South Orange County.
         </motion.p>
 
-        {/* CTA Buttons */}
+        {/* CTA Buttons — pulled UP ~80px via negative margin */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.85 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          style={{ marginBottom: '0' }}
+          style={{
+            marginTop: 'clamp(-60px, -6vw, -40px)',
+            marginBottom: 0,
+          }}
         >
           <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
             <PhoneIcon />
@@ -113,13 +127,13 @@ export default function HeroSection() {
           </a>
         </motion.div>
 
-        {/* Stats Row */}
+        {/* Stats Row — pulled UP ~60px via negative margin */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
           className="flex flex-wrap items-center justify-center gap-8 pt-4 border-t border-white/10"
-          style={{ marginTop: '1rem' }}
+          style={{ marginTop: 'clamp(-40px, -4vw, -20px)' }}
         >
           {[
             { value: '40+',     label: 'Years Experience' },
