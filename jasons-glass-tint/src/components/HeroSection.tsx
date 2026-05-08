@@ -1,6 +1,7 @@
 'use client';
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import HeroLogo from './HeroLogo';
 
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
@@ -50,16 +51,17 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Main headline */}
-        <motion.h1
+        {/* Main headline — stacked SVG logo */}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
-          className="font-condensed text-jgt-text leading-none mb-4"
-          style={{ fontSize: 'clamp(4rem, 11vw, 9.5rem)', letterSpacing: '0.06em' }}
+          className="relative w-full mx-auto mb-2"
+          style={{ maxWidth: 'clamp(260px, 62vw, 680px)' }}
+          aria-label="Jason's Glass Tint"
         >
-          Jason's Glass Tint
-        </motion.h1>
+          <HeroLogo className="w-full h-auto drop-shadow-[0_2px_24px_rgba(0,0,0,0.55)]" />
+        </motion.div>
 
         {/* Tagline */}
         <motion.p
