@@ -90,13 +90,6 @@ const IMAGE_REGISTRY: ImageEntry[] = [
 
 /* ─── Safe localStorage helpers ─────────────────────────────────────────── */
 
-/**
- * Load image overrides from localStorage.
- * - Validates JSON is a plain object.
- * - Skips any individual value that isn't a string or looks corrupted.
- * - Skips any value that is over MAX_STORED_BYTES (stored as base64).
- * - Never throws; always returns a safe subset.
- */
 function loadImageOverrides(): Record<string, string> {
   if (typeof window === 'undefined') return {};
   try {
@@ -104,38 +97,30 @@ function loadImageOverrides(): Record<string, string> {
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return {};
-
     const safe: Record<string, string> = {};
     for (const [key, val] of Object.entries(parsed)) {
       if (typeof val !== 'string') continue;
-      // Must start with data: and be a plausible data URL
       if (!val.startsWith('data:image/')) continue;
-      // Skip if too large (corrupted / raw uncompressed upload)
       if (val.length > MAX_STORED_BYTES) {
-        console.warn(`[ImageOverrides] Skipping "${key}": stored value too large (${val.length} bytes). Falling back to original.`);
+        console.warn(`[ImageOverrides] Skipping "${key}": too large.`);
         continue;
       }
       safe[key] = val;
     }
     return safe;
   } catch (err) {
-    console.warn('[ImageOverrides] Failed to load from localStorage:', err);
+    console.warn('[ImageOverrides] Failed to load:', err);
     return {};
   }
 }
 
-/**
- * Save image overrides to localStorage.
- * Catches QuotaExceededError and other write failures gracefully.
- * Returns true on success, false on failure.
- */
 function saveImageOverrides(overrides: Record<string, string>): boolean {
   if (typeof window === 'undefined') return false;
   try {
     localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(overrides));
     return true;
   } catch (err) {
-    console.error('[ImageOverrides] Failed to save to localStorage:', err);
+    console.error('[ImageOverrides] Failed to save:', err);
     return false;
   }
 }
@@ -143,6 +128,71 @@ function saveImageOverrides(overrides: Record<string, string>): boolean {
 function clearImageOverrides(): void {
   if (typeof window === 'undefined') return;
   try { localStorage.removeItem(IMAGE_STORAGE_KEY); } catch { /* noop */ }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GALLERY — localStorage data model
+───────────────────────────────────────────────────────────────────────────── */
+const GALLERY_STORAGE_KEY = 'jgt_custom_gallery_v1';
+
+const GALLERY_CATEGORIES = [
+  'All Projects',
+  'Automotive',
+  'Residential',
+  'Commercial',
+  'Marine',
+  'RV',
+  'Frost',
+  'Safety Film',
+] as const;
+
+type GalleryCategory = typeof GALLERY_CATEGORIES[number];
+
+interface CustomGalleryImage {
+  id: string;
+  title: string;
+  src: string;         // compressed base64 data URL
+  categories: GalleryCategory[]; // always includes 'All Projects'
+  addedAt: number;
+}
+
+function loadCustomGallery(): CustomGalleryImage[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(GALLERY_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (item): item is CustomGalleryImage =>
+        typeof item === 'object' &&
+        item !== null &&
+        typeof item.id === 'string' &&
+        typeof item.title === 'string' &&
+        typeof item.src === 'string' &&
+        item.src.startsWith('data:image/') &&
+        Array.isArray(item.categories),
+    );
+  } catch (err) {
+    console.warn('[CustomGallery] Load failed, resetting:', err);
+    return [];
+  }
+}
+
+function saveCustomGallery(images: CustomGalleryImage[]): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(images));
+    return true;
+  } catch (err) {
+    console.error('[CustomGallery] Save failed:', err);
+    return false;
+  }
+}
+
+function clearCustomGallery(): void {
+  if (typeof window === 'undefined') return;
+  try { localStorage.removeItem(GALLERY_STORAGE_KEY); } catch { /* noop */ }
 }
 
 /* ─── Image compression helper ──────────────────────────────────────────── */
@@ -154,79 +204,72 @@ interface CompressOptions {
   hasAlpha:  boolean;
 }
 
-/**
- * Compress/resize an image File using a canvas.
- * Preserves transparency when hasAlpha=true (outputs WebP with alpha; falls back to PNG).
- * Returns a data URL or throws on failure.
- */
 function compressImage(file: File, opts: CompressOptions): Promise<string> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const img  = new Image();
-
     img.onload = () => {
       URL.revokeObjectURL(url);
       try {
         let { width, height } = img;
-
-        // Scale down if needed, maintaining aspect ratio
         if (width > opts.maxWidth || height > opts.maxHeight) {
           const ratio = Math.min(opts.maxWidth / width, opts.maxHeight / height);
           width  = Math.round(width  * ratio);
           height = Math.round(height * ratio);
         }
-
         const canvas = document.createElement('canvas');
         canvas.width  = width;
         canvas.height = height;
-
         const ctx = canvas.getContext('2d');
         if (!ctx) { reject(new Error('Could not get canvas 2D context.')); return; }
-
         if (!opts.hasAlpha) {
-          // Fill with white for JPEG output (no transparency)
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, width, height);
         }
-
         ctx.drawImage(img, 0, 0, width, height);
-
-        // Choose output format
-        const mimeType = opts.hasAlpha ? 'image/webp' : 'image/webp';
-        let dataUrl = canvas.toDataURL(mimeType, opts.quality);
-
-        // If WebP with alpha is still large, try PNG as fallback
+        let dataUrl = canvas.toDataURL('image/webp', opts.quality);
         if (opts.hasAlpha && dataUrl.length > MAX_STORED_BYTES) {
           dataUrl = canvas.toDataURL('image/png');
         }
-
         resolve(dataUrl);
-      } catch (err) {
-        reject(err);
-      }
+      } catch (err) { reject(err); }
     };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Failed to load image for compression.'));
-    };
-
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Failed to load image.')); };
     img.src = url;
   });
 }
 
-/**
- * Detect whether an image file likely has an alpha channel.
- * For PNG we assume yes; everything else assumed no.
- */
 function fileHasAlpha(file: File): boolean {
   return file.type === 'image/png';
+}
+
+async function processImageFile(file: File): Promise<string> {
+  const mime = file.type.toLowerCase();
+  const name = file.name.toLowerCase();
+  const extOk  = ACCEPTED_EXT.some((ext) => name.endsWith(ext));
+  const mimeOk = ACCEPTED_TYPES.includes(mime);
+  if (!extOk && !mimeOk) {
+    const isHeic = name.endsWith('.heic') || name.endsWith('.heif') || mime.includes('heic');
+    const isTiff = name.endsWith('.tiff') || name.endsWith('.tif')  || mime.includes('tiff');
+    const isRaw  = name.endsWith('.raw')  || name.endsWith('.cr2')  || name.endsWith('.nef') || name.endsWith('.arw') || name.endsWith('.dng');
+    if (isHeic) throw new Error('HEIC files are not supported. Please convert to JPG or PNG first.');
+    if (isTiff) throw new Error('TIFF files are not supported. Please use JPG, PNG, or WebP.');
+    if (isRaw)  throw new Error('RAW camera files are not supported. Please export as JPG or PNG.');
+    throw new Error('Unsupported file type. Please upload JPG, PNG, or WebP.');
+  }
+  const dataUrl = await compressImage(file, {
+    maxWidth: 1800, maxHeight: 1800, quality: 0.82, hasAlpha: fileHasAlpha(file),
+  });
+  if (dataUrl.length > MAX_STORED_BYTES) {
+    throw new Error('Image is still too large after compression. Please choose a smaller image.');
+  }
+  return dataUrl;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
    SIDEBAR NAV
 ───────────────────────────────────────────────────────────────────────────── */
-type Tab = 'positioning' | 'images';
+type Tab = 'positioning' | 'images' | 'gallery';
 
 const NAV_ITEMS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   {
@@ -250,6 +293,18 @@ const NAV_ITEMS: { id: Tab; label: string; icon: React.ReactNode }[] = [
       </svg>
     ),
   },
+  {
+    id: 'gallery',
+    label: 'Gallery',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2"/>
+        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+        <line x1="12" y1="12" x2="12" y2="16"/>
+        <line x1="10" y1="14" x2="14" y2="14"/>
+      </svg>
+    ),
+  },
 ];
 
 const IMAGE_GROUPS = Array.from(new Set(IMAGE_REGISTRY.map((e) => e.group)));
@@ -268,10 +323,15 @@ export default function AdminHeroLayout() {
   const [imgOverrides, setImgOverrides] = useState<Record<string, string>>({});
   const [imgSaved, setImgSaved]         = useState(false);
 
-  /* ── Load on mount (safe) ── */
+  /* ── Gallery state ── */
+  const [galleryImages, setGalleryImages] = useState<CustomGalleryImage[]>([]);
+  const [gallerySaved, setGallerySaved]   = useState(false);
+
+  /* ── Load on mount ── */
   useEffect(() => {
     try { setCfg(loadHeroConfig()); } catch { /* fall back to DEFAULT_CONFIG */ }
-    setImgOverrides(loadImageOverrides()); // already safe
+    setImgOverrides(loadImageOverrides());
+    setGalleryImages(loadCustomGallery());
   }, []);
 
   /* ── Positioning handlers ── */
@@ -327,10 +387,34 @@ export default function AdminHeroLayout() {
     }
   };
 
+  /* ── Gallery handlers ── */
+  const handleGalleryUpdate = useCallback((updated: CustomGalleryImage[]) => {
+    setGalleryImages(updated);
+    saveCustomGallery(updated);
+    setGallerySaved(true);
+    setTimeout(() => setGallerySaved(false), 2500);
+  }, []);
+
+  const handleResetGallery = () => {
+    clearCustomGallery();
+    setGalleryImages([]);
+  };
+
   /* ── Unified save ── */
-  const isPositioning = activeTab === 'positioning';
-  const handleSave    = isPositioning ? handleSaveLayout : handleSaveImages;
-  const isSaved       = isPositioning ? layoutSaved : imgSaved;
+  const handleSave = () => {
+    if (activeTab === 'positioning') handleSaveLayout();
+    else if (activeTab === 'images') handleSaveImages();
+    // Gallery auto-saves on every change; button still gives visual feedback
+    else {
+      saveCustomGallery(galleryImages);
+      setGallerySaved(true);
+      setTimeout(() => setGallerySaved(false), 2500);
+    }
+  };
+  const isSaved =
+    activeTab === 'positioning' ? layoutSaved :
+    activeTab === 'images'      ? imgSaved :
+    gallerySaved;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col" style={{ fontFamily: 'sans-serif' }}>
@@ -347,7 +431,7 @@ export default function AdminHeroLayout() {
           <span className="text-sm text-white/70">Site Editor</span>
           <span className="text-white/20">·</span>
           <span className="text-[11px] tracking-widest uppercase text-white/40">
-            {isPositioning ? 'Positioning' : 'Images'}
+            {activeTab === 'positioning' ? 'Positioning' : activeTab === 'images' ? 'Images' : 'Gallery'}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -358,7 +442,7 @@ export default function AdminHeroLayout() {
           >
             ↗ View Homepage
           </a>
-          {isPositioning && (
+          {activeTab === 'positioning' && (
             <button
               onClick={handleResetLayout}
               className="px-3 py-2 text-[11px] tracking-widest uppercase border border-white/20 text-white/60 hover:border-white/50 hover:text-white transition-colors rounded"
@@ -366,12 +450,20 @@ export default function AdminHeroLayout() {
               Reset to Default
             </button>
           )}
-          {!isPositioning && (
+          {activeTab === 'images' && (
             <button
               onClick={handleResetAllImages}
               className="px-3 py-2 text-[11px] tracking-widest uppercase border border-white/20 text-white/60 hover:border-white/50 hover:text-white transition-colors rounded"
             >
               Reset All Images
+            </button>
+          )}
+          {activeTab === 'gallery' && (
+            <button
+              onClick={handleResetGallery}
+              className="px-3 py-2 text-[11px] tracking-widest uppercase border border-red-500/30 text-red-400/70 hover:border-red-500/60 hover:text-red-400 transition-colors rounded"
+            >
+              Reset Gallery
             </button>
           )}
           <button
@@ -428,13 +520,13 @@ export default function AdminHeroLayout() {
           </div>
         </nav>
 
-        {/* ── Main content + preview ── */}
+        {/* ── Main content ── */}
         <div className="flex flex-1 min-h-0 min-w-0">
 
           {/* ── Controls panel (scrollable) ── */}
           <div
             className="w-80 xl:w-96 flex-shrink-0 overflow-y-auto border-r border-white/10"
-            style={{ background: '#111' }}
+            style={{ background: '#111', display: activeTab === 'gallery' ? 'none' : 'block' }}
           >
             {activeTab === 'positioning' ? (
               <PositioningPanel cfg={cfg} update={update} />
@@ -447,15 +539,27 @@ export default function AdminHeroLayout() {
             )}
           </div>
 
-          {/* ── Live preview ── */}
-          <div className="flex-1 relative" style={{ minHeight: '600px' }}>
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 px-3 py-1 rounded-full bg-black/70 border border-white/10 pointer-events-none">
-              <span className="text-[10px] font-mono tracking-widest uppercase text-white/50">Live Preview</span>
+          {/* ── Gallery full-width panel ── */}
+          {activeTab === 'gallery' && (
+            <div className="flex-1 overflow-y-auto" style={{ background: '#0e0e0e' }}>
+              <GalleryPanel
+                images={galleryImages}
+                onUpdate={handleGalleryUpdate}
+              />
             </div>
-            <div className="w-full h-full overflow-hidden">
-              <HeroSection config={cfg} imageOverrides={imgOverrides} />
+          )}
+
+          {/* ── Live preview (hidden on gallery tab) ── */}
+          {activeTab !== 'gallery' && (
+            <div className="flex-1 relative" style={{ minHeight: '600px' }}>
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 px-3 py-1 rounded-full bg-black/70 border border-white/10 pointer-events-none">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-white/50">Live Preview</span>
+              </div>
+              <div className="w-full h-full overflow-hidden">
+                <HeroSection config={cfg} imageOverrides={imgOverrides} />
+              </div>
             </div>
-          </div>
+          )}
 
         </div>
       </div>
@@ -475,7 +579,6 @@ function PositioningPanel({
 }) {
   return (
     <>
-      {/* Section 1: Scale / Size */}
       <div className="p-6 border-b border-white/10">
         <SectionHeader title="Scale / Size" sub="gap & logo width" />
         <div className="space-y-6">
@@ -494,7 +597,6 @@ function PositioningPanel({
         </div>
       </div>
 
-      {/* Section 2: Move Up / Down */}
       <div className="p-6 border-b border-white/10">
         <SectionHeader title="Move Up / Down" sub="Y position only" />
         <p className="text-[10px] text-white/25 mb-5 leading-relaxed">
@@ -524,7 +626,6 @@ function PositioningPanel({
         </div>
       </div>
 
-      {/* Section 3: Scroll Indicator */}
       <div className="p-6">
         <SectionHeader title="Scroll Indicator" sub="X / Y position" />
         <p className="text-[10px] text-white/25 mb-5 leading-relaxed">
@@ -551,7 +652,6 @@ function PositioningPanel({
               </div>
             );
           })()}
-
           {(() => {
             const val = cfg.scrollIndicatorY;
             const color = val === 0 ? 'rgba(255,255,255,0.3)' : val < 0 ? '#60a5fa' : '#f87171';
@@ -573,7 +673,6 @@ function PositioningPanel({
             );
           })()}
         </div>
-
         <div className="mt-8 p-3 border border-yellow-400/20 rounded bg-yellow-400/5">
           <p className="text-[10px] text-yellow-400/70 leading-relaxed">
             Adjust sliders — the preview updates instantly.
@@ -599,7 +698,6 @@ function ImagesPanel({
 }) {
   return (
     <div className="p-5 space-y-8">
-
       <div className="p-3 border border-white/10 rounded bg-white/3">
         <p className="text-[10px] text-white/40 leading-relaxed">
           🖼 Replace images for your browser only. Original files are never deleted.
@@ -614,7 +712,6 @@ function ImagesPanel({
             <span className="text-[10px] tracking-[0.2em] uppercase text-white/30 font-medium">{group}</span>
             <div className="flex-1 h-[1px] bg-white/8" />
           </div>
-
           <div className="space-y-4">
             {IMAGE_REGISTRY.filter((e) => e.group === group).map((entry) => (
               <ImageCard
@@ -628,7 +725,6 @@ function ImagesPanel({
           </div>
         </div>
       ))}
-
       <div className="h-8" />
     </div>
   );
@@ -657,55 +753,15 @@ function ImageCard({
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    // Reset input immediately so the same file can be chosen again later
     e.target.value = '';
     if (!file) return;
-
     setError(null);
     setProcessing(true);
-
     try {
-      /* 1. Validate file type ─────────────────────────────────────────── */
-      const mime = file.type.toLowerCase();
-      const name = file.name.toLowerCase();
-      const extOk = ACCEPTED_EXT.some((ext) => name.endsWith(ext));
-      const mimeOk = ACCEPTED_TYPES.includes(mime);
-
-      if (!extOk && !mimeOk) {
-        // Give a user-friendly message for common unsupported types
-        const isHeic = name.endsWith('.heic') || name.endsWith('.heif') || mime.includes('heic') || mime.includes('heif');
-        const isTiff = name.endsWith('.tiff') || name.endsWith('.tif') || mime.includes('tiff');
-        const isRaw  = name.endsWith('.raw') || name.endsWith('.cr2') || name.endsWith('.nef') ||
-                       name.endsWith('.arw') || name.endsWith('.dng') || mime.includes('x-raw');
-
-        if (isHeic || isTiff || isRaw) {
-          throw new Error('Unsupported image type. Please upload JPG, PNG, or WebP.');
-        }
-        throw new Error('Unsupported image type. Please upload JPG, PNG, or WebP.');
-      }
-
-      /* 2. Compress / resize ───────────────────────────────────────────── */
-      const hasAlpha = fileHasAlpha(file);
-      const dataUrl  = await compressImage(file, {
-        maxWidth:  1800,
-        maxHeight: 1800,
-        quality:   0.82,
-        hasAlpha,
-      });
-
-      /* 3. Final size guard ────────────────────────────────────────────── */
-      if (dataUrl.length > MAX_STORED_BYTES) {
-        throw new Error(
-          'Image is still too large after compression. Please choose a smaller image.',
-        );
-      }
-
-      /* 4. Commit ─────────────────────────────────────────────────────── */
+      const dataUrl = await processImageFile(file);
       onReplace(entry.id, dataUrl);
-
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Unknown error processing image.';
-      setError(msg);
+      setError(err instanceof Error ? err.message : 'Unknown error processing image.');
     } finally {
       setProcessing(false);
     }
@@ -716,7 +772,6 @@ function ImageCard({
       className="rounded overflow-hidden border transition-colors"
       style={{ borderColor: isCustom ? 'rgba(197,160,86,0.4)' : 'rgba(255,255,255,0.08)', background: '#0e0e0e' }}
     >
-      {/* Image preview */}
       <div className="relative w-full bg-black/30" style={{ aspectRatio: '16/7' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -724,33 +779,24 @@ function ImageCard({
           alt={entry.label}
           className="w-full h-full object-cover"
           style={{ objectPosition: 'center' }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.opacity = '0.15';
-          }}
+          onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.15'; }}
         />
         {isCustom && (
           <div className="absolute top-2 right-2 bg-yellow-400/90 text-black text-[9px] tracking-widest uppercase px-2 py-0.5 rounded font-semibold">
             Custom
           </div>
         )}
-        {/* Processing overlay */}
         {processing && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/70">
-            <span className="text-[11px] tracking-widest uppercase text-yellow-400 animate-pulse">
-              Processing image…
-            </span>
+            <span className="text-[11px] tracking-widest uppercase text-yellow-400 animate-pulse">Processing image…</span>
           </div>
         )}
       </div>
-
-      {/* Error message */}
       {error && (
         <div className="mx-3 mt-3 px-3 py-2 rounded border border-red-500/40 bg-red-500/10">
           <p className="text-[11px] text-red-400 leading-snug">⚠ {error}</p>
         </div>
       )}
-
-      {/* Card footer */}
       <div className="px-3 py-3">
         <div className="mb-2">
           <p className="text-[12px] text-white/80 font-medium leading-tight">{entry.label}</p>
@@ -766,9 +812,7 @@ function ImageCard({
                   .replace('/images/', '/')}
           </p>
         </div>
-
         <div className="flex items-center gap-2 mt-3">
-          {/* Replace button — disabled while processing */}
           <button
             onClick={() => { setError(null); fileRef.current?.click(); }}
             disabled={processing}
@@ -782,8 +826,6 @@ function ImageCard({
           >
             {processing ? 'Processing…' : '↑ Replace'}
           </button>
-
-          {/* Reset button (shown if custom) */}
           {isCustom && !processing && (
             <button
               onClick={() => { setError(null); onReset(entry.id); }}
@@ -794,8 +836,6 @@ function ImageCard({
             </button>
           )}
         </div>
-
-        {/* Hidden file input — only accepted types */}
         <input
           ref={fileRef}
           type="file"
@@ -803,6 +843,421 @@ function ImageCard({
           className="hidden"
           onChange={handleFileChange}
         />
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GALLERY PANEL — full-width custom gallery management
+───────────────────────────────────────────────────────────────────────────── */
+function GalleryPanel({
+  images,
+  onUpdate,
+}: {
+  images: CustomGalleryImage[];
+  onUpdate: (updated: CustomGalleryImage[]) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading]   = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  /* ── Upload new image ── */
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      const dataUrl = await processImageFile(file);
+      const newImage: CustomGalleryImage = {
+        id:         `gallery-custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        title:      file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
+        src:        dataUrl,
+        categories: ['All Projects'],
+        addedAt:    Date.now(),
+      };
+      onUpdate([newImage, ...images]);
+    } catch (err: unknown) {
+      setUploadError(err instanceof Error ? err.message : 'Failed to process image.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  /* ── Update a single image ── */
+  const updateImage = (id: string, patch: Partial<CustomGalleryImage>) => {
+    onUpdate(images.map((img) => img.id === id ? { ...img, ...patch } : img));
+  };
+
+  /* ── Delete an image ── */
+  const deleteImage = (id: string) => {
+    onUpdate(images.filter((img) => img.id !== id));
+  };
+
+  /* ── Replace image src ── */
+  const replaceImageSrc = async (id: string, file: File) => {
+    try {
+      const dataUrl = await processImageFile(file);
+      updateImage(id, { src: dataUrl });
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Failed to replace image.');
+    }
+  };
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+
+      {/* ── Header ── */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-1">
+          <h2 className="text-lg font-semibold tracking-wide text-white/90">Project Gallery</h2>
+          <span className="text-[10px] tracking-widest uppercase text-white/30 bg-white/5 border border-white/10 px-2 py-0.5 rounded">
+            {images.length} image{images.length !== 1 ? 's' : ''}
+          </span>
+        </div>
+        <p className="text-[11px] text-white/35">
+          Add and manage project photos shown in the public gallery. Every image automatically appears under &quot;All Projects.&quot;
+        </p>
+      </div>
+
+      {/* ── Upload area ── */}
+      <div className="mb-8">
+        <button
+          onClick={() => { if (!uploading) { setUploadError(null); fileRef.current?.click(); } }}
+          disabled={uploading}
+          className="w-full flex flex-col items-center justify-center gap-3 py-10 border-2 border-dashed rounded-xl transition-all"
+          style={{
+            borderColor: uploading ? 'rgba(197,160,86,0.3)' : 'rgba(197,160,86,0.45)',
+            background:  uploading ? 'rgba(197,160,86,0.04)' : 'rgba(197,160,86,0.06)',
+            cursor:      uploading ? 'not-allowed' : 'pointer',
+          }}
+          onMouseEnter={(e) => {
+            if (!uploading) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(197,160,86,0.1)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = uploading ? 'rgba(197,160,86,0.04)' : 'rgba(197,160,86,0.06)';
+          }}
+        >
+          {uploading ? (
+            <>
+              <div className="w-8 h-8 border-2 border-yellow-400/40 border-t-yellow-400 rounded-full animate-spin" />
+              <span className="text-[12px] tracking-widest uppercase text-yellow-400/70">Processing image…</span>
+            </>
+          ) : (
+            <>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'rgba(197,160,86,0.15)' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C5A056" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="text-[13px] font-medium tracking-wide text-white/70">Add New Gallery Image</p>
+                <p className="text-[10px] text-white/30 mt-1">JPG, JPEG, PNG, WebP · Auto-compressed</p>
+              </div>
+            </>
+          )}
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        {uploadError && (
+          <div className="mt-3 px-4 py-3 rounded-lg border border-red-500/40 bg-red-500/8">
+            <p className="text-[12px] text-red-400">⚠ {uploadError}</p>
+          </div>
+        )}
+      </div>
+
+      {/* ── Category legend ── */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {GALLERY_CATEGORIES.map((cat) => (
+          <span
+            key={cat}
+            className="text-[9px] tracking-widest uppercase px-2 py-1 rounded border"
+            style={{
+              borderColor: cat === 'All Projects' ? 'rgba(197,160,86,0.5)' : 'rgba(255,255,255,0.12)',
+              color:       cat === 'All Projects' ? '#C5A056'              : 'rgba(255,255,255,0.35)',
+              background:  cat === 'All Projects' ? 'rgba(197,160,86,0.08)' : 'transparent',
+            }}
+          >
+            {cat}
+          </span>
+        ))}
+      </div>
+
+      {/* ── Gallery management grid ── */}
+      {images.length === 0 ? (
+        <div className="text-center py-20 border border-white/8 rounded-xl">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(255,255,255,0.04)' }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
+          <p className="text-[13px] text-white/30 tracking-wide">No gallery images yet</p>
+          <p className="text-[11px] text-white/20 mt-1">Upload your first project photo above</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {images.map((img) => (
+            <GalleryImageCard
+              key={img.id}
+              image={img}
+              onUpdate={(patch) => updateImage(img.id, patch)}
+              onDelete={() => deleteImage(img.id)}
+              onReplace={(file) => replaceImageSrc(img.id, file)}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="h-12" />
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GALLERY IMAGE CARD
+───────────────────────────────────────────────────────────────────────────── */
+function GalleryImageCard({
+  image,
+  onUpdate,
+  onDelete,
+  onReplace,
+}: {
+  image: CustomGalleryImage;
+  onUpdate:  (patch: Partial<CustomGalleryImage>) => void;
+  onDelete:  () => void;
+  onReplace: (file: File) => void;
+}) {
+  const replaceRef     = useRef<HTMLInputElement>(null);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [draftTitle,   setDraftTitle]   = useState(image.title);
+  const [showCatMenu,  setShowCatMenu]  = useState(false);
+  const [replacing,    setReplacing]    = useState(false);
+  const [imgBroken,    setImgBroken]    = useState(false);
+
+  /* Keep draftTitle in sync if parent updates title */
+  useEffect(() => { setDraftTitle(image.title); }, [image.title]);
+
+  const commitTitle = () => {
+    const trimmed = draftTitle.trim();
+    if (trimmed && trimmed !== image.title) onUpdate({ title: trimmed });
+    else setDraftTitle(image.title); // revert if empty
+    setEditingTitle(false);
+  };
+
+  const toggleCategory = (cat: GalleryCategory) => {
+    if (cat === 'All Projects') return; // always included, never removable
+    const has = image.categories.includes(cat);
+    const next = has
+      ? image.categories.filter((c) => c !== cat)
+      : [...image.categories, cat];
+    // Always ensure 'All Projects' is present
+    if (!next.includes('All Projects')) next.unshift('All Projects');
+    onUpdate({ categories: next });
+  };
+
+  const handleReplaceFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setReplacing(true);
+    await onReplace(file);
+    setReplacing(false);
+    setImgBroken(false);
+  };
+
+  const confirmDelete = () => {
+    if (window.confirm(`Remove "${image.title}" from the gallery?`)) onDelete();
+  };
+
+  return (
+    <div
+      className="flex flex-col rounded-xl overflow-hidden border"
+      style={{ borderColor: 'rgba(255,255,255,0.09)', background: '#131313' }}
+    >
+      {/* Thumbnail */}
+      <div className="relative bg-black/40" style={{ aspectRatio: '4/3' }}>
+        {imgBroken ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+            <span className="text-[10px] text-white/25">Image unavailable</span>
+          </div>
+        ) : (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={image.src}
+            alt={image.title}
+            className="w-full h-full object-cover"
+            onError={() => setImgBroken(true)}
+          />
+        )}
+        {replacing && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/70">
+            <div className="w-7 h-7 border-2 border-yellow-400/40 border-t-yellow-400 rounded-full animate-spin" />
+          </div>
+        )}
+        {/* Delete button */}
+        <button
+          onClick={confirmDelete}
+          className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full transition-all"
+          style={{ background: 'rgba(220,38,38,0.85)', color: 'white' }}
+          title="Remove image"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div className="flex-1 p-4 flex flex-col gap-4">
+
+        {/* Title editing */}
+        <div>
+          <label className="text-[9px] tracking-[0.18em] uppercase text-white/30 mb-1.5 block">Project Title</label>
+          {editingTitle ? (
+            <div className="flex gap-2">
+              <input
+                autoFocus
+                value={draftTitle}
+                onChange={(e) => setDraftTitle(e.target.value)}
+                onBlur={commitTitle}
+                onKeyDown={(e) => { if (e.key === 'Enter') commitTitle(); if (e.key === 'Escape') { setDraftTitle(image.title); setEditingTitle(false); } }}
+                className="flex-1 bg-white/8 border border-yellow-400/50 rounded px-3 py-2 text-[13px] text-white outline-none"
+                maxLength={80}
+              />
+            </div>
+          ) : (
+            <button
+              onClick={() => setEditingTitle(true)}
+              className="w-full text-left px-3 py-2 rounded border border-white/10 hover:border-yellow-400/40 transition-colors group"
+              style={{ background: 'rgba(255,255,255,0.03)' }}
+            >
+              <span className="text-[13px] text-white/80 group-hover:text-white transition-colors">{image.title}</span>
+              <span className="ml-2 text-[10px] text-white/25 group-hover:text-yellow-400/60 transition-colors">✎</span>
+            </button>
+          )}
+        </div>
+
+        {/* Category selector */}
+        <div>
+          <label className="text-[9px] tracking-[0.18em] uppercase text-white/30 mb-1.5 block">Categories</label>
+
+          {/* Active categories pills */}
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {image.categories.map((cat) => (
+              <span
+                key={cat}
+                className="flex items-center gap-1 text-[9px] tracking-widest uppercase px-2 py-1 rounded"
+                style={{
+                  background: cat === 'All Projects' ? 'rgba(197,160,86,0.15)' : 'rgba(255,255,255,0.08)',
+                  color:      cat === 'All Projects' ? '#C5A056'               : 'rgba(255,255,255,0.6)',
+                  border:     `1px solid ${cat === 'All Projects' ? 'rgba(197,160,86,0.4)' : 'rgba(255,255,255,0.12)'}`,
+                }}
+              >
+                {cat}
+                {cat !== 'All Projects' && (
+                  <button
+                    onClick={() => toggleCategory(cat)}
+                    className="ml-0.5 text-white/40 hover:text-white/80 transition-colors leading-none"
+                    title={`Remove ${cat}`}
+                  >
+                    ×
+                  </button>
+                )}
+              </span>
+            ))}
+          </div>
+
+          {/* Add category dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setShowCatMenu((v) => !v)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded border text-[10px] tracking-widest uppercase transition-colors"
+              style={{ borderColor: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.45)', background: 'rgba(255,255,255,0.04)' }}
+            >
+              <span>+ Add Category</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            {showCatMenu && (
+              <>
+                {/* Backdrop */}
+                <div className="fixed inset-0 z-10" onClick={() => setShowCatMenu(false)} />
+                <div
+                  className="absolute left-0 top-full mt-1 z-20 rounded-lg border overflow-hidden shadow-2xl"
+                  style={{ background: '#1a1a1a', borderColor: 'rgba(255,255,255,0.12)', minWidth: '180px' }}
+                >
+                  {GALLERY_CATEGORIES.map((cat) => {
+                    const selected = image.categories.includes(cat);
+                    const isAll    = cat === 'All Projects';
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => { if (!isAll) toggleCategory(cat); }}
+                        disabled={isAll}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-[11px] transition-colors"
+                        style={{
+                          color:      isAll ? '#C5A056' : selected ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.45)',
+                          background: 'transparent',
+                          cursor:     isAll ? 'default' : 'pointer',
+                        }}
+                        onMouseEnter={(e) => { if (!isAll) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                      >
+                        <span
+                          className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0"
+                          style={{
+                            background: selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.8)') : 'rgba(255,255,255,0.08)',
+                            border: `1px solid ${selected ? (isAll ? '#C5A056' : 'rgba(197,160,86,0.8)') : 'rgba(255,255,255,0.15)'}`,
+                          }}
+                        >
+                          {selected && (
+                            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke={isAll ? '#000' : '#000'} strokeWidth="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+                          )}
+                        </span>
+                        {cat}
+                        {isAll && <span className="ml-auto text-[9px] text-yellow-400/40">Always</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Replace button */}
+        <div className="mt-auto pt-2 border-t border-white/8">
+          <button
+            onClick={() => { if (!replacing) replaceRef.current?.click(); }}
+            disabled={replacing}
+            className="w-full py-2 text-[10px] tracking-widest uppercase rounded border transition-all"
+            style={{
+              borderColor: replacing ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)',
+              color:       replacing ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.55)',
+              background:  'transparent',
+              cursor:      replacing ? 'not-allowed' : 'pointer',
+            }}
+            onMouseEnter={(e) => { if (!replacing) { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(197,160,86,0.5)'; (e.currentTarget as HTMLButtonElement).style.color = '#C5A056'; } }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.2)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.55)'; }}
+          >
+            ↑ Replace Image
+          </button>
+          <input
+            ref={replaceRef}
+            type="file"
+            accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+            className="hidden"
+            onChange={handleReplaceFileChange}
+          />
+        </div>
       </div>
     </div>
   );

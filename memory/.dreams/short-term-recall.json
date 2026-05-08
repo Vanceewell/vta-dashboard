@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-08T04:20:04.316Z",
+  "updatedAt": "2026-05-08T18:02:29.392Z",
   "entries": {
     "memory:memory/2026-04-24.md:64:85": {
       "key": "memory:memory/2026-04-24.md:64:85",
@@ -201,15 +201,17 @@
       "endLine": 47,
       "source": "memory",
       "snippet": "# Memory — 2026-05-08 ## Fancy Fuimaono Website Update - Subagent task completed: updated `fancy-fuimaonoS.html` in `Vanceewell/vta-dashboard` repo - Replaced chef image with Tatum Fuimaono's photo (`tatum-fuimaono.jpg`) - Updated chef name from \"Chef Alexandre Renauld\" to \"Tatum Fuimaono\" - Commit: `eb2e0b2` — \"Update: Tatum Fuimaono hero image\" - Live URL: https://vanceewell.github.io/vta-dashboard/fancy-fuimaonoS.html --- ## Jason's Glass Tint — Full Website Build **Repo:** `Vanceewell/vta-dashboard/tree/main/jasons-glass-tint` **Stack:** Next.js 14, TypeScript, Tailwind CSS, Framer Motion, Supabase ### What was built - Full luxury website for Jason's Glass Tint, San Clemente CA (sinc",
-      "recallCount": 1,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-08T04:20:04.316Z",
-      "lastRecalledAt": "2026-05-08T04:20:04.316Z",
+      "lastRecalledAt": "2026-05-08T18:02:29.392Z",
       "queryHashes": [
-        "b8bebf9c5bec"
+        "b8bebf9c5bec",
+        "d8933fc2626b",
+        "84b426496b25"
       ],
       "recallDays": [
         "2026-05-08"
