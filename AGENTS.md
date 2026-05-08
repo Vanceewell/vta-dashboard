@@ -221,29 +221,31 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 
 ## Website Creation Workflow (Default)
 
-Every time Vance asks to create a website, follow this process exactly:
+**Every time Vance asks to create a website, follow this process exactly:**
 
-1. Use the `anthropic-frontend-design` skill (design intelligence, CSV data) to guide design decisions.
-2. Save the site as a **complete single-file HTML** file with all CSS inline unless Vance explicitly asks otherwise.
-3. Store the file in `/data/.openclaw/workspace/` with a clean filename like `business-name-website.html`.
-4. Verify the file is complete and well-formed (starts with `<!DOCTYPE html>`, ends with `</html>`, all sections present).
-5. **Render a visual preview card in chat** using the canvas embed system (`[embed ...]`) so Vance can see it.
-6. **Deliver as a direct downloadable file attachment in chat.** Vance clicks download, double-clicks the HTML file, it opens as a webpage in the browser — not raw code.
-7. Before saying the job is done, verify: file downloads, opens visually as a webpage.
-8. **Never deploy or overwrite a live/production website** unless Vance explicitly says "deploy" or "push to live".
-9. After creating the site, reply with ONLY:
+### Build Phase
+1. Use the `anthropic-frontend-design` skill (design intelligence, CSV data) to guide design decisions
+2. Build as a **complete single-file HTML** file with all CSS inline (unless Vance explicitly asks otherwise)
+3. Verify the file is complete and well-formed (starts with `<!DOCTYPE html>`, ends with `</html>`, all sections present)
+
+### Push & Deliver Phase
+4. **Push to GitHub:** `Vanceewell/vta-dashboard` repo (using stored fine-grained token)
+5. **Provide the GitHub link:** Direct link to the raw file on GitHub so Vance can preview/download
+6. Reply with ONLY:
    - Filename
-   - Status (local draft only)
-   - One-line download/open instruction
+   - GitHub link (raw content URL)
+   - One-line preview/download instruction
 
-**NEVER USE:**
-- `localhost` or `127.0.0.1` links (OpenClaw runs in Docker, not accessible from Vance's Mac)
-- `paste.rs` or any third-party paste service
-- Giant pasted code blocks in chat
-- GitHub token requests
-- `docker cp` commands
-- Broad credential requests
+### Safety Rules
+- ✅ **DO:** Push to vta-dashboard with GitHub fine-grained token
+- ✅ **DO:** Provide raw GitHub links (`https://raw.githubusercontent.com/...`)
+- ✅ **DO:** Ask before deploying to ANY live business domain
+- ❌ **NEVER:** Use localhost, 127.0.0.1, paste.rs, or third-party paste services
+- ❌ **NEVER:** Paste giant code blocks in chat
+- ❌ **NEVER:** Request GitHub tokens (they're already stored)
+- ❌ **NEVER:** Use `docker cp` commands
+- ❌ **NEVER:** Deploy to live sites without explicit approval
 
-**If direct chat file attachments are not supported in OpenClaw:**
-Say so clearly upfront. Use the built-in canvas/artifact visual preview (`[embed ...]`) instead.
-Do NOT pretend a localhost link or paste link is a download. They are not.
+### Deployment
+- **Draft/Testing:** GitHub link only (no deployment)
+- **Live business domains:** Require explicit approval from Vance before any push

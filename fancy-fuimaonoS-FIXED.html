@@ -1,0 +1,2716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fancy Fuimaono's — Newport Beach</title>
+  <meta name="description" content="Fancy Fuimaono's — A luxury dining experience in Newport Beach, CA. If you're feeling fancy, come to our restaurant and go dancing." />
+
+  <!-- Google Fonts: Cormorant Garamond + Raleway -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Raleway:wght@200;300;400;500;600&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ================================================================
+       RESET & BASE
+    ================================================================ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black:       #050505;
+      --black-rich:  #0d0d0d;
+      --black-card:  #111111;
+      --black-soft:  #1a1a1a;
+      --gold:        #c9a84c;
+      --gold-light:  #e8c97b;
+      --gold-dark:   #9a7b2e;
+      --gold-pale:   #f5e9c8;
+      --cream:       #f7f3ec;
+      --ivory:       #faf8f4;
+      --warm-white:  #fff9f0;
+      --text-light:  #d4c9b0;
+      --text-muted:  #7a7060;
+      --border:      rgba(201, 168, 76, 0.25);
+      --border-soft: rgba(201, 168, 76, 0.12);
+      --transition:  0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      overflow-x: hidden; /* prevent horizontal scroll on all devices */
+      scroll-padding-top: 80px; /* account for fixed nav height */
+    }
+
+    body {
+      background-color: var(--black);
+      color: var(--text-light);
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      line-height: 1.75;
+      overflow-x: hidden;
+      width: 100%;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ================================================================
+       TYPOGRAPHY SYSTEM
+    ================================================================ */
+    .heading-display {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+    }
+
+    .heading-cap {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    .gold-text {
+      color: var(--gold);
+    }
+
+    .gold-label {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      color: var(--gold);
+    }
+
+    /* ================================================================
+       NAV
+    ================================================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0) 100%);
+      transition: background var(--transition), padding var(--transition);
+    }
+
+    nav.scrolled {
+      background: rgba(8, 7, 5, 0.97);
+      padding: 1rem 3rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: var(--gold-light);
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(212, 201, 176, 0.7);
+      transition: color var(--transition);
+      cursor: pointer;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .nav-reserve {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 0.55rem 1.4rem;
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+    }
+
+    .nav-reserve:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+
+    /* Mobile hamburger - DISABLED (using only top nav) */
+    .nav-toggle {
+      display: none !important;
+    }
+
+    .nav-toggle span {
+      display: none !important;
+    }
+
+    /* ================================================================
+       SECTION SHARED
+    ================================================================ */
+    section {
+      position: relative;
+    }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+
+    .divider-gold {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .divider-gold::before,
+    .divider-gold::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dark), transparent);
+    }
+
+    .divider-gold svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--gold);
+      flex-shrink: 0;
+    }
+
+    /* Scroll-reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ================================================================
+       HERO SECTION
+       Image: Unsplash - fine dining restaurant at night
+       Credit: Photo by Sérgio Alves Santos on Unsplash
+       URL: https://images.unsplash.com/photo-1559339352-11d035aa65de
+    ================================================================ */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      /*
+        IMAGE CREDIT: Photo by Sérgio Alves Santos on Unsplash
+        URL: https://unsplash.com/photos/qvBYnMuNJ9A
+        License: Unsplash Free License
+      */
+      background-image: url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center 40%;
+      transform: scale(1.05);
+      animation: heroZoom 18s ease-out forwards;
+    }
+
+    @keyframes heroZoom {
+      from { transform: scale(1.05); }
+      to   { transform: scale(1.0); }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(5,5,5,0.88) 0%,
+        rgba(5,5,5,0.55) 50%,
+        rgba(5,5,5,0.80) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      text-align: center;
+      max-width: 900px;
+      padding: 0 2rem;
+      animation: heroFadeIn 1.4s cubic-bezier(0.4,0,0.2,1) 0.3s both;
+    }
+
+    @keyframes heroFadeIn {
+      from { opacity: 0; transform: translateY(25px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-pre-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 9vw, 7.5rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      line-height: 1.0;
+      color: var(--ivory);
+      margin-bottom: 0.3em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      margin: 1.8rem auto;
+      max-width: 360px;
+    }
+
+    .hero-divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+
+    .hero-divider-line.r {
+      background: linear-gradient(to left, transparent, var(--gold));
+    }
+
+    .hero-divider-diamond {
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 300;
+      color: rgba(245, 233, 200, 0.85);
+      letter-spacing: 0.02em;
+      margin-bottom: 2.8rem;
+      line-height: 1.4;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      background: var(--gold);
+      color: var(--black);
+      padding: 1rem 2.5rem;
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--gold);
+      padding: 1rem 2.5rem;
+      border: 1px solid rgba(201,168,76,0.5);
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-block;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      animation: scrollBounce 2.5s ease-in-out infinite;
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.7; }
+      50%       { transform: translateX(-50%) translateY(6px); opacity: 1; }
+    }
+
+    .hero-scroll span {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* ================================================================
+       ABOUT SECTION
+       Image: Unsplash - elegant restaurant interior
+       Credit: Photo by Petr Sevcovic on Unsplash
+       URL: https://images.unsplash.com/photo-1414235077428-338989a2e8c0
+    ================================================================ */
+    #about {
+      padding: 9rem 0;
+      background: var(--black-rich);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .about-image-wrap {
+      position: relative;
+    }
+
+    .about-image-wrap::before {
+      content: '';
+      position: absolute;
+      top: -1.5rem;
+      left: -1.5rem;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      border: 1px solid var(--border);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .about-image-wrap img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 560px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .about-badge {
+      position: absolute;
+      bottom: -2rem;
+      right: -2rem;
+      z-index: 2;
+      width: 110px;
+      height: 110px;
+      background: var(--gold);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .about-badge-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--black);
+      line-height: 1;
+    }
+
+    .about-badge-text {
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .about-text {
+      padding-top: 1rem;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.4rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+      font-weight: 300;
+      color: var(--ivory);
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .about-body {
+      font-size: 0.97rem;
+      line-height: 1.9;
+      color: var(--text-light);
+      margin-bottom: 1.4rem;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2.5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ================================================================
+       CHEF SPOTLIGHT
+       Image: Free chef image from Unsplash
+       Credit: Photo by Piotr Arnoldes on Pexels
+       URL: https://images.pexels.com/photos/887827/pexels-photo-887827.jpeg
+    ================================================================ */
+    #chef {
+      padding: 9rem 0;
+      background: var(--black-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #chef::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dark), transparent);
+    }
+
+    #chef::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dark), transparent);
+    }
+
+    .chef-bg-ornament {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.06);
+      pointer-events: none;
+    }
+
+    .chef-bg-ornament::before {
+      content: '';
+      position: absolute;
+      inset: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.04);
+    }
+
+    .chef-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7rem;
+      align-items: center;
+    }
+
+    .chef-content {
+      order: 2;
+    }
+
+    .chef-image-frame {
+      order: 1;
+      position: relative;
+    }
+
+    .chef-image-outer {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .chef-image-outer::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border: 1px solid var(--border);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .chef-image-outer::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: -12px;
+      right: 12px;
+      top: 12px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.12), transparent);
+      z-index: 0;
+    }
+
+    .chef-photo {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 620px;
+      object-fit: cover;
+      object-position: center top;
+      filter: sepia(15%) contrast(1.05);
+    }
+
+    .chef-monogram {
+      position: absolute;
+      top: -1.5rem;
+      right: -1.5rem;
+      z-index: 3;
+      width: 80px;
+      height: 80px;
+      background: var(--black-rich);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chef-monogram svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .chef-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      font-weight: 300;
+      color: var(--ivory);
+      line-height: 1.35;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .chef-quote::before {
+      content: '"';
+      position: absolute;
+      left: 0;
+      top: -0.2em;
+      font-size: 3rem;
+      color: var(--gold);
+      line-height: 1;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .chef-bio {
+      font-size: 0.92rem;
+      color: var(--text-light);
+      line-height: 1.9;
+      margin-bottom: 2rem;
+    }
+
+    .chef-name-block {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-top: 2.5rem;
+    }
+
+    .chef-name-line {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .chef-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: var(--ivory);
+    }
+
+    .chef-title-text {
+      font-family: 'Cinzel', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-top: 0.2rem;
+    }
+
+    .chef-awards {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .chef-award {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .chef-award svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .chef-award-text {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ================================================================
+       MENU SECTION
+       Dish images from Unsplash
+    ================================================================ */
+    #menu {
+      padding: 9rem 0;
+      background: var(--black-rich);
+    }
+
+    .menu-header {
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 5rem;
+    }
+
+    .menu-header .section-title {
+      margin-bottom: 1rem;
+    }
+
+    .menu-header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .menu-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 4rem;
+      border: 1px solid var(--border-soft);
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .menu-tab {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.8rem 2rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--border-soft);
+    }
+
+    .menu-tab:last-child { border-right: none; }
+
+    .menu-tab.active,
+    .menu-tab:hover {
+      color: var(--gold);
+      background: rgba(201,168,76,0.06);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+
+    .menu-card {
+      background: var(--black-soft);
+      border: 1px solid var(--border-soft);
+      overflow: hidden;
+      transition: border-color var(--transition), transform var(--transition);
+      cursor: pointer;
+    }
+
+    .menu-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+    }
+
+    .menu-card-img {
+      position: relative;
+      overflow: hidden;
+      height: 240px;
+    }
+
+    .menu-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .menu-card:hover .menu-card-img img {
+      transform: scale(1.05);
+    }
+
+    .menu-card-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5,5,5,0.6) 0%, transparent 60%);
+    }
+
+    .menu-card-body {
+      padding: 1.6rem;
+    }
+
+    .menu-card-category {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .menu-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--ivory);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .menu-card-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 1.2rem;
+    }
+
+    .menu-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .menu-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--gold);
+    }
+
+    .menu-detail {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+
+    .menu-card:hover .menu-detail {
+      color: var(--gold);
+    }
+
+    /* ================================================================
+       EXPERIENCE SECTION
+       Background: Unsplash - ambient restaurant
+    ================================================================ */
+    #experience {
+      padding: 10rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .experience-bg {
+      position: absolute;
+      inset: 0;
+      /*
+        IMAGE CREDIT: Photo by Louis Hansel on Unsplash
+        URL: https://unsplash.com/photos/0pIC5ByxAqg
+        License: Unsplash Free License
+      */
+      background-image: url('https://images.unsplash.com/photo-1550966871-3ed3cfd4b674?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .experience-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(5,5,5,0.88);
+    }
+
+    .experience-content {
+      position: relative;
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .experience-content .section-title {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .experience-body {
+      font-size: 1rem;
+      color: rgba(212,201,176,0.75);
+      line-height: 2;
+      margin-bottom: 4rem;
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      text-align: center;
+    }
+
+    .pillar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .pillar-icon {
+      width: 60px;
+      height: 60px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .pillar-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .pillar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--ivory);
+    }
+
+    .pillar-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* ================================================================
+       GALLERY SECTION
+       Multiple images from Unsplash/Pexels
+    ================================================================ */
+    #gallery {
+      padding: 9rem 0;
+      background: var(--black);
+    }
+
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: 0.75rem;
+    }
+
+    .gallery-item {
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .gallery-item:nth-child(1) {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    .gallery-item:nth-child(4) {
+      grid-column: span 2;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+      min-height: 200px;
+    }
+
+    .gallery-item:nth-child(1) img { min-height: 400px; }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+    }
+
+    .gallery-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(5,5,5,0);
+      transition: background var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gallery-item:hover .gallery-item-overlay {
+      background: rgba(5,5,5,0.45);
+    }
+
+    .gallery-item-overlay svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 1.5;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .gallery-item:hover .gallery-item-overlay svg {
+      opacity: 1;
+    }
+
+    /* ================================================================
+       RESERVATION CTA
+    ================================================================ */
+    #reservation {
+      padding: 9rem 0;
+      background: var(--black-soft);
+      position: relative;
+    }
+
+    #reservation::before,
+    #reservation::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dark), transparent);
+    }
+    #reservation::before { top: 0; }
+    #reservation::after  { bottom: 0; }
+
+    .reservation-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .reservation-text .section-title {
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+    }
+
+    .reservation-body {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      line-height: 1.85;
+      margin-top: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .reservation-phone {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1.4rem 1.8rem;
+      border: 1px solid var(--border);
+      background: rgba(201,168,76,0.04);
+      transition: border-color var(--transition);
+    }
+
+    .reservation-phone:hover {
+      border-color: var(--gold);
+    }
+
+    .reservation-phone svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 1.5;
+      flex-shrink: 0;
+    }
+
+    .reservation-phone-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .reservation-phone-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      color: var(--ivory);
+      letter-spacing: 0.06em;
+      cursor: pointer;
+    }
+
+    .reservation-hours {
+      margin-top: 2rem;
+    }
+
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+    }
+
+    .hours-day {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .hours-time {
+      color: var(--text-light);
+      font-size: 0.85rem;
+    }
+
+    .reservation-form {
+      background: var(--black-card);
+      border: 1px solid var(--border-soft);
+      padding: 3rem;
+    }
+
+    .form-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--ivory);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.56rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border-soft);
+      color: var(--text-light);
+      padding: 0.85rem 1rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color var(--transition);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--gold);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-select {
+      background-color: var(--black-card);
+      color: var(--text-light);
+    }
+
+    .form-select option {
+      background-color: var(--black-soft);
+    }
+
+    .btn-form {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .btn-form:hover {
+      background: var(--gold-light);
+    }
+
+    /* ================================================================
+       LOCATION SECTION
+    ================================================================ */
+    #location {
+      padding: 8rem 0;
+      background: var(--black-rich);
+    }
+
+    .location-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .location-map-placeholder {
+      height: 400px;
+      background: var(--black-soft);
+      border: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .location-map-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(201,168,76,0.02) 40px,
+        rgba(201,168,76,0.02) 80px
+      );
+    }
+
+    .location-map-placeholder svg {
+      width: 48px;
+      height: 48px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 1;
+      opacity: 0.6;
+      position: relative;
+    }
+
+    .location-map-placeholder p {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      position: relative;
+    }
+
+    .location-address {
+      margin-top: 1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 300;
+      color: var(--ivory);
+      font-style: italic;
+    }
+
+    .location-details {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .location-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .location-detail-item svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 1.5;
+      flex-shrink: 0;
+    }
+
+    .location-detail-text {
+      font-size: 0.88rem;
+      color: var(--text-light);
+    }
+
+    /* ================================================================
+       FOOTER
+    ================================================================ */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--border-soft);
+      padding: 5rem 0 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 4rem;
+    }
+
+    .footer-brand .nav-logo {
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 240px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    .footer-social a {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .footer-social a:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+    }
+
+    .footer-social svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-muted);
+      fill: none;
+      stroke-width: 1.5;
+      transition: stroke var(--transition);
+    }
+
+    .footer-social a:hover svg {
+      stroke: var(--gold);
+    }
+
+    .footer-col-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.4rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .footer-links li a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      transition: color var(--transition);
+      cursor: pointer;
+    }
+
+    .footer-links li a:hover {
+      color: var(--gold);
+    }
+
+    .footer-contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-contact-item svg {
+      width: 15px;
+      height: 15px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 1.5;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+
+    .footer-contact-item span {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-soft);
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-bottom p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-bottom-links a {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      transition: color var(--transition);
+      cursor: pointer;
+    }
+
+    .footer-bottom-links a:hover {
+      color: var(--gold);
+    }
+
+    /* ================================================================
+       RESPONSIVE - TABLET
+    ================================================================ */
+    @media (max-width: 1024px) {
+      html { scroll-padding-top: 70px; }
+      nav { 
+        padding: 1.2rem 2rem; 
+        flex-wrap: wrap;
+      }
+      nav.scrolled { padding: 0.8rem 2rem; }
+      .section-inner { padding: 0 2rem; }
+
+      .about-grid,
+      .chef-grid,
+      .reservation-inner,
+      .location-inner {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+      }
+
+      .chef-content { order: 1; }
+      .chef-image-frame { order: 2; }
+
+      .chef-photo { height: 480px; }
+      .about-image-wrap img { height: 420px; }
+
+      .menu-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-item:nth-child(1) { grid-column: span 2; }
+      .gallery-item:nth-child(4) { grid-column: span 1; }
+
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .pillars { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+
+      .nav-links { display: flex; flex-direction: column; gap: 1rem; width: 100%; order: 3; }
+      .nav-reserve { display: block; order: 2; margin-left: auto; }
+      .nav-toggle { display: none !important; }
+
+      /* Disable parallax/fixed bg on tablets — broken on iOS */
+      .experience-bg { background-attachment: scroll; }
+    }
+
+    /* ================================================================
+       RESPONSIVE - MOBILE
+    ================================================================ */
+    @media (max-width: 640px) {
+      html { scroll-padding-top: 60px; }
+      nav { 
+        padding: 1rem 1.2rem; 
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+      }
+      .section-inner { padding: 0 1.2rem; }
+      .nav-logo { margin-bottom: 0.5rem; }
+      .nav-links { width: 100%; }
+      .nav-reserve { width: 100%; text-align: center; }
+
+      #hero { min-height: 100svh; }
+      .hero-content { padding: 0 1rem; }
+
+      #about, #chef, #menu, #gallery, #reservation, #location { padding: 5rem 0; }
+      #experience { padding: 6rem 0; }
+
+      /* Hide decorative frames that cause horizontal overflow on small screens */
+      .about-image-wrap::before { display: none; }
+      .chef-image-outer::before,
+      .chef-image-outer::after { display: none; }
+
+      /* Keep decorative badges/monograms inside the viewport */
+      .about-image-wrap img { height: 300px; }
+      .about-badge {
+        width: 76px;
+        height: 76px;
+        bottom: 0.5rem;
+        right: 0.5rem;
+      }
+      .about-badge-num { font-size: 1.4rem; }
+
+      .chef-monogram {
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+
+      .chef-photo { height: 360px; }
+      .chef-awards { flex-direction: column; gap: 1rem; }
+
+      .menu-grid { grid-template-columns: 1fr; }
+      .menu-tabs { flex-wrap: wrap; width: 100%; }
+      .menu-tab { flex: 1; min-width: 80px; text-align: center; }
+
+      .pillars { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+      .gallery-item:nth-child(1) { grid-column: span 2; }
+      .gallery-item:nth-child(4) { grid-column: span 2; }
+
+      .reservation-form { padding: 1.8rem; }
+      .form-row { grid-template-columns: 1fr; }
+
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+      .footer-bottom-links { flex-wrap: wrap; justify-content: center; }
+
+      .hero-cta-group { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-ghost { width: 100%; max-width: 320px; text-align: center; }
+
+      .about-stats { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+
+      .location-inner { gap: 3rem; }
+      .location-map-placeholder { height: 260px; }
+
+      /* Clip sections that had decorative elements protruding outside */
+      #about, #chef { overflow: hidden; }
+    }
+
+    /* ================================================================
+       EXTRA SMALL — iPhone SE / mini (max 389px)
+    ================================================================ */
+    @media (max-width: 389px) {
+      .section-inner { padding: 0 1rem; }
+      .nav-logo { font-size: 0.88rem; letter-spacing: 0.12em; }
+
+      .hero-title { font-size: clamp(2.8rem, 14vw, 3.5rem); }
+
+      .stat-num { font-size: 1.6rem; }
+      .stat-label { font-size: 0.48rem; }
+
+      .menu-tab { font-size: 0.52rem; padding: 0.7rem 0.8rem; }
+
+      .reservation-form { padding: 1.2rem 1rem; }
+
+      /* Gallery: single column on tiny screens */
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item:nth-child(1),
+      .gallery-item:nth-child(4) { grid-column: span 1; }
+    }
+
+    /* ================================================================
+       MOBILE NAV DRAWER - REMOVED (using top nav only)
+    ================================================================ */
+    .mobile-nav {
+      display: none !important;
+    }
+
+    .mobile-nav.open {
+      display: none !important;
+    }
+
+    .mobile-nav-links {
+      display: none !important;
+    }
+
+    .mobile-nav-links li a {
+      display: none !important;
+    }
+
+    .mobile-nav-close {
+      display: none !important;
+    }
+
+    .mobile-nav-close svg {
+      display: none !important;
+    }
+
+    .mobile-nav-reserve {
+      display: none !important;
+    }
+
+    .mobile-nav-reserve a {
+      display: none !important;
+    }
+
+    .nav-overlay {
+      display: none !important;
+    }
+
+    .nav-overlay.show {
+      display: none !important;
+    }
+
+    /* Gold shimmer animation on headline */
+    @keyframes goldShimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .shimmer-text {
+      background: linear-gradient(90deg, var(--gold-dark) 0%, var(--gold-light) 30%, var(--gold) 50%, var(--gold-light) 70%, var(--gold-dark) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: goldShimmer 4s linear infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <nav id="mainNav">
+    <a href="#hero" class="nav-logo">Fancy Fuimaono's</a>
+
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#chef">Chef</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#location">Location</a></li>
+    </ul>
+
+    <a href="#reservation" class="nav-reserve">Reserve a Table</a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="nav-overlay" id="navOverlay"></div>
+  <nav class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <ul class="mobile-nav-links">
+      <li><a href="#about"      data-mobile-link>About</a></li>
+      <li><a href="#chef"       data-mobile-link>Chef</a></li>
+      <li><a href="#menu"       data-mobile-link>Menu</a></li>
+      <li><a href="#experience" data-mobile-link>Experience</a></li>
+      <li><a href="#gallery"    data-mobile-link>Gallery</a></li>
+      <li><a href="#location"   data-mobile-link>Location</a></li>
+    </ul>
+    <div class="mobile-nav-reserve">
+      <a href="#reservation" data-mobile-link>Reserve a Table</a>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO
+       IMAGE CREDIT: Photo by Sérgio Alves Santos on Unsplash
+       URL: https://unsplash.com/photos/qvBYnMuNJ9A
+       License: Unsplash Free License
+  ============================================================ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <span class="hero-pre-label">Newport Beach · California</span>
+
+      <h1 class="hero-title">
+        Fancy<br>
+        <em>Fuimaono's</em>
+      </h1>
+
+      <div class="hero-divider">
+        <div class="hero-divider-line"></div>
+        <div class="hero-divider-diamond"></div>
+        <!-- Ornamental star SVG -->
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <div class="hero-divider-diamond"></div>
+        <div class="hero-divider-line r"></div>
+      </div>
+
+      <p class="hero-tagline">
+        "If you're feeling fancy, come to my restaurant and go dancing"
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#reservation" class="btn-primary">Reserve Your Table</a>
+        <a href="#menu" class="btn-ghost">Explore the Menu</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <span>Discover</span>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#c9a84c" stroke-width="1.5">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT
+       IMAGE CREDIT: Photo by Petr Sevcovic on Unsplash
+       URL: https://unsplash.com/photos/mNGaaLeWEp0
+       License: Unsplash Free License
+  ============================================================ -->
+  <section id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+
+        <div class="about-image-wrap reveal">
+          <!--
+            IMAGE CREDIT: Photo by Petr Sevcovic on Unsplash
+            URL: https://unsplash.com/photos/mNGaaLeWEp0
+            License: Unsplash Free License
+          -->
+          <img
+            src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80"
+            alt="Elegant candlelit interior of Fancy Fuimaono's restaurant"
+            loading="lazy"
+          />
+          <div class="about-badge">
+            <span class="about-badge-num">5★</span>
+            <span class="about-badge-text">Luxury<br>Dining</span>
+          </div>
+        </div>
+
+        <div class="about-text reveal reveal-delay-2">
+          <span class="section-label">Our Story</span>
+          <h2 class="section-title">Where Culinary Art<br>Meets <em>Pure Elegance</em></h2>
+          <p class="about-body">
+            Born from a passion for extraordinary food and unforgettable nights, Fancy Fuimaono's
+            is Newport Beach's most celebrated luxury dining destination. We believe that a truly
+            remarkable meal is more than flavors — it's the shimmer of candlelight, the pulse of
+            live music, and the company that makes every evening legendary.
+          </p>
+          <p class="about-body">
+            Our menus are crafted from the finest seasonal ingredients, curated by a team with
+            decades of Michelin-caliber experience. Every plate is a statement. Every visit,
+            a memory you'll carry.
+          </p>
+
+          <div class="about-stats">
+            <div class="stat-item">
+              <span class="stat-num">12</span>
+              <span class="stat-label">Years of Excellence</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">3</span>
+              <span class="stat-label">Award Accolades</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">200+</span>
+              <span class="stat-label">Wine Labels</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CHEF SPOTLIGHT
+       IMAGE CREDIT: Photo by Piotr Arnoldes on Pexels
+       URL: https://www.pexels.com/photo/chef-putting-garnish-on-dish-887827/
+       License: Pexels Free License
+  ============================================================ -->
+  <section id="chef">
+    <div class="chef-bg-ornament"></div>
+    <div class="section-inner">
+      <div class="chef-grid">
+
+        <div class="chef-image-frame reveal">
+          <div class="chef-image-outer">
+            <!--
+              IMAGE CREDIT: Chef plating a dish — Photo by Piotr Arnoldes on Pexels
+              URL: https://www.pexels.com/photo/887827/
+              License: Pexels Free License
+              NOTE: Replace this src with the actual chef photo if one is provided.
+            -->
+            <img
+              class="chef-photo"
+              src="./tatum-fuimaono.jpg"
+              alt="Tatum Fuimaono, Executive Chef of Fancy Fuimaono's"
+              loading="lazy"
+            />
+            <div class="chef-monogram">
+              <!-- Toque / chef hat SVG icon -->
+              <svg viewBox="0 0 48 48" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 28 C10 28 7 25 7 21 C7 17 10 14 14 14 C14.5 14 15 14.1 15.5 14.2 C16.5 11.2 19.4 9 23 9 C26 9 28.6 10.6 30 13 C30.8 12.4 31.8 12 33 12 C36.3 12 39 14.7 39 18 C39 21.3 36.3 24 33 24"/>
+                <rect x="12" y="28" width="24" height="12" rx="1"/>
+                <line x1="12" y1="32" x2="36" y2="32"/>
+                <line x1="12" y1="36" x2="36" y2="36"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="chef-content reveal reveal-delay-2">
+          <span class="section-label">Chef Spotlight</span>
+          <h2 class="section-title">The Artisan<br>Behind the <em>Plate</em></h2>
+
+          <p class="chef-quote">
+            Every dish is a conversation between the land, the sea, and the soul of this city.
+          </p>
+
+          <p class="chef-bio">
+            Our Executive Chef brings over two decades of refined culinary mastery from the
+            kitchens of Paris, Tokyo, and New York. Trained under Michelin-starred mentors and
+            fueled by a lifelong obsession with peak-season ingredients, our chef approaches
+            every service as a performance — where technique meets intuition, and tradition
+            meets daring innovation.
+          </p>
+          <p class="chef-bio">
+            At Fancy Fuimaono's, the menu changes seasonally, reflecting whatever the California
+            coast and Central Valley have to offer at their absolute finest.
+          </p>
+
+          <div class="chef-name-block">
+            <div class="chef-name-line"></div>
+            <div>
+              <span class="chef-name">Tatum Fuimaono</span>
+              <span class="chef-title-text">Executive Chef &amp; Culinary Director</span>
+            </div>
+          </div>
+
+          <div class="chef-awards">
+            <div class="chef-award">
+              <!-- Star award icon -->
+              <svg viewBox="0 0 24 24">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span class="chef-award-text">Best Chef<br>OC 2023</span>
+            </div>
+            <div class="chef-award">
+              <svg viewBox="0 0 24 24">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span class="chef-award-text">Michelin<br>Recognition</span>
+            </div>
+            <div class="chef-award">
+              <svg viewBox="0 0 24 24">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span class="chef-award-text">James Beard<br>Nominee</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MENU HIGHLIGHTS
+       Dish images from Unsplash
+  ============================================================ -->
+  <section id="menu">
+    <div class="section-inner">
+
+      <div class="menu-header reveal">
+        <span class="section-label">Culinary Selection</span>
+        <h2 class="section-title">Menu <em>Highlights</em></h2>
+        <p>A curated selection of our most celebrated dishes, composed with the finest California-sourced ingredients.</p>
+      </div>
+
+      <div class="menu-tabs reveal">
+        <button class="menu-tab active">Signatures</button>
+        <button class="menu-tab">Starters</button>
+        <button class="menu-tab">Mains</button>
+        <button class="menu-tab">Desserts</button>
+      </div>
+
+      <div class="menu-grid">
+
+        <!--
+          DISH IMAGE 1: Pan-seared scallops
+          Photo by Mgg Vitchakorn on Unsplash
+          URL: https://unsplash.com/photos/zFLL_HdgHhM
+          License: Unsplash Free License
+        -->
+        <div class="menu-card reveal reveal-delay-1">
+          <div class="menu-card-img">
+            <img
+              src="https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=600&q=80"
+              alt="Seared scallops with truffle emulsion"
+              loading="lazy"
+            />
+            <div class="menu-card-img-overlay"></div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-category">Signature</span>
+            <h3 class="menu-card-title">Seared Diver Scallops</h3>
+            <p class="menu-card-desc">Pan-seared Pacific scallops, white truffle emulsion, micro herbs, champagne beurre blanc</p>
+            <div class="menu-card-footer">
+              <span class="menu-price">$58</span>
+              <span class="menu-detail">Chef's Recommendation</span>
+            </div>
+          </div>
+        </div>
+
+        <!--
+          DISH IMAGE 2: Wagyu beef
+          Photo by Carissa Gan on Unsplash
+          URL: https://unsplash.com/photos/aneOf8qOfsg
+          License: Unsplash Free License
+        -->
+        <div class="menu-card reveal reveal-delay-2">
+          <div class="menu-card-img">
+            <img
+              src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80"
+              alt="A5 Wagyu Tenderloin with gold dust"
+              loading="lazy"
+            />
+            <div class="menu-card-img-overlay"></div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-category">Signature</span>
+            <h3 class="menu-card-title">A5 Wagyu Tenderloin</h3>
+            <p class="menu-card-desc">Japanese A5 wagyu, black garlic jus, bone marrow butter, truffle-roasted fingerling potatoes</p>
+            <div class="menu-card-footer">
+              <span class="menu-price">$145</span>
+              <span class="menu-detail">House Favourite</span>
+            </div>
+          </div>
+        </div>
+
+        <!--
+          DISH IMAGE 3: Lobster dish
+          Photo from Unsplash
+          URL: https://unsplash.com/photos/26T6EAsQCiA
+          License: Unsplash Free License
+        -->
+        <div class="menu-card reveal reveal-delay-3">
+          <div class="menu-card-img">
+            <img
+              src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80"
+              alt="Maine lobster thermidor"
+              loading="lazy"
+            />
+            <div class="menu-card-img-overlay"></div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-category">From the Sea</span>
+            <h3 class="menu-card-title">Maine Lobster Thermidor</h3>
+            <p class="menu-card-desc">Whole Maine lobster, gruyère gratin, cognac cream, saffron risotto, caviar garnish</p>
+            <div class="menu-card-footer">
+              <span class="menu-price">$98</span>
+              <span class="menu-detail">Market Price</span>
+            </div>
+          </div>
+        </div>
+
+        <!--
+          DISH IMAGE 4: Foie gras starter
+          Photo from Unsplash fine dining
+          License: Unsplash Free License
+        -->
+        <div class="menu-card reveal reveal-delay-1">
+          <div class="menu-card-img">
+            <img
+              src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=600&q=80"
+              alt="Seared foie gras with fruit compote"
+              loading="lazy"
+            />
+            <div class="menu-card-img-overlay"></div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-category">Starter</span>
+            <h3 class="menu-card-title">Seared Foie Gras</h3>
+            <p class="menu-card-desc">Hudson Valley foie gras, Sauternes gelée, brioche toast, pickled cherry compote</p>
+            <div class="menu-card-footer">
+              <span class="menu-price">$48</span>
+              <span class="menu-detail">Seasonal</span>
+            </div>
+          </div>
+        </div>
+
+        <!--
+          DISH IMAGE 5: Dessert
+          Photo from Unsplash
+          License: Unsplash Free License
+        -->
+        <div class="menu-card reveal reveal-delay-2">
+          <div class="menu-card-img">
+            <img
+              src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=600&q=80"
+              alt="Dark chocolate mousse with gold leaf"
+              loading="lazy"
+            />
+            <div class="menu-card-img-overlay"></div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-category">Dessert</span>
+            <h3 class="menu-card-title">Valrhona Chocolate Temptation</h3>
+            <p class="menu-card-desc">72% dark chocolate mousse, Tahitian vanilla bean crème, edible 24k gold leaf</p>
+            <div class="menu-card-footer">
+              <span class="menu-price">$28</span>
+              <span class="menu-detail">Award-Winning</span>
+            </div>
+          </div>
+        </div>
+
+        <!--
+          DISH IMAGE 6: Pasta / truffle
+          Photo from Unsplash
+          License: Unsplash Free License
+        -->
+        <div class="menu-card reveal reveal-delay-3">
+          <div class="menu-card-img">
+            <img
+              src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=600&q=80"
+              alt="Black truffle tagliatelle"
+              loading="lazy"
+            />
+            <div class="menu-card-img-overlay"></div>
+          </div>
+          <div class="menu-card-body">
+            <span class="menu-card-category">Pasta</span>
+            <h3 class="menu-card-title">Black Truffle Tagliatelle</h3>
+            <p class="menu-card-desc">Hand-rolled egg pasta, périgord black truffle, aged Parmigiano Reggiano, truffle butter</p>
+            <div class="menu-card-footer">
+              <span class="menu-price">$72</span>
+              <span class="menu-detail">Truffle Season</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       DINING EXPERIENCE
+       Background image from Unsplash
+  ============================================================ -->
+  <section id="experience">
+    <div class="experience-bg"></div>
+    <div class="experience-overlay"></div>
+
+    <div class="section-inner">
+      <div class="experience-content reveal">
+        <span class="section-label">The Fuimaono's Experience</span>
+        <h2 class="section-title">Dine. Dance. <em>Remember.</em></h2>
+        <p class="experience-body">
+          At Fancy Fuimaono's, dinner is only the beginning. As the night deepens,
+          our intimate dance floor awakens with live music from world-class performers.
+          Lose yourself in the melody, in the moment, in the magic that only Newport Beach can offer.
+        </p>
+
+        <div class="pillars">
+          <div class="pillar">
+            <div class="pillar-icon">
+              <!-- Wine glass SVG -->
+              <svg viewBox="0 0 24 24">
+                <path d="M8 22 L16 22"/>
+                <path d="M12 11 L12 22"/>
+                <path d="M6 3 L18 3 L17 9 C16.5 12 14 13 12 13 C10 13 7.5 12 7 9 Z"/>
+              </svg>
+            </div>
+            <h3 class="pillar-title">Curated Wine Cellar</h3>
+            <p class="pillar-desc">Over 200 labels spanning Burgundy, Napa, and beyond — each chosen to complement our seasonal menu perfectly.</p>
+          </div>
+
+          <div class="pillar">
+            <div class="pillar-icon">
+              <!-- Music note SVG -->
+              <svg viewBox="0 0 24 24">
+                <path d="M9 18 V5 L21 3 V16"/>
+                <circle cx="6" cy="18" r="3"/>
+                <circle cx="18" cy="16" r="3"/>
+              </svg>
+            </div>
+            <h3 class="pillar-title">Live Music & Dancing</h3>
+            <p class="pillar-desc">Friday and Saturday evenings feature live jazz, Latin, and contemporary performances. The dance floor is yours from 9 PM.</p>
+          </div>
+
+          <div class="pillar">
+            <div class="pillar-icon">
+              <!-- Private dining SVG -->
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="8" width="18" height="12" rx="1"/>
+                <path d="M8 8 V6 C8 4.9 8.9 4 10 4 H14 C15.1 4 16 4.9 16 6 V8"/>
+                <line x1="12" y1="12" x2="12" y2="16"/>
+                <line x1="10" y1="14" x2="14" y2="14"/>
+              </svg>
+            </div>
+            <h3 class="pillar-title">Private Dining Rooms</h3>
+            <p class="pillar-desc">Three intimate private suites for celebrations, corporate dinners, and proposals — each furnished with bespoke luxury.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       GALLERY
+       Multiple images from Unsplash / Pexels
+  ============================================================ -->
+  <section id="gallery">
+    <div class="section-inner">
+      <div class="gallery-header reveal">
+        <span class="section-label">A Visual Journey</span>
+        <h2 class="section-title">Inside <em>Fancy Fuimaono's</em></h2>
+      </div>
+
+      <div class="gallery-grid reveal">
+
+        <!--
+          GALLERY IMAGE 1 (large): Restaurant ambiance
+          Photo by Sérgio Alves Santos on Unsplash
+          URL: https://unsplash.com/photos/h9Oo0VFKqus
+          License: Unsplash Free License
+        -->
+        <div class="gallery-item">
+          <img
+            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80"
+            alt="Luxurious main dining room at Fancy Fuimaono's"
+            loading="lazy"
+          />
+          <div class="gallery-item-overlay">
+            <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></svg>
+          </div>
+        </div>
+
+        <!--
+          GALLERY IMAGE 2: Wine service
+          Photo from Unsplash
+          License: Unsplash Free License
+        -->
+        <div class="gallery-item">
+          <img
+            src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=600&q=80"
+            alt="Sommelier pouring a fine Burgundy at the table"
+            loading="lazy"
+          />
+          <div class="gallery-item-overlay">
+            <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></svg>
+          </div>
+        </div>
+
+        <!--
+          GALLERY IMAGE 3: Table setting
+          Photo from Unsplash
+          License: Unsplash Free License
+        -->
+        <div class="gallery-item">
+          <img
+            src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=600&q=80"
+            alt="Elegant white-tablecloth table setting with candlelight"
+            loading="lazy"
+          />
+          <div class="gallery-item-overlay">
+            <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></svg>
+          </div>
+        </div>
+
+        <!--
+          GALLERY IMAGE 4: Champagne / bar
+          Photo from Unsplash
+          License: Unsplash Free License
+        -->
+        <div class="gallery-item">
+          <img
+            src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80"
+            alt="Champagne glasses at the Fancy Fuimaono's bar"
+            loading="lazy"
+          />
+          <div class="gallery-item-overlay">
+            <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></svg>
+          </div>
+        </div>
+
+        <!--
+          GALLERY IMAGE 5: Dessert plating
+          Photo from Unsplash
+          License: Unsplash Free License
+        -->
+        <div class="gallery-item">
+          <img
+            src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80"
+            alt="Exquisite dessert plating at Fancy Fuimaono's"
+            loading="lazy"
+          />
+          <div class="gallery-item-overlay">
+            <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       RESERVATION CTA
+  ============================================================ -->
+  <section id="reservation">
+    <div class="section-inner">
+      <div class="reservation-inner">
+
+        <div class="reservation-text reveal">
+          <span class="section-label">Make a Reservation</span>
+          <h2 class="section-title">Your Table<br>Awaits <em>Tonight</em></h2>
+          <p class="reservation-body">
+            Whether it's an intimate dinner for two or a grand celebration, we'll ensure
+            every detail is flawlessly attended to. Call us directly or complete the
+            reservation form and one of our team will confirm your booking within the hour.
+          </p>
+
+          <a href="tel:9494563911" class="reservation-phone">
+            <svg viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .94h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.83a16 16 0 006.29 6.29l1.25-1.25a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            <div>
+              <span class="reservation-phone-label">Call for Reservations</span>
+              <span class="reservation-phone-num">(949) 456-3911</span>
+            </div>
+          </a>
+
+          <div class="reservation-hours">
+            <div class="hours-row">
+              <span class="hours-day">Monday – Thursday</span>
+              <span class="hours-time">5:00 PM – 10:30 PM</span>
+            </div>
+            <div class="hours-row">
+              <span class="hours-day">Friday – Saturday</span>
+              <span class="hours-time">5:00 PM – 1:00 AM</span>
+            </div>
+            <div class="hours-row">
+              <span class="hours-day">Sunday</span>
+              <span class="hours-time">4:00 PM – 9:30 PM</span>
+            </div>
+            <div class="hours-row">
+              <span class="hours-day">Dance Floor Opens</span>
+              <span class="hours-time">Friday &amp; Saturday 9:00 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reservation-form reveal reveal-delay-2">
+          <p class="form-title">Reserve Your Evening</p>
+
+          <form onsubmit="handleReservation(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="res-first">First Name</label>
+                <input class="form-input" type="text" id="res-first" name="first" placeholder="Alexandra" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="res-last">Last Name</label>
+                <input class="form-input" type="text" id="res-last" name="last" placeholder="Fuimaono" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="res-email">Email Address</label>
+              <input class="form-input" type="email" id="res-email" name="email" placeholder="you@example.com" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="res-phone">Phone Number</label>
+              <input class="form-input" type="tel" id="res-phone" name="phone" placeholder="(949) 000-0000" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="res-date">Date</label>
+                <input class="form-input" type="date" id="res-date" name="date" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="res-time">Preferred Time</label>
+                <select class="form-input form-select" id="res-time" name="time" required>
+                  <option value="" disabled selected>Select time</option>
+                  <option>5:00 PM</option>
+                  <option>5:30 PM</option>
+                  <option>6:00 PM</option>
+                  <option>6:30 PM</option>
+                  <option>7:00 PM</option>
+                  <option>7:30 PM</option>
+                  <option>8:00 PM</option>
+                  <option>8:30 PM</option>
+                  <option>9:00 PM</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="res-guests">Number of Guests</label>
+              <select class="form-input form-select" id="res-guests" name="guests" required>
+                <option value="" disabled selected>Select party size</option>
+                <option>1 Guest</option>
+                <option>2 Guests</option>
+                <option>3 Guests</option>
+                <option>4 Guests</option>
+                <option>5 Guests</option>
+                <option>6 Guests</option>
+                <option>7–10 Guests</option>
+                <option>Private Event (10+)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="res-notes">Special Requests</label>
+              <textarea class="form-input" id="res-notes" name="notes" rows="3" placeholder="Dietary requirements, special occasions, seating preferences…" style="resize:vertical;"></textarea>
+            </div>
+
+            <button type="submit" class="btn-form">Confirm Reservation</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LOCATION
+  ============================================================ -->
+  <section id="location">
+    <div class="section-inner">
+      <div class="location-inner">
+
+        <div class="reveal">
+          <div class="location-map-placeholder">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <p>Newport Beach · California</p>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-2">
+          <span class="section-label">Find Us</span>
+          <h2 class="section-title">Newport Beach,<br><em>California</em></h2>
+
+          <p class="about-body" style="margin-top:1rem;">
+            Nestled in the heart of Newport Beach, Fancy Fuimaono's is moments from the
+            harbor with sweeping views of the Pacific coastline. Valet parking available
+            nightly. Private entrance for exclusive events.
+          </p>
+
+          <div class="location-details">
+            <div class="location-detail-item">
+              <svg viewBox="0 0 24 24">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span class="location-detail-text">Newport Beach, CA 92660</span>
+            </div>
+            <div class="location-detail-item">
+              <svg viewBox="0 0 24 24">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .94h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.83a16 16 0 006.29 6.29l1.25-1.25a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+              </svg>
+              <span class="location-detail-text">(949) 456-3911</span>
+            </div>
+            <div class="location-detail-item">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span class="location-detail-text">Open Mon – Sun · Dinner Service from 4 PM</span>
+            </div>
+            <div class="location-detail-item">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4"/>
+                <circle cx="9" cy="19" r="2"/>
+                <circle cx="20" cy="19" r="2"/>
+              </svg>
+              <span class="location-detail-text">Complimentary Valet Parking Available Nightly</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <div class="section-inner">
+
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="nav-logo">Fancy Fuimaono's</span>
+          <p>
+            A luxury dining and dancing experience in the heart of Newport Beach.
+            Where every evening becomes a story worth telling.
+          </p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">
+              <!-- Instagram SVG -->
+              <svg viewBox="0 0 24 24">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <!-- Facebook SVG -->
+              <svg viewBox="0 0 24 24">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+              </svg>
+            </a>
+            <a href="#" aria-label="Twitter / X">
+              <!-- X SVG -->
+              <svg viewBox="0 0 24 24">
+                <path d="M4 4l16 16M20 4L4 20"/>
+              </svg>
+            </a>
+            <a href="#" aria-label="TikTok">
+              <!-- TikTok-style SVG -->
+              <svg viewBox="0 0 24 24">
+                <path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <p class="footer-col-title">Explore</p>
+          <ul class="footer-links">
+            <li><a href="#about">Our Story</a></li>
+            <li><a href="#chef">Meet the Chef</a></li>
+            <li><a href="#menu">The Menu</a></li>
+            <li><a href="#experience">Dining Experience</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="footer-col-title">Reservations</p>
+          <ul class="footer-links">
+            <li><a href="#reservation">Book a Table</a></li>
+            <li><a href="#reservation">Private Dining</a></li>
+            <li><a href="#reservation">Corporate Events</a></li>
+            <li><a href="#reservation">Special Occasions</a></li>
+            <li><a href="tel:9494563911">(949) 456-3911</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="footer-col-title">Contact</p>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>Newport Beach<br>California, CA 92660</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .94h3a2 2 0 012 1.72c.12.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 8.83a16 16 0 006.29 6.29l1.25-1.25a2 2 0 012.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            <span>(949) 456-3911</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <span>info@fancyfuimaonoS.com</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer bottom bar -->
+      <div class="footer-bottom">
+        <p>&copy; 2025 Fancy Fuimaono's · Newport Beach, California · All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+    // --- Sticky nav ---
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // --- Mobile nav toggle ---
+    const navToggle   = document.getElementById('navToggle');
+    const mobileNav   = document.getElementById('mobileNav');
+    const navOverlay  = document.getElementById('navOverlay');
+    const mobileClose = document.getElementById('mobileNavClose');
+
+    function openMobileNav() {
+      mobileNav.classList.add('open');
+      navOverlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      navOverlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    navToggle.addEventListener('click', openMobileNav);
+    mobileClose.addEventListener('click', closeMobileNav);
+    navOverlay.addEventListener('click', closeMobileNav);
+
+    document.querySelectorAll('[data-mobile-link]').forEach(link => {
+      link.addEventListener('click', closeMobileNav);
+    });
+
+    // --- Scroll reveal ---
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // --- Menu tabs (visual only) ---
+    document.querySelectorAll('.menu-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // --- Reservation form handler ---
+    function handleReservation(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.btn-form');
+      btn.textContent = 'Reservation Requested!';
+      btn.style.background = '#9a7b2e';
+      btn.style.cursor = 'default';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = 'Confirm Reservation';
+        btn.style.background = '';
+        btn.style.cursor = '';
+        btn.disabled = false;
+        e.target.reset();
+      }, 4000);
+    }
+
+    // --- Smooth scroll for all anchor links ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

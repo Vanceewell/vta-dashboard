@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-07T20:25:25.119Z",
+  "updatedAt": "2026-05-07T23:21:39.611Z",
   "entries": {
     "memory:memory/2026-04-24.md:64:85": {
       "key": "memory:memory/2026-04-24.md:64:85",
@@ -62,6 +62,39 @@
         "tint",
         "website",
         "project"
+      ]
+    },
+    "memory:memory/2026-05-07.md:1:40": {
+      "key": "memory:memory/2026-05-07.md:1:40",
+      "path": "memory/2026-05-07.md",
+      "startLine": 1,
+      "endLine": 40,
+      "source": "memory",
+      "snippet": "# Daily Memory - May 7, 2026 ## Website Projects Completed ### Fancy Fuimaono's Restaurant Website - **Client:** Tatum Fuimaono (Vance's cousin) - **Location:** Newport Beach, CA - **Tagline:** \"If your feeling fancy come to my resturant and go dancing\" - **Cuisine:** Fancy food - **Contact:** (949) 456-3911 **Build Process:** 1. Initial site built with Sonnet (dark luxury, black/gold, cinematic hero, chef spotlight, menu, gallery, reservation CTA) 2. Updated with Tatum's actual chef photo (replaced stock images) 3. Tatum's image saved as `tatum-fuimaono.jpg` in repo 4. Final live URL: https://vanceewell.github.io/vta-dashboard/fancy-fuimaonoS.html **Site Features:** - Dark luxury aesthe",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-05-07T22:13:46.215Z",
+      "lastRecalledAt": "2026-05-07T23:21:39.611Z",
+      "queryHashes": [
+        "f3b51c5b1d5d",
+        "c1a2d945cd81",
+        "23c0b5044c66"
+      ],
+      "recallDays": [
+        "2026-05-07"
+      ],
+      "conceptTags": [
+        "456-3911",
+        "black/gold",
+        "tatum-fuimaono.jpg",
+        "may",
+        "website",
+        "projects",
+        "completed",
+        "fancy"
       ]
     }
   }

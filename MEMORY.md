@@ -48,25 +48,18 @@
 
 ## Website Creation Workflow (Permanent Default)
 
-Every time Vance asks to build a website:
-1. Use `anthropic-frontend-design` skill for design decisions
-2. Single-file HTML, all CSS inline, saved to `/data/.openclaw/workspace/`
-3. Verify file is complete before delivery
-4. Render a visual preview card directly in chat using the canvas/embed system if supported
-5. Deliver as a **direct downloadable file attachment in chat** — user clicks download, double-clicks file, it opens as a webpage in browser
-6. Before saying done, verify: file downloads, opens visually as a webpage, not raw code
-7. Never deploy to live site without explicit "deploy" instruction
-8. After build, reply with ONLY: filename + draft status + one-line download instruction
+**Every time Vance asks to build a website:**
+1. Build website files locally (single-file HTML with inline CSS, or multiple files as needed)
+2. Push to GitHub: `Vanceewell/vta-dashboard` repository
+3. GitHub Pages is pre-configured on `main` branch at root `/`
+4. After pushing, **always provide the live GitHub Pages URL** (e.g., `https://vanceewell.github.io/vta-dashboard/`)
+5. Do NOT use: localhost, Docker copy, paste.rs, or chunked HTML unless explicitly requested
+6. Keep sessions lightweight to reduce token costs
 
-**NEVER USE:**
-- localhost or 127.0.0.1 links (Docker = not accessible from Mac)
-- paste.rs (unreliable, not a real download)
-- Giant pasted code chunks
-- GitHub token requests
-- Docker copy commands
-- Broad credential requests
-
-**If direct chat attachments are not supported in OpenClaw:** say so clearly and use the built-in canvas/artifact visual preview system instead. Do NOT pretend a localhost or paste link is a download.
+**Workflow:**
+- Build → Push to GitHub → Provide live URL → Done
+- No localhost links, no downloads, no attachments
+- User can view live immediately at the GitHub Pages URL
 
 ## Questions to Explore With Vance
 - What's your budget for cleaning business startup?

@@ -36,16 +36,14 @@ export default function HeroSection() {
         className="relative z-10 text-center px-6 max-w-5xl mx-auto"
         style={{ y: textY, opacity: fade }}
       >
-        {/* Location badge */}
+        {/* Location badge — more prominent */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-flex items-center gap-3 mb-8"
+          className="inline-block mb-8"
         >
-          <span className="w-8 h-[1px] bg-jgt-gold block" />
-          <span className="font-sans font-500 text-jgt-gold tracking-[0.28em] uppercase" style={{ fontSize: 'clamp(0.85rem, 2vw, 1.1rem)' }}>San Clemente</span>
-          <span className="w-8 h-[1px] bg-jgt-gold block" />
+          <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(2rem, 6vw, 4.5rem)' }}>San Clemente</span>
         </motion.div>
 
         {/* Main headline */}
@@ -65,7 +63,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.55 }}
           className="font-display italic font-light text-jgt-gold/90 mb-6"
-          style={{ fontSize: 'clamp(1.6rem, 4vw, 2.8rem)' }}
+          style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)' }}
         >
           Since 1989
         </motion.p>
