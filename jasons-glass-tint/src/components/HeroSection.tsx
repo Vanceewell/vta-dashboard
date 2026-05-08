@@ -52,7 +52,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-block mb-3"
+          className="inline-block mb-1"
         >
           <div className="flex items-center justify-center gap-4">
             <div className="w-8 h-[1px] bg-jgt-gold/60" />
@@ -66,7 +66,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
-          className="relative w-full mx-auto mb-1"
+          className="relative w-full mx-auto mb-0"
           style={{ maxWidth: LOGO_WIDTH }}
         >
           <HeroLogoImage />
@@ -77,8 +77,8 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.55 }}
-          className="font-display italic font-light text-jgt-gold/90 mb-3"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
+          className="font-display italic font-light text-jgt-gold/90 mb-2"
+          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', marginTop: '-4px' }}
         >
           Since 1989
         </motion.p>
@@ -88,7 +88,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
-          className="font-sans font-light text-jgt-muted max-w-2xl mx-auto mb-7 leading-relaxed"
+          className="font-sans font-light text-jgt-muted max-w-2xl mx-auto mb-5 leading-relaxed"
           style={{ fontSize: 'clamp(0.85rem, 1.4vw, 1rem)' }}
         >
           Premium window tint installation for automotive, residential, commercial, RV,
@@ -116,7 +116,7 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
-          className="flex flex-wrap items-center justify-center gap-8 mt-10 pt-8 border-t border-white/10"
+          className="flex flex-wrap items-center justify-center gap-8 mt-7 pt-6 border-t border-white/10"
         >
           {[
             { value: '40+',     label: 'Years Experience' },
