@@ -1,14 +1,13 @@
 /**
- * heroConfig.ts — Single source of truth for hero layout spacing.
+ * heroConfig.ts — Hero layout configuration.
  *
- * DEFAULT_CONFIG is baked into the build at deploy time.
- * The /api/save-hero-layout route patches this file and git-pushes,
- * triggering a Vercel redeploy so ALL visitors get the updated values.
- *
- * localStorage is used ONLY for temporary live-preview in the admin editor.
+ * DEFAULT_CONFIG is the fallback baked into the build.
+ * The /admin-hero-layout editor saves overrides to localStorage under STORAGE_KEY.
+ * HeroSection reads from localStorage on mount — so your browser sees your saved layout.
+ * Other visitors (different browsers) always see DEFAULT_CONFIG.
  */
 
-export const STORAGE_KEY = 'jgt_hero_layout_preview_v1';
+export const STORAGE_KEY = 'jgt_hero_layout_v1';
 
 export interface HeroConfig {
   /** Gap below San Clemente label (px) */
@@ -25,11 +24,6 @@ export interface HeroConfig {
   logoWidth: number;
 }
 
-/**
- * !! EDIT THIS BLOCK to change the live public layout !!
- * The /admin-hero-layout editor updates these values automatically
- * by committing and pushing to GitHub, which triggers a Vercel redeploy.
- */
 export const DEFAULT_CONFIG: HeroConfig = {
   gapSanClementeLogo:  32,
   gapLogoSince:        28,
@@ -39,8 +33,8 @@ export const DEFAULT_CONFIG: HeroConfig = {
   logoWidth:           640,
 };
 
-/** Load temporary preview config from localStorage (admin editor only). */
-export function loadPreviewConfig(): HeroConfig {
+/** Load saved layout from localStorage, falling back to DEFAULT_CONFIG. */
+export function loadHeroConfig(): HeroConfig {
   if (typeof window === 'undefined') return DEFAULT_CONFIG;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -51,14 +45,14 @@ export function loadPreviewConfig(): HeroConfig {
   }
 }
 
-/** Save temporary preview config to localStorage (admin editor only). */
-export function savePreviewConfig(cfg: HeroConfig): void {
+/** Persist layout to localStorage. */
+export function saveHeroConfig(cfg: HeroConfig): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
 }
 
-/** Clear preview config from localStorage. */
-export function clearPreviewConfig(): void {
+/** Clear saved layout (reverts to DEFAULT_CONFIG). */
+export function clearHeroConfig(): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(STORAGE_KEY);
 }
