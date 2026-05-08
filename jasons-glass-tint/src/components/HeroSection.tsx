@@ -45,38 +45,29 @@ export default function HeroSection() {
       {/* Content */}
       <motion.div
         className="relative z-10 text-center px-6 max-w-5xl mx-auto w-full"
-        style={{
-          y: textY,
-          opacity: fade,
-          // Shift entire content block down: ~2in desktop, scales to ~1in tablet, 0 mobile
-          paddingTop: 'clamp(0px, 6vw, 112px)',
-        }}
+        style={{ y: textY, opacity: fade }}
       >
-        {/* Location badge — shifted down ~2in on desktop */}
+        {/* Location badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-block mb-6"
-          style={{ marginTop: 'clamp(0px, 4vw, 80px)' }}
+          className="inline-block mb-3"
         >
           <div className="flex items-center justify-center gap-4">
             <div className="w-8 h-[1px] bg-jgt-gold/60" />
-            <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(1.5rem, 4.5vw, 2.5rem)' }}>San Clemente</span>
+            <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2rem)' }}>San Clemente</span>
             <div className="w-8 h-[1px] bg-jgt-gold/60" />
           </div>
         </motion.div>
 
-        {/* Main headline — logo image, shifted down ~1in additional on desktop */}
+        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
-          className={`relative w-full mx-auto ${LOGO_MARGIN_B}`}
-          style={{
-            maxWidth: LOGO_WIDTH,
-            marginTop: 'clamp(0px, 2.5vw, 48px)',
-          }}
+          className="relative w-full mx-auto mb-1"
+          style={{ maxWidth: LOGO_WIDTH }}
         >
           <HeroLogoImage />
         </motion.div>
@@ -86,8 +77,8 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.55 }}
-          className="font-display italic font-light text-jgt-gold/90 mb-6"
-          style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)' }}
+          className="font-display italic font-light text-jgt-gold/90 mb-3"
+          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
         >
           Since 1989
         </motion.p>
@@ -97,8 +88,8 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
-          className="font-sans font-light text-jgt-muted max-w-2xl mx-auto mb-10 leading-relaxed"
-          style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
+          className="font-sans font-light text-jgt-muted max-w-2xl mx-auto mb-7 leading-relaxed"
+          style={{ fontSize: 'clamp(0.85rem, 1.4vw, 1rem)' }}
         >
           Premium window tint installation for automotive, residential, commercial, RV,
           marine, frost, and safety film projects throughout San Clemente and South Orange County.
@@ -125,7 +116,7 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
-          className="flex flex-wrap items-center justify-center gap-8 mt-16 pt-10 border-t border-white/10"
+          className="flex flex-wrap items-center justify-center gap-8 mt-10 pt-8 border-t border-white/10"
         >
           {[
             { value: '40+',     label: 'Years Experience' },
