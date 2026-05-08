@@ -1,8 +1,8 @@
 'use client';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import HeroLogo from './HeroLogo';
-import { loadHeroConfig, DEFAULT_CONFIG, type HeroConfig } from '@/lib/heroConfig';
+import { DEFAULT_CONFIG, type HeroConfig } from '@/lib/heroConfig';
 
 const LOGO_SRC = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png';
 
@@ -19,14 +19,9 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
   const fade  = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // Client-side config load (avoids SSR mismatch)
-  const [cfg, setCfg] = useState<HeroConfig>(DEFAULT_CONFIG);
-  useEffect(() => {
-    setCfg(loadHeroConfig());
-  }, []);
-
-  // If a live config is passed (admin editor), use that instead
-  const layout = propConfig ?? cfg;
+  // DEFAULT_CONFIG is baked into the build at deploy time — same for all visitors.
+  // The admin editor passes propConfig for live preview only.
+  const layout = propConfig ?? DEFAULT_CONFIG;
 
   // Clamp helper: mobile value ≈ 60% of desktop value
   const mb = (desktop: number) => `clamp(${Math.round(desktop * 0.60)}px, ${(desktop / 10).toFixed(1)}vw, ${desktop}px)`;

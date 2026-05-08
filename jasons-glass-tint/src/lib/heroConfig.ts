@@ -1,29 +1,35 @@
 /**
- * heroConfig.ts
- * Shared hero layout configuration.
- * Values are gap sizes (marginBottom) in px between each stacked element.
- * The admin editor writes to localStorage under STORAGE_KEY.
- * HeroSection reads from localStorage on mount (client-side) and falls back
- * to DEFAULT_CONFIG so public visitors always get a valid layout.
+ * heroConfig.ts — Single source of truth for hero layout spacing.
+ *
+ * DEFAULT_CONFIG is baked into the build at deploy time.
+ * The /api/save-hero-layout route patches this file and git-pushes,
+ * triggering a Vercel redeploy so ALL visitors get the updated values.
+ *
+ * localStorage is used ONLY for temporary live-preview in the admin editor.
  */
 
-export const STORAGE_KEY = 'jgt_hero_layout_v1';
+export const STORAGE_KEY = 'jgt_hero_layout_preview_v1';
 
 export interface HeroConfig {
-  /** marginBottom below San Clemente label (px) */
+  /** Gap below San Clemente label (px) */
   gapSanClementeLogo: number;
-  /** marginBottom below logo (px) */
+  /** Gap below logo (px) */
   gapLogoSince: number;
-  /** marginBottom below "Since 1989" (px) */
+  /** Gap below "Since 1989" (px) */
   gapSinceParagraph: number;
-  /** marginBottom below paragraph (px) */
+  /** Gap below paragraph (px) */
   gapParagraphButtons: number;
-  /** marginBottom below buttons (px) */
+  /** Gap below buttons (px) */
   gapButtonsStats: number;
   /** Logo max-width (px) */
   logoWidth: number;
 }
 
+/**
+ * !! EDIT THIS BLOCK to change the live public layout !!
+ * The /admin-hero-layout editor updates these values automatically
+ * by committing and pushing to GitHub, which triggers a Vercel redeploy.
+ */
 export const DEFAULT_CONFIG: HeroConfig = {
   gapSanClementeLogo:  32,
   gapLogoSince:        28,
@@ -33,8 +39,8 @@ export const DEFAULT_CONFIG: HeroConfig = {
   logoWidth:           640,
 };
 
-/** Load saved config from localStorage, merging with defaults for safety. */
-export function loadHeroConfig(): HeroConfig {
+/** Load temporary preview config from localStorage (admin editor only). */
+export function loadPreviewConfig(): HeroConfig {
   if (typeof window === 'undefined') return DEFAULT_CONFIG;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -45,8 +51,14 @@ export function loadHeroConfig(): HeroConfig {
   }
 }
 
-/** Persist config to localStorage. */
-export function saveHeroConfig(cfg: HeroConfig): void {
+/** Save temporary preview config to localStorage (admin editor only). */
+export function savePreviewConfig(cfg: HeroConfig): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+}
+
+/** Clear preview config from localStorage. */
+export function clearPreviewConfig(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(STORAGE_KEY);
 }
