@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Professional automotive window tinting in San Clemente. Jason personally installs ceramic, carbon, and standard film on all vehicle types. Call (949) 496-8468 for a quote.",
   openGraph: {
     title: "Automotive Window Tinting San Clemente | Jason's Glass Tint",
-    description: "35+ years tinting cars, trucks, and SUVs in San Clemente. Ceramic film, carbon film, factory-precise installation by Jason himself.",
+    description: "40+ years tinting cars, trucks, and SUVs in San Clemente. Ceramic film, carbon film, factory-precise installation by Jason himself.",
     url: 'https://jasonsglasstint.com/automotive-window-tint',
   },
   alternates: { canonical: 'https://jasonsglasstint.com/automotive-window-tint' },
@@ -18,7 +18,7 @@ export default function Page() {
       hero={{
         label:    "Automotive Window Tinting",
         headline: "Car Window Tinting in San Clemente",
-        sub:      "From daily drivers to high-end sports cars, Jason brings 35+ years of automotive tint experience to every install. Ceramic film, carbon film, and standard options — all installed with factory precision.",
+        sub:      "From daily drivers to high-end sports cars, Jason brings 40+ years of automotive tint experience to every install. Ceramic film, carbon film, and standard options — all installed with factory precision.",
         img:      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=80",
       }}
       intro="Automotive window tinting is the most common request Jason receives — and also the one where quality of installation matters most. Factory-look tint on a luxury vehicle isn't something you want to trust to a chain shop or a part-time installer."

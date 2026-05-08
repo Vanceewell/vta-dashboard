@@ -65,7 +65,7 @@ export default function AboutSection() {
             <div className="space-y-5 font-sans font-light text-jgt-muted leading-relaxed text-[0.95rem]">
               <p>
                 Jason started tinting windows in high school — not as a job, but as a craft. Over
-                35 years later, he still approaches every installation with the same obsessive
+                40 years later, he still approaches every installation with the same obsessive
                 attention to detail he had on day one.
               </p>
               <p>
@@ -77,7 +77,7 @@ export default function AboutSection() {
                 {' '}The person you talk to on the phone is the person installing your film.
               </p>
               <p>
-                Over three and a half decades, he's tinted more than 100,000 windows across
+                Over four decades, he's tinted more than 100,000 windows across
                 San Clemente and South Orange County. Cars, homes, commercial buildings, boats,
                 RVs — Jason has done it all, and he's done it right.
               </p>

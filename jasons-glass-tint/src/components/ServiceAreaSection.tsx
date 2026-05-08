@@ -115,7 +115,7 @@ export default function ServiceAreaSection() {
           <div>
             <h3 className="font-display text-jgt-text text-2xl mb-4">San Clemente's Window Tinting Expert</h3>
             <p className="font-sans font-light text-jgt-muted text-sm leading-relaxed">
-              For over 35 years, Jason's Glass Tint has been San Clemente's go-to source for
+              For over 40 years, Jason's Glass Tint has been San Clemente's go-to source for
               professional window film installation. Whether you need automotive tint for your
               daily driver, residential film for your ocean-view home, or commercial tinting
               for a business on El Camino Real, Jason delivers results that last.

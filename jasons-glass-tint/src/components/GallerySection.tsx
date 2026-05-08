@@ -42,7 +42,7 @@ export default function GallerySection() {
           <span className="section-label">Project Gallery</span>
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mt-4 gap-4">
             <h2 className="font-display text-jgt-text" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}>
-              35+ Years of Craftsmanship
+              40+ Years of Craftsmanship
             </h2>
             <a href="/admin-gallery" className="btn-outline text-xs self-start lg:self-auto">
               + Upload Images

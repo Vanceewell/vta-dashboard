@@ -25,7 +25,7 @@ export default function Page() {
       sections={[
         {
           heading: "Residential Window Film for San Clemente Homes",
-          body: "Jason has been installing residential window film throughout San Clemente and South Orange County since the 1980s. He understands the specific challenges of coastal California homes — intense UV exposure year-round, glare off the Pacific on western exposures, and the need to preserve views while controlling heat. Whether you live in a Talega hillside home, a downtown San Clemente bungalow, or a Dana Point cliff-side property, the right window film can transform your indoor environment without altering the exterior appearance of your home.",
+          body: "Jason has been installing residential window film throughout San Clemente and South Orange County since 1989. He understands the specific challenges of coastal California homes — intense UV exposure year-round, glare off the Pacific on western exposures, and the need to preserve views while controlling heat. Whether you live in a Talega hillside home, a downtown San Clemente bungalow, or a Dana Point cliff-side property, the right window film can transform your indoor environment without altering the exterior appearance of your home.",
         },
         {
           heading: "Solar Control Film: Comfort and Energy Savings",

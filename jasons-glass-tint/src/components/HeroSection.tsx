@@ -44,7 +44,7 @@ export default function HeroSection() {
           className="inline-flex items-center gap-3 mb-8"
         >
           <span className="w-8 h-[1px] bg-jgt-gold block" />
-          <span className="section-label">Serving San Clemente Since 1989</span>
+          <span className="font-sans font-500 text-jgt-gold tracking-[0.28em] uppercase" style={{ fontSize: 'clamp(0.85rem, 2vw, 1.1rem)' }}>San Clemente</span>
           <span className="w-8 h-[1px] bg-jgt-gold block" />
         </motion.div>
 
@@ -65,9 +65,9 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.55 }}
           className="font-display italic font-light text-jgt-gold/90 mb-6"
-          style={{ fontSize: 'clamp(1.25rem, 3vw, 2rem)' }}
+          style={{ fontSize: 'clamp(1.6rem, 4vw, 2.8rem)' }}
         >
-          Trusted Since the 1980s
+          Since 1989
         </motion.p>
 
         {/* Supporting text */}
@@ -106,7 +106,7 @@ export default function HeroSection() {
           className="flex flex-wrap items-center justify-center gap-8 mt-16 pt-10 border-t border-white/10"
         >
           {[
-            { value: '35+',     label: 'Years Experience' },
+            { value: '40+',     label: 'Years Experience' },
             { value: '100K+',   label: 'Windows Tinted'   },
             { value: 'Zero',    label: 'Subcontractors'   },
             { value: 'Premium', label: 'Film Only'         },

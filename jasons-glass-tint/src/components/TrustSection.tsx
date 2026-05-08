@@ -4,7 +4,7 @@ import { motion, useInView } from 'framer-motion';
 
 // AI-EDITABLE: trust stats
 const STATS = [
-  { value: 35,       suffix: '+',  label: 'Years Experience',          sub: 'Hands-on since 1989'               },
+  { value: 40,       suffix: '+',  label: 'Years Experience',          sub: 'Hands-on since 1989'               },
   { value: 100000,   suffix: '+',  label: 'Windows Tinted',            sub: 'Across San Clemente & OC'          },
   { value: 0,        suffix: '',   label: 'Subcontractors',            sub: 'Jason installs every job himself'   },
   { value: 100,      suffix: '%',  label: 'Premium Film',              sub: 'No cheap film, ever'                },

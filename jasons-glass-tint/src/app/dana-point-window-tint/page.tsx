@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Professional window tinting for automotive, residential, and marine in Dana Point. Serving Dana Point since 1989. Call (949) 496-8468 for a quote.",
   openGraph: {
     title: "Window Tinting Dana Point | Jason's Glass Tint",
-    description: "Car, home, and boat tinting in Dana Point by Jason himself. 35+ years experience, no subcontractors, premium film.",
+    description: "Car, home, and boat tinting in Dana Point by Jason himself. 40+ years experience, no subcontractors, premium film.",
     url: 'https://jasonsglasstint.com/dana-point-window-tint',
   },
   alternates: { canonical: 'https://jasonsglasstint.com/dana-point-window-tint' },

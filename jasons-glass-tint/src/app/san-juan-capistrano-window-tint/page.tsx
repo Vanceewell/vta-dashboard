@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Professional window tinting for homes and businesses in San Juan Capistrano. Serving SJC and South Orange County since 1989. Call (949) 496-8468.",
   openGraph: {
     title: "Window Tinting San Juan Capistrano | Jason's Glass Tint",
-    description: "Premium residential and commercial window tinting in San Juan Capistrano by Jason himself. 35+ years experience.",
+    description: "Premium residential and commercial window tinting in San Juan Capistrano by Jason himself. 40+ years experience.",
     url: 'https://jasonsglasstint.com/san-juan-capistrano-window-tint',
   },
   alternates: { canonical: 'https://jasonsglasstint.com/san-juan-capistrano-window-tint' },
@@ -18,14 +18,14 @@ export default function Page() {
       hero={{
         label:    "San Juan Capistrano, California",
         headline: "Window Tinting in San Juan Capistrano",
-        sub:      "San Juan Capistrano's mix of historic properties, modern neighborhoods, and thriving commercial district makes it one of South OC's most diverse tinting markets. Jason has served SJC clients for over 35 years.",
+        sub:      "San Juan Capistrano's mix of historic properties, modern neighborhoods, and thriving commercial district makes it one of South OC's most diverse tinting markets. Jason has served SJC clients for over 40 years.",
         img:      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80",
       }}
       intro="San Juan Capistrano is a community with deep roots and a growing modern character. Whether you're in a historic Capistrano Beach home, a newer Vermejo or Pacifica neighborhood, or running a business on Ortega Highway, Jason's Glass Tint brings the same premium service to SJC that it has for San Clemente since 1989."
       sections={[
         {
           heading: "Residential Window Tinting in San Juan Capistrano",
-          body: "San Juan Capistrano's residential landscape spans from historic adobes and craftsman bungalows near the mission district to contemporary homes in newer subdivisions. Both ends of the spectrum benefit from professional window film. For older homes with single-pane glass, solar control film adds meaningful insulation value while reducing heat gain. For newer homes with large windows and open floor plans, film is essential for comfort and energy management. Jason regularly serves SJC homeowners across all neighborhood types — and his 35+ years of experience means he's familiar with the specific window configurations common in each area.",
+          body: "San Juan Capistrano's residential landscape spans from historic adobes and craftsman bungalows near the mission district to contemporary homes in newer subdivisions. Both ends of the spectrum benefit from professional window film. For older homes with single-pane glass, solar control film adds meaningful insulation value while reducing heat gain. For newer homes with large windows and open floor plans, film is essential for comfort and energy management. Jason regularly serves SJC homeowners across all neighborhood types — and his 40+ years of experience means he's familiar with the specific window configurations common in each area.",
         },
         {
           heading: "Commercial Tinting on Ortega Highway and Beyond",

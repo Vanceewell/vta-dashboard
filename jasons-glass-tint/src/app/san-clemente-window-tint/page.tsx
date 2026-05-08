@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "San Clemente's most trusted window tint installer since 1989. Jason personally installs every job — automotive, residential, commercial, and marine tinting. Call (949) 496-8468.",
   openGraph: {
     title: "Window Tinting San Clemente | Jason's Glass Tint",
-    description: "35+ years of window film installation in San Clemente. Jason personally installs every project. No subcontractors. Premium film. Honest pricing.",
+    description: "40+ years of window film installation in San Clemente. Jason personally installs every project. No subcontractors. Premium film. Honest pricing.",
     url: 'https://jasonsglasstint.com/san-clemente-window-tint',
   },
   alternates: { canonical: 'https://jasonsglasstint.com/san-clemente-window-tint' },
@@ -37,10 +37,10 @@ export default function Page() {
         hero={{
           label:    "San Clemente, California",
           headline: "Window Tinting in San Clemente",
-          sub:      "Jason's Glass Tint has served San Clemente since 1989. Over 35 years of professional film installation — automotive, residential, commercial, and marine — all personally installed by Jason.",
+          sub:      "Jason's Glass Tint has served San Clemente since 1989. Over 40 years of professional film installation — automotive, residential, commercial, and marine — all personally installed by Jason.",
           img:      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1400&q=80",
         }}
-        intro="San Clemente has been Jason's home and his primary service area for over three and a half decades. He's tinted windows on everything from daily commuters to oceanfront estates — and he's built his reputation one clean install at a time."
+        intro="San Clemente has been Jason's home and his primary service area for over four decades. He's tinted windows on everything from daily commuters to oceanfront estates — and he's built his reputation one clean install at a time."
         sections={[
           {
             heading: "San Clemente's Trusted Tint Installer",
@@ -52,11 +52,11 @@ export default function Page() {
           },
           {
             heading: "Why San Clemente Chooses Jason",
-            body: "The difference between Jason's Glass Tint and a national chain or large shop comes down to one thing: personal accountability. When you call Jason, you're speaking with the installer. When he quotes you a price, that's the price you pay. When he shows up, it's him — not someone else. Over 35 years, Jason has earned the trust of thousands of San Clemente residents, and that trust is the foundation of everything. Many of his current clients have been coming back since the 1990s, and now their adult children bring their own vehicles to Jason. That kind of loyalty doesn't happen by accident.",
+            body: "The difference between Jason's Glass Tint and a national chain or large shop comes down to one thing: personal accountability. When you call Jason, you're speaking with the installer. When he quotes you a price, that's the price you pay. When he shows up, it's him — not someone else. Over 40 years, Jason has earned the trust of thousands of San Clemente residents, and that trust is the foundation of everything. Many of his current clients have been coming back since the 1990s, and now their adult children bring their own vehicles to Jason. That kind of loyalty doesn't happen by accident.",
           },
         ]}
         benefits={[
-          '35+ years serving San Clemente exclusively',
+          '40+ years serving San Clemente exclusively',
           'Jason personally installs every project',
           'No subcontractors, no crew turnover',
           'Premium film brands only — 3M, Llumar, Huper Optik',

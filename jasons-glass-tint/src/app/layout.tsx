@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card:        'summary_large_image',
     title:       "Jason's Glass Tint | San Clemente's Premier Window Tinting",
-    description: 'Premium tint installed personally by Jason. 35+ years experience. Automotive, residential, commercial & marine.',
+    description: 'Premium tint installed personally by Jason. 40+ years experience. Automotive, residential, commercial & marine.',
     images:      ['/og-image.jpg'],
   },
   robots: {
