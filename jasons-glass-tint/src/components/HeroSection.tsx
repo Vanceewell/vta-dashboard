@@ -184,6 +184,7 @@ export default function HeroSection({ config: propConfig }: { config?: HeroConfi
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4, duration: 0.6 }}
+        style={{ transform: `translateX(calc(-50% + ${L.scrollIndicatorX}px)) translateY(${L.scrollIndicatorY}px)` }}
       >
         <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-jgt-muted/60">Scroll</span>
         <motion.div

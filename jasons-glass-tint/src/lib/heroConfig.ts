@@ -30,6 +30,10 @@ export interface HeroConfig {
   yOffsetParagraph:   number;
   yOffsetButtons:     number;
   yOffsetStats:       number;
+
+  // ── Scroll indicator position (px) ──────────────────────────
+  scrollIndicatorX:   number;
+  scrollIndicatorY:   number;
 }
 
 export const DEFAULT_CONFIG: HeroConfig = {
@@ -48,6 +52,10 @@ export const DEFAULT_CONFIG: HeroConfig = {
   yOffsetParagraph:   0,
   yOffsetButtons:     0,
   yOffsetStats:       0,
+
+  // scroll indicator position (0 = default center-bottom)
+  scrollIndicatorX:   0,
+  scrollIndicatorY:   0,
 };
 
 /** Load saved layout from localStorage, falling back to DEFAULT_CONFIG. */

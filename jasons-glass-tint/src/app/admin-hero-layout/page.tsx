@@ -30,6 +30,11 @@ const Y_SLIDERS: { key: keyof HeroConfig; label: string }[] = [
 const Y_MIN = -200;
 const Y_MAX =  200;
 
+const SCROLL_X_MIN = -500;
+const SCROLL_X_MAX =  500;
+const SCROLL_Y_MIN = -200;
+const SCROLL_Y_MAX =  200;
+
 /* ─── Component ─────────────────────────────────────────────── */
 export default function AdminHeroLayout() {
   const [cfg, setCfg] = useState<HeroConfig>(DEFAULT_CONFIG);
@@ -175,6 +180,79 @@ export default function AdminHeroLayout() {
                   </div>
                 );
               })}
+            </div>
+
+          </div>
+
+          {/* ── Section 3: Scroll Indicator Position ── */}
+          <div className="p-6 border-t border-white/10">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[10px] tracking-[0.2em] uppercase text-white/30">Scroll Indicator</span>
+              <span className="text-[9px] text-white/20 font-mono">(X / Y position)</span>
+            </div>
+            <p className="text-[10px] text-white/25 mb-5 leading-relaxed">
+              Moves the SCROLL indicator left/right and up/down independently.
+            </p>
+            <div className="space-y-6">
+
+              {/* Scroll X */}
+              {(() => {
+                const val = cfg.scrollIndicatorX;
+                return (
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-[12px] text-white/70 font-sans">Scroll X (left / right)</label>
+                      <span
+                        className="font-mono text-[13px] tabular-nums"
+                        style={{ color: val === 0 ? 'rgba(255,255,255,0.3)' : val < 0 ? '#a78bfa' : '#34d399' }}
+                      >
+                        {val > 0 ? `+${val}` : val}px
+                      </span>
+                    </div>
+                    <input
+                      type="range" min={SCROLL_X_MIN} max={SCROLL_X_MAX} step={1} value={val}
+                      onChange={(e) => update('scrollIndicatorX', Number(e.target.value))}
+                      className="w-full cursor-pointer"
+                      style={{ accentColor: val === 0 ? '#555' : val < 0 ? '#a78bfa' : '#34d399', height: '6px' }}
+                    />
+                    <div className="flex justify-between mt-1">
+                      <span className="text-[10px] text-purple-400/40">← {Math.abs(SCROLL_X_MIN)}px left</span>
+                      <span className="text-[10px] text-white/20">0</span>
+                      <span className="text-[10px] text-emerald-400/40">{SCROLL_X_MAX}px right →</span>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Scroll Y */}
+              {(() => {
+                const val = cfg.scrollIndicatorY;
+                return (
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-[12px] text-white/70 font-sans">Scroll Y (up / down)</label>
+                      <span
+                        className="font-mono text-[13px] tabular-nums"
+                        style={{ color: val === 0 ? 'rgba(255,255,255,0.3)' : val < 0 ? '#60a5fa' : '#f87171' }}
+                      >
+                        {val > 0 ? `+${val}` : val}px
+                      </span>
+                    </div>
+                    <input
+                      type="range" min={SCROLL_Y_MIN} max={SCROLL_Y_MAX} step={1} value={val}
+                      onChange={(e) => update('scrollIndicatorY', Number(e.target.value))}
+                      className="w-full cursor-pointer"
+                      style={{ accentColor: val === 0 ? '#555' : val < 0 ? '#60a5fa' : '#f87171', height: '6px' }}
+                    />
+                    <div className="flex justify-between mt-1">
+                      <span className="text-[10px] text-blue-400/40">↑ {Math.abs(SCROLL_Y_MIN)}px up</span>
+                      <span className="text-[10px] text-white/20">0</span>
+                      <span className="text-[10px] text-red-400/40">{SCROLL_Y_MAX}px down ↓</span>
+                    </div>
+                  </div>
+                );
+              })()}
+
             </div>
 
             {/* Save tip */}
