@@ -45,7 +45,7 @@ export default function HeroSection() {
         >
           <div className="flex items-center justify-center gap-4">
             <div className="w-8 h-[1px] bg-jgt-gold/60" />
-            <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)' }}>San Clemente</span>
+            <span className="font-display font-light text-jgt-gold tracking-wide" style={{ fontSize: 'clamp(1.5rem, 4.5vw, 2.5rem)' }}>San Clemente</span>
             <div className="w-8 h-[1px] bg-jgt-gold/60" />
           </div>
         </motion.div>

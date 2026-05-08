@@ -18,7 +18,7 @@ const STEPS = [
   {
     num:  '03',
     title: 'Schedule Installation',
-    desc:  "Pick a time that works for you. Jason arrives on time, prepared. Most automotive installs complete in 2–4 hours; residential and commercial vary.",
+    desc:  "Pick a time that works for you. Most automotive installs complete in 2–4 hours; residential and commercial vary.",
     icon:  <CalendarIcon />,
   },
   {
@@ -43,7 +43,7 @@ export default function ProcessSection() {
         >
           <span className="section-label">How It Works</span>
           <h2 className="font-display text-jgt-text mt-4" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}>
-            Simple, Personal, Direct
+            One town, one tint.
           </h2>
           <p className="font-sans font-light text-jgt-muted max-w-xl mx-auto mt-4 text-sm leading-relaxed">
             No online forms, no call centers, no waiting. Text Jason and get a real response from

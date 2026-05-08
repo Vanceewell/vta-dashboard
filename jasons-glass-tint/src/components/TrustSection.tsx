@@ -7,8 +7,8 @@ const STATS = [
   { value: 40,       suffix: '+',  label: 'Years Experience',          sub: 'Hands-on since 1989'               },
   { value: 100000,   suffix: '+',  label: 'Windows Tinted',            sub: 'Across San Clemente & OC'          },
   { value: 0,        suffix: '',   label: 'Subcontractors',            sub: 'Jason installs every job himself'   },
-  { value: 5,        suffix: '-Star Reviews', label: '',              sub: 'From satisfied customers'           },
-  { value: 1989,     suffix: '',   label: 'Serving Since',             sub: "San Clemente's trusted choice"      },
+  { value: 5,        suffix: '-Star Reviews', label: '',              sub: 'From all customers'                 },
+  { value: 100,      suffix: '%',  label: 'Premium Film',              sub: 'Only the best, on every job'        },
   { value: 1,        suffix: '',   label: 'Installer',                 sub: 'No rotating crews, no surprises'   },
 ];
 
@@ -99,8 +99,8 @@ export default function TrustSection() {
           transition={{ duration: 0.7, delay: 0.4 }}
           className="text-center mt-16"
         >
-          <p className="font-display italic text-jgt-muted text-xl lg:text-2xl max-w-2xl mx-auto">
-            "Premium film. Honest service. One town, one tint."
+          <p className="font-display italic text-jgt-gold text-2xl lg:text-3xl max-w-2xl mx-auto font-light tracking-wide">
+            One town, one tint.
           </p>
           <div className="w-8 h-[1px] bg-jgt-gold mx-auto mt-6" />
         </motion.div>
