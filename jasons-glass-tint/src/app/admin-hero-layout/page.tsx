@@ -402,7 +402,6 @@ export default function AdminHeroLayout() {
       prev.map((img) => {
         if (img.id !== id) return img;
         const cats = patch.categories ?? img.categories;
-        if (!cats.includes('All Projects')) cats.unshift('All Projects');
         return { ...img, title: patch.title ?? img.title, categories: cats, updatedAt: Date.now() };
       }),
     );
@@ -942,7 +941,7 @@ function GalleryPanel({
     try {
       const blob  = await processImageForGallery(file);
       const title = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
-      await onAdd(blob, title, ['All Projects']);
+      await onAdd(blob, title, []);
       triggerSavedToast();
     } catch (err: unknown) {
       setUploadError(
@@ -986,7 +985,7 @@ function GalleryPanel({
         </div>
         <p className="text-[11px] text-white/35">
           Images are stored in IndexedDB — no size limits. Changes persist after refresh.
-          Every image includes &quot;All Projects&quot; automatically.
+          Choose categories manually — including whether each image appears in &quot;All Projects&quot;.
         </p>
       </div>
 
@@ -1160,12 +1159,10 @@ function GalleryImageCard({
   };
 
   const toggleCategory = (cat: GalleryCategory) => {
-    if (cat === 'All Projects') return;
     const has  = image.categories.includes(cat);
     const next: GalleryCategory[] = has
       ? image.categories.filter((c) => c !== cat)
       : [...image.categories, cat];
-    if (!next.includes('All Projects')) next.unshift('All Projects');
     onMeta({ categories: next });
   };
 
@@ -1271,14 +1268,13 @@ function GalleryImageCard({
               return (
                 <button
                   key={cat}
-                  onClick={() => { if (!isAll) toggleCategory(cat); }}
-                  disabled={isAll}
+                  onClick={() => toggleCategory(cat)}
                   className="flex items-center gap-2 px-2.5 py-2 rounded border text-left text-[10px] tracking-wide transition-all"
                   style={{
                     background:  selected ? (isAll ? 'rgba(197,160,86,0.18)' : 'rgba(197,160,86,0.14)') : 'rgba(255,255,255,0.03)',
                     borderColor: selected ? (isAll ? 'rgba(197,160,86,0.6)' : 'rgba(197,160,86,0.5)') : 'rgba(255,255,255,0.1)',
                     color:       selected ? (isAll ? '#C5A056' : 'rgba(255,255,255,0.85)') : 'rgba(255,255,255,0.4)',
-                    cursor:      isAll ? 'default' : 'pointer',
+                    cursor:      'pointer',
                   }}
                 >
                   <span
@@ -1295,7 +1291,7 @@ function GalleryImageCard({
               );
             })}
           </div>
-          <p className="text-[9px] text-white/20 mt-1.5">&quot;All Projects&quot; is always included automatically.</p>
+          <p className="text-[9px] text-white/20 mt-1.5">Check &quot;All Projects&quot; manually to include this image in that filter.</p>
         </div>
 
         {/* Replace */}
