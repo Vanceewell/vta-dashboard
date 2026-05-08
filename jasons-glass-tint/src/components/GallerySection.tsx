@@ -1,90 +1,46 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  GALLERY_CATEGORIES,
+  type GalleryCategory,
+  type GalleryItem,
+  loadGallery,
+} from '@/lib/galleryStorage';
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   STORAGE KEY — must match admin-hero-layout/page.tsx
+   PUBLIC GALLERY SECTION
+   Reads from the shared localStorage key `jgt_gallery_items`.
+   If no items are saved, shows a premium empty-state — never shows
+   broken placeholder images.
 ───────────────────────────────────────────────────────────────────────────── */
-const GALLERY_STORAGE_KEY = 'jgt_custom_gallery_v1';
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   GALLERY CATEGORIES — must match admin-hero-layout/page.tsx
-───────────────────────────────────────────────────────────────────────────── */
-const GALLERY_CATEGORIES_ALL = ['All Projects', 'Automotive', 'Residential', 'Commercial', 'Marine', 'RV', 'Frost', 'Safety Film'] as const;
-type GalleryCategory = typeof GALLERY_CATEGORIES_ALL[number];
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   CUSTOM GALLERY IMAGE (matches admin page type)
-───────────────────────────────────────────────────────────────────────────── */
-interface CustomGalleryImage {
-  id:         string;
-  title:      string;
-  src:        string;
-  categories: GalleryCategory[];
-  addedAt:    number;
-}
-
-/* Safe load custom gallery from localStorage */
-function loadCustomGallery(): CustomGalleryImage[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(GALLERY_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (item): item is CustomGalleryImage =>
-        typeof item === 'object' &&
-        item !== null &&
-        typeof item.id === 'string' &&
-        typeof item.title === 'string' &&
-        typeof item.src === 'string' &&
-        item.src.startsWith('data:image/') &&
-        Array.isArray(item.categories),
-    );
-  } catch {
-    return [];
-  }
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   GALLERY ITEM — used for rendering
-───────────────────────────────────────────────────────────────────────────── */
-interface GalleryItem {
-  id:         string;
-  src:        string;
-  title:      string;
-  categories: GalleryCategory[];
-  tall:       boolean;
+interface RenderItem extends GalleryItem {
+  tall: boolean;
 }
 
 export default function GallerySection() {
-  const [active, setActive]       = useState<GalleryCategory>('All Projects');
-  const [lightbox, setLightbox]   = useState<string | null>(null);
-  const [items, setItems]         = useState<GalleryItem[]>([]);
-  const [loaded, setLoaded]       = useState(false);
+  const [active,   setActive]   = useState<GalleryCategory>('All Projects');
+  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [items,    setItems]    = useState<RenderItem[]>([]);
+  const [loaded,   setLoaded]   = useState(false);
 
   /* Load gallery from localStorage (client only) */
   useEffect(() => {
-    const customImages = loadCustomGallery();
-
-    /* Convert custom uploads to GalleryItem format */
-    const customItems: GalleryItem[] = customImages.map((img, i) => ({
-      id:         img.id,
-      src:        img.src,
-      title:      img.title,
-      categories: img.categories,
-      tall:       i % 3 === 0,
+    const saved = loadGallery();
+    const renderItems: RenderItem[] = saved.map((item, i) => ({
+      ...item,
+      tall: i % 3 === 0,
     }));
-
-    setItems(customItems);
+    setItems(renderItems);
     setLoaded(true);
   }, []);
 
   /* Filter by active tab */
-  const filtered = active === 'All Projects'
-    ? items
-    : items.filter((item) => item.categories.includes(active));
+  const filtered =
+    active === 'All Projects'
+      ? items
+      : items.filter((item) => item.categories.includes(active));
 
   return (
     <section id="gallery" className="py-24 lg:py-32 bg-jgt-bg">
@@ -109,7 +65,7 @@ export default function GallerySection() {
 
         {/* Filter Tabs */}
         <div className="flex flex-wrap gap-2 mb-10">
-          {GALLERY_CATEGORIES_ALL.map((cat) => (
+          {GALLERY_CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setActive(cat)}
@@ -124,7 +80,7 @@ export default function GallerySection() {
           ))}
         </div>
 
-        {/* Empty state — only shown in public view, premium style */}
+        {/* No gallery items saved → premium empty state */}
         {loaded && items.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -137,7 +93,7 @@ export default function GallerySection() {
               Gallery coming soon.
             </p>
             <p className="font-sans text-jgt-muted text-sm max-w-sm mx-auto">
-              Jason's project photos are on the way. In the meantime, text him directly for examples of past work.
+              Jason&apos;s project photos are on the way. In the meantime, text him directly for examples of past work.
             </p>
             <a
               href="sms:9494968468"
@@ -149,7 +105,7 @@ export default function GallerySection() {
           </motion.div>
         )}
 
-        {/* Filtered empty state (has images but none in this category) */}
+        {/* Has items but none match active category */}
         {loaded && items.length > 0 && filtered.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -244,7 +200,10 @@ export default function GallerySection() {
                 onClick={() => setLightbox(null)}
                 aria-label="Close"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
               </button>
             </motion.div>
           </motion.div>
