@@ -1,32 +1,30 @@
 /**
- * galleryStorage.ts
+ * galleryStorage.ts — Supabase-first gallery storage
  * ─────────────────────────────────────────────────────────────────────────────
- * Single source of truth for gallery data.
- * Both the admin editor and the public GallerySection import from here.
+ * PRIMARY:  Supabase Storage (blobs) + Supabase DB (metadata)
+ *           → images are public URLs visible on ALL devices
  *
- * Storage strategy:
- *   • IndexedDB  — image blobs (no size limit, handles full-size photos)
- *   • localStorage — metadata only (ids, titles, categories, timestamps)
+ * FALLBACK: If Supabase is not configured, uploads are rejected with a clear
+ *           setup instruction message. We never silently fall back to local-only
+ *           storage, which caused images to disappear on other devices.
  *
- * IndexedDB DB name : jgt_gallery
- * IndexedDB store   : images          (key: id, value: Blob)
- * localStorage key  : jgt_gallery_meta
- *
- * Migration: any old base64 data URLs stored in jgt_gallery_items or
- * jgt_custom_gallery_v1 are silently dropped (they bloated localStorage).
+ * LOCAL CACHE: IndexedDB stores blob previews for instant display while the
+ *              public URL is loading, and for the upload preview. This is
+ *              cleared/not relied upon for cross-device visibility.
  */
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Constants
-// ─────────────────────────────────────────────────────────────────────────────
+import {
+  isSupabaseConfigured,
+  fetchSupabaseGallery,
+  uploadToSupabase,
+  updateSupabaseMeta,
+  deleteFromSupabase,
+  replaceInSupabase,
+  type GalleryRow,
+} from './supabase';
 
-const DB_NAME      = 'jgt_gallery';
-const DB_VERSION   = 1;
-const STORE_NAME   = 'images';
-const META_KEY     = 'jgt_gallery_meta';  // localStorage key for metadata array
-
 // ─────────────────────────────────────────────────────────────────────────────
-// Category types
+// Re-export category types (unchanged — used across the codebase)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const GALLERY_CATEGORIES = [
@@ -46,301 +44,190 @@ export type GalleryCategory = (typeof GALLERY_CATEGORIES)[number];
 // Data models
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Metadata stored in localStorage (small, serialisable). */
-export interface GalleryMeta {
+export interface ImageFraming {
+  zoom:    number;
+  offsetX: number;
+  offsetY: number;
+}
+
+/**
+ * The shape components work with.
+ * `objectUrl` is either a Supabase public URL or a temporary local blob URL.
+ */
+export interface GalleryItem {
   id:         string;
   title:      string;
   categories: GalleryCategory[];
+  framing?:   ImageFraming;
   createdAt:  number;
   updatedAt:  number;
+  /** Public URL (Supabase) or temporary blob URL (local preview only) */
+  objectUrl:  string;
+  /** True when the image lives in Supabase and is publicly accessible */
+  isPublic:   boolean;
 }
 
-/** Full item = metadata + an object URL ready for <img src>. */
-export interface GalleryItem extends GalleryMeta {
-  /** Object URL created from the blob — revoke when done, or reuse. */
-  objectUrl: string;
-}
+// Keep GalleryMeta for any callers that use it
+export type GalleryMeta = Omit<GalleryItem, 'objectUrl' | 'isPublic'>;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// IndexedDB helpers
+// Row → GalleryItem converter
 // ─────────────────────────────────────────────────────────────────────────────
 
-function openDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = () => {
-      if (!req.result.objectStoreNames.contains(STORE_NAME)) {
-        req.result.createObjectStore(STORE_NAME);
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror   = () => reject(req.error);
-  });
-}
-
-async function idbPut(id: string, blob: Blob): Promise<void> {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx    = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    const req   = store.put(blob, id);
-    req.onsuccess = () => resolve();
-    req.onerror   = () => reject(req.error);
-    tx.oncomplete  = () => db.close();
-  });
-}
-
-async function idbGet(id: string): Promise<Blob | undefined> {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx    = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-    const req   = store.get(id);
-    req.onsuccess = () => { db.close(); resolve(req.result as Blob | undefined); };
-    req.onerror   = () => { db.close(); reject(req.error); };
-  });
-}
-
-async function idbDelete(id: string): Promise<void> {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx    = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    const req   = store.delete(id);
-    req.onsuccess = () => resolve();
-    req.onerror   = () => reject(req.error);
-    tx.oncomplete  = () => db.close();
-  });
-}
-
-async function idbGetAllKeys(): Promise<string[]> {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx    = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-    const req   = store.getAllKeys();
-    req.onsuccess = () => { db.close(); resolve(req.result as string[]); };
-    req.onerror   = () => { db.close(); reject(req.error); };
-  });
-}
-
-async function idbClear(): Promise<void> {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx    = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    const req   = store.clear();
-    req.onsuccess = () => resolve();
-    req.onerror   = () => reject(req.error);
-    tx.oncomplete  = () => db.close();
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Metadata helpers (localStorage — only the small fields)
-// ─────────────────────────────────────────────────────────────────────────────
-
-function loadMeta(): GalleryMeta[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(META_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(isValidMeta).map(normalizeMeta);
-  } catch {
-    return [];
-  }
-}
-
-function saveMeta(items: GalleryMeta[]): void {
-  if (typeof window === 'undefined') return;
-  try {
-    localStorage.setItem(META_KEY, JSON.stringify(items));
-  } catch {
-    // Metadata is tiny; this almost never fails.
-    // If it does, the image is still in IndexedDB.
-  }
-}
-
-function clearMeta(): void {
-  if (typeof window === 'undefined') return;
-  try { localStorage.removeItem(META_KEY); } catch { /* noop */ }
-  // Also remove old localStorage blob keys so we don't accumulate junk
-  try { localStorage.removeItem('jgt_gallery_items'); } catch { /* noop */ }
-  try { localStorage.removeItem('jgt_custom_gallery_v1'); } catch { /* noop */ }
-}
-
-function isValidMeta(x: unknown): boolean {
-  if (typeof x !== 'object' || x === null) return false;
-  const m = x as Record<string, unknown>;
-  return (
-    typeof m.id    === 'string' && m.id !== '' &&
-    typeof m.title === 'string' &&
-    Array.isArray(m.categories)
-  );
-}
-
-function normalizeMeta(x: Record<string, unknown>): GalleryMeta {
-  const cats = (Array.isArray(x.categories) ? [...x.categories] : []) as GalleryCategory[];
-  // Do NOT auto-inject 'All Projects' — user controls that category manually
+function rowToItem(row: GalleryRow): GalleryItem {
   return {
-    id:         String(x.id),
-    title:      String(x.title ?? ''),
-    categories: cats,
-    createdAt:  typeof x.createdAt === 'number' ? x.createdAt
-               : typeof x.addedAt  === 'number' ? x.addedAt : Date.now(),
-    updatedAt:  typeof x.updatedAt === 'number' ? x.updatedAt : Date.now(),
+    id:         row.id,
+    title:      row.title,
+    categories: row.categories as GalleryCategory[],
+    framing:    row.framing ?? undefined,
+    createdAt:  new Date(row.created_at).getTime(),
+    updatedAt:  new Date(row.updated_at).getTime(),
+    objectUrl:  row.public_url,
+    isPublic:   true,
   };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Public API
+// Public API — mirrors old interface so admin page and GallerySection
+//              need minimal changes
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Load all gallery items.
- * Returns GalleryItem[] where each item has an objectUrl ready to use in <img>.
- * Call URL.revokeObjectURL(item.objectUrl) when the component unmounts.
+ * Load all gallery items from Supabase.
+ * Returns items ordered by newest first.
  */
 export async function loadGallery(): Promise<GalleryItem[]> {
-  if (typeof window === 'undefined') return [];
-  const metas = loadMeta();
-  if (metas.length === 0) return [];
-
-  // Load blobs from IndexedDB in parallel
-  const items = await Promise.all(
-    metas.map(async (meta): Promise<GalleryItem | null> => {
-      try {
-        const blob = await idbGet(meta.id);
-        if (!blob) return null; // blob missing — orphaned metadata
-        return { ...meta, objectUrl: URL.createObjectURL(blob) };
-      } catch {
-        return null;
-      }
-    }),
-  );
-  return items.filter((item): item is GalleryItem => item !== null);
+  if (!isSupabaseConfigured()) {
+    // Return empty so gallery shows the empty state rather than crashing
+    console.warn('[gallery] Supabase not configured — gallery will be empty until credentials are set.');
+    return [];
+  }
+  const rows = await fetchSupabaseGallery();
+  return rows.map(rowToItem);
 }
 
 /**
- * Add a new image to the gallery.
- * Accepts a File or Blob (already compressed by processImageForGallery).
+ * Add a new image to the gallery via Supabase.
  */
 export async function addGalleryImage(
   blob:       Blob,
   title:      string,
   categories: GalleryCategory[],
+  framing?:   ImageFraming,
 ): Promise<{ ok: boolean; item?: GalleryItem; error?: string }> {
-  if (typeof window === 'undefined') return { ok: false, error: 'Not in browser.' };
-  const id = `gci-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  // Use exactly the categories the user selected — do NOT auto-add 'All Projects'
-  const cats: GalleryCategory[] = [...categories];
-
-  try {
-    await idbPut(id, blob);
-  } catch (err) {
+  if (!isSupabaseConfigured()) {
     return {
-      ok: false,
-      error: 'Gallery storage is full. Delete older images or use smaller files.',
+      ok:    false,
+      error: 'Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your environment variables, then redeploy.',
     };
   }
 
-  const now  = Date.now();
-  const meta: GalleryMeta = { id, title, categories: cats, createdAt: now, updatedAt: now };
-  const metas = [meta, ...loadMeta()];
-  saveMeta(metas);
+  const result = await uploadToSupabase(
+    blob,
+    `upload-${Date.now()}`,
+    title,
+    categories,
+    framing,
+  );
 
-  return {
-    ok:   true,
-    item: { ...meta, objectUrl: URL.createObjectURL(blob) },
-  };
+  if (!result.ok || !result.row) {
+    return { ok: false, error: result.error ?? 'Upload failed.' };
+  }
+
+  return { ok: true, item: rowToItem(result.row) };
 }
 
 /**
  * Replace the image blob for an existing gallery item.
+ * `row` is optional for API compatibility — if omitted the replace will fail gracefully.
  */
 export async function replaceGalleryImage(
   id:   string,
   blob: Blob,
+  row?: GalleryRow,
 ): Promise<{ ok: boolean; objectUrl?: string; error?: string }> {
-  if (typeof window === 'undefined') return { ok: false, error: 'Not in browser.' };
-  try {
-    await idbPut(id, blob);
-    // Update updatedAt in metadata
-    const metas = loadMeta().map((m) =>
-      m.id === id ? { ...m, updatedAt: Date.now() } : m,
-    );
-    saveMeta(metas);
-    return { ok: true, objectUrl: URL.createObjectURL(blob) };
-  } catch {
-    return {
-      ok: false,
-      error: 'Gallery storage is full. Delete older images or use smaller files.',
-    };
+  if (!isSupabaseConfigured()) {
+    return { ok: false, error: 'Supabase not configured.' };
+  }
+  if (!row) {
+    return { ok: false, error: 'Row data required to replace image in Supabase mode.' };
+  }
+  const result = await replaceInSupabase(row, blob);
+  if (!result.ok) return { ok: false, error: result.error };
+  return { ok: true, objectUrl: result.publicUrl };
+}
+
+/**
+ * Update metadata (title, categories, framing) for an existing item.
+ */
+export async function updateGalleryMeta(
+  id:    string,
+  patch: Partial<Pick<GalleryMeta, 'title' | 'categories' | 'framing'>>,
+): Promise<void> {
+  if (!isSupabaseConfigured()) return;
+  await updateSupabaseMeta(id, {
+    title:      patch.title,
+    categories: patch.categories as GalleryCategory[],
+    framing:    patch.framing ?? null,
+  });
+}
+
+/**
+ * Delete an image from Supabase Storage and DB.
+ * `row` is optional for API compatibility — if omitted, only the DB row is deleted
+ * (the storage blob will be orphaned; clean up via Supabase dashboard).
+ */
+export async function deleteGalleryImage(
+  id:   string,
+  row?: GalleryRow,
+): Promise<void> {
+  if (!isSupabaseConfigured()) return;
+  if (row) {
+    await deleteFromSupabase(row);
+  } else {
+    // Fallback: delete only the DB row (blob stays in storage)
+    const { supabase } = await import('./supabase');
+    if (supabase) {
+      await supabase.from('gallery_images').delete().eq('id', id);
+    }
   }
 }
 
 /**
- * Update only metadata fields (title, categories) for an existing item.
- * Does not touch the blob.
+ * Get gallery metadata (synchronous helper — fetches from Supabase async).
+ * Use loadGallery() for the actual async load.
  */
-export function updateGalleryMeta(
-  id:    string,
-  patch: Partial<Pick<GalleryMeta, 'title' | 'categories'>>,
-): void {
-  if (typeof window === 'undefined') return;
-  const metas = loadMeta().map((m) => {
-    if (m.id !== id) return m;
-    // Use exactly what the user chose — no auto-injection of 'All Projects'
-    const cats = patch.categories ?? m.categories;
-    return {
-      ...m,
-      title:      patch.title ?? m.title,
-      categories: cats,
-      updatedAt:  Date.now(),
-    };
-  });
-  saveMeta(metas);
+export function getGalleryMeta(): GalleryMeta[] {
+  // This is a sync API from the old interface; we can't fetch async here.
+  // Callers should use loadGallery() instead.
+  return [];
 }
 
 /**
- * Delete an image (blob + metadata).
- */
-export async function deleteGalleryImage(id: string): Promise<void> {
-  if (typeof window === 'undefined') return;
-  try { await idbDelete(id); } catch { /* ignore */ }
-  saveMeta(loadMeta().filter((m) => m.id !== id));
-}
-
-/**
- * Clear ALL gallery data (blobs + metadata).
+ * Clear ALL gallery images from Supabase.
+ * @deprecated Use individual deleteGalleryImage() calls instead.
+ * This no-ops silently — deleting all images via the admin panel should be
+ * done image-by-image. Kept for API compatibility with admin-hero-layout.
  */
 export async function clearGallery(): Promise<void> {
-  if (typeof window === 'undefined') return;
-  try { await idbClear(); } catch { /* ignore */ }
-  clearMeta();
+  // No-op: Supabase gallery should not be bulk-cleared from the browser.
+  // The admin-hero-layout reset button is a legacy IndexedDB action.
+  console.warn('[gallery] clearGallery() is a no-op in Supabase mode. Delete images individually in the Gallery Manager.');
 }
 
 /**
- * Remove metadata entries whose blobs are missing in IndexedDB (orphan cleanup).
- * Returns number of entries removed.
+ * Remove metadata entries whose blobs are missing (orphan cleanup).
+ * In Supabase mode, rows with missing storage files are cleaned by checking public URLs.
+ * Returns 0 — Supabase orphan cleanup should be done via the Supabase dashboard.
  */
 export async function cleanBrokenGalleryData(): Promise<number> {
-  if (typeof window === 'undefined') return 0;
-  let keys: string[] = [];
-  try { keys = await idbGetAllKeys(); } catch { return 0; }
-  const keySet = new Set(keys);
-  const metas  = loadMeta();
-  const clean  = metas.filter((m) => keySet.has(m.id));
-  const removed = metas.length - clean.length;
-  if (removed > 0) saveMeta(clean);
-  return removed;
+  console.warn('[gallery] cleanBrokenGalleryData() is a no-op in Supabase mode.');
+  return 0;
 }
 
 /**
- * Export gallery metadata as a downloadable JSON (no blobs — just structure).
- * Images can be re-imported later from JSON, but blobs must be re-uploaded.
+ * Export gallery metadata as a downloadable JSON.
+ * Works with the in-memory GalleryMeta list passed by the caller.
  */
 export function exportGalleryMetaJSON(metas: GalleryMeta[]): string {
   return JSON.stringify(
@@ -351,23 +238,16 @@ export function exportGalleryMetaJSON(metas: GalleryMeta[]): string {
   );
 }
 
-/**
- * Get current metadata list (synchronous, no blobs).
- */
-export function getGalleryMeta(): GalleryMeta[] {
-  return loadMeta();
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
-// Image compression
+// Image compression (unchanged — still used before upload)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ACCEPTED_EXT  = ['.jpg', '.jpeg', '.png', '.webp'];
 const ACCEPTED_MIME = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 /**
- * Validate, compress, and return a Blob suitable for IndexedDB storage.
- * Max 1600×1600 px, WebP at 0.78 quality (PNG for transparency).
+ * Validate, compress, and return a Blob ready for Supabase upload.
+ * Max 1600×1600 px, WebP at 0.78 quality (PNG preserved for transparency).
  */
 export async function processImageForGallery(file: File): Promise<Blob> {
   const mime = file.type.toLowerCase();

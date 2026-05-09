@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   GALLERY_CATEGORIES,
@@ -10,9 +10,10 @@ import {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    PUBLIC GALLERY SECTION
-   Reads from IndexedDB via galleryStorage.ts.
-   • If no items saved → premium empty state (no broken placeholders ever).
-   • Revokes object URLs on unmount to avoid memory leaks.
+   Reads from Supabase via galleryStorage.ts → loadGallery().
+   Images are public Supabase Storage URLs — visible on every device.
+   • No IndexedDB, no object URLs, no browser-only storage.
+   • If no items saved → premium empty state (no broken placeholders).
 ───────────────────────────────────────────────────────────────────────────── */
 
 /* Premium SVG icons — one per category, luxury/minimal style */
@@ -86,34 +87,21 @@ export default function GallerySection() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [items,    setItems]    = useState<RenderItem[]>([]);
   const [loaded,   setLoaded]   = useState(false);
-  const objectUrls = useRef<string[]>([]);
 
   useEffect(() => {
-    let cancelled = false;
-
-    loadGallery().then((saved) => {
-      if (cancelled) {
-        saved.forEach((i) => URL.revokeObjectURL(i.objectUrl));
-        return;
-      }
-      // Track URLs so we can revoke on unmount
-      objectUrls.current = saved.map((i) => i.objectUrl);
-      setItems(
-        saved.map((item, i) => ({ ...item, tall: i % 3 === 0 })),
-      );
-      setLoaded(true);
-    }).catch(() => {
-      if (!cancelled) setLoaded(true);
-    });
-
-    return () => {
-      cancelled = true;
-      objectUrls.current.forEach((u) => URL.revokeObjectURL(u));
-    };
+    // loadGallery() fetches from Supabase — returns public URLs that work everywhere
+    loadGallery()
+      .then((saved) => {
+        setItems(saved.map((item, i) => ({ ...item, tall: i % 3 === 0 })));
+        setLoaded(true);
+      })
+      .catch(() => {
+        setLoaded(true);
+      });
   }, []);
 
   // Each filter tab shows only items that have that category selected.
-  // 'All Projects' is no longer a catch-all — it shows only images explicitly tagged with it.
+  // 'All Projects' is not a catch-all — it shows only images explicitly tagged with it.
   const filtered = items.filter((item) => item.categories.includes(active));
 
   return (
@@ -128,7 +116,6 @@ export default function GallerySection() {
           transition={{ duration: 0.7 }}
           className="mb-12"
         >
-          {/* Eyebrow label — upper-left, above the heading */}
           <span className="section-label">40+ years of craftsmanship</span>
           <div className="mt-3">
             <h2 className="font-display text-jgt-text" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}>
@@ -212,6 +199,7 @@ export default function GallerySection() {
                   onClick={() => setLightbox(img.objectUrl)}
                 >
                   <div className={`relative overflow-hidden ${img.tall ? 'aspect-[3/4]' : 'aspect-[4/3]'}`}>
+                    {/* objectUrl is a Supabase public URL — works on all devices */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={img.objectUrl}

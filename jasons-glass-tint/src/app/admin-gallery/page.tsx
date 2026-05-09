@@ -11,6 +11,13 @@ import {
   deleteGalleryImage,
   processImageForGallery,
 } from '@/lib/galleryStorage';
+import { isSupabaseConfigured, type GalleryRow } from '@/lib/supabase';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────────────────────────
+
+type UploadStatus = 'pending' | 'uploading' | 'done' | 'error';
 
 interface QueueItem {
   id:         string;
@@ -18,7 +25,7 @@ interface QueueItem {
   preview:    string;
   categories: GalleryCategory[];
   title:      string;
-  status:     'pending' | 'uploading' | 'done' | 'error';
+  status:     UploadStatus;
   progress:   number;
   error?:     string;
 }
@@ -29,15 +36,111 @@ interface EditState {
   categories: GalleryCategory[];
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Status badge component
+// ─────────────────────────────────────────────────────────────────────────────
+
+function StatusBadge({ status, error }: { status: UploadStatus; error?: string }) {
+  if (status === 'uploading') {
+    return (
+      <div className="flex items-center gap-1.5 font-sans text-xs text-jgt-gold">
+        <span className="inline-block w-2 h-2 rounded-full bg-jgt-gold animate-pulse" />
+        Uploading…
+      </div>
+    );
+  }
+  if (status === 'done') {
+    return (
+      <div className="flex items-center gap-1.5 font-sans text-xs text-emerald-400">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Saved live
+      </div>
+    );
+  }
+  if (status === 'error') {
+    return (
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-1.5 font-sans text-xs text-red-400">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          Upload failed
+        </div>
+        {error && <p className="font-sans text-[10px] text-red-400/80 leading-relaxed">{error}</p>}
+      </div>
+    );
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Supabase setup instructions banner
+// ─────────────────────────────────────────────────────────────────────────────
+
+function SetupInstructions() {
+  return (
+    <div className="mb-8 p-6 border border-amber-500/40 bg-amber-500/5">
+      <div className="flex items-start gap-3 mb-4">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" className="mt-0.5 flex-shrink-0">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <div>
+          <p className="font-sans text-amber-400 text-sm font-semibold mb-2">Supabase Not Configured</p>
+          <p className="font-sans text-amber-400/80 text-xs leading-relaxed mb-4">
+            Images are not being saved to shared storage. To make gallery images visible on all devices, you need to connect Supabase.
+          </p>
+          <ol className="font-sans text-amber-400/70 text-xs leading-relaxed space-y-1.5 list-decimal list-inside">
+            <li>Go to <strong className="text-amber-400">app.supabase.com</strong> and create a free project</li>
+            <li>In your project, go to <strong className="text-amber-400">Settings → API</strong> and copy your URL and anon key</li>
+            <li>In your Vercel project, go to <strong className="text-amber-400">Settings → Environment Variables</strong> and add:
+              <code className="block mt-1 ml-4 bg-black/30 px-2 py-1 text-amber-300 text-[10px]">NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co</code>
+              <code className="block mt-0.5 ml-4 bg-black/30 px-2 py-1 text-amber-300 text-[10px]">NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key</code>
+            </li>
+            <li>In Supabase, create a <strong className="text-amber-400">Storage bucket</strong> named <code className="bg-black/30 px-1 text-amber-300">gallery</code> with <strong className="text-amber-400">public access enabled</strong></li>
+            <li>Run this SQL in the <strong className="text-amber-400">Supabase SQL Editor</strong>:
+              <pre className="mt-1 ml-4 bg-black/30 px-3 py-2 text-amber-300 text-[10px] overflow-x-auto whitespace-pre">{`create table if not exists gallery_images (
+  id            uuid primary key default gen_random_uuid(),
+  storage_path  text not null,
+  public_url    text not null,
+  filename      text not null,
+  title         text not null default '',
+  categories    text[] not null default '{}',
+  framing       jsonb,
+  display_order integer not null default 0,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+alter table gallery_images enable row level security;
+create policy "Public read" on gallery_images for select using (true);
+create policy "Anon insert" on gallery_images for insert with check (true);
+create policy "Anon update" on gallery_images for update using (true);
+create policy "Anon delete" on gallery_images for delete using (true);`}</pre>
+            </li>
+            <li>Redeploy your Vercel project</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Page component
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function AdminGalleryPage() {
   const [items,     setItems]     = useState<GalleryItem[]>([]);
+  // rawRows keeps the full Supabase row data so we can pass it to delete/replace
+  const [rawRows,   setRawRows]   = useState<Map<string, GalleryRow>>(new Map());
   const [queue,     setQueue]     = useState<QueueItem[]>([]);
   const [dragging,  setDragging]  = useState(false);
   const [loading,   setLoading]   = useState(true);
   const [editState, setEditState] = useState<EditState | null>(null);
+  const [savingEdit, setSavingEdit] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabaseReady = isSupabaseConfigured();
 
-  // Load gallery from IndexedDB on mount
+  // Load gallery from Supabase on mount
   useEffect(() => {
     loadGallery().then((loaded) => {
       setItems(loaded);
@@ -45,6 +148,7 @@ export default function AdminGalleryPage() {
     });
   }, []);
 
+  // Handle file selection
   const handleFiles = useCallback((files: FileList | null) => {
     if (!files) return;
     Array.from(files).forEach((file) => {
@@ -57,7 +161,7 @@ export default function AdminGalleryPage() {
             id:         Math.random().toString(36).slice(2),
             file,
             preview:    e.target?.result as string,
-            categories: [],   // no categories pre-selected; user picks manually
+            categories: [],
             title:      file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
             status:     'pending',
             progress:   0,
@@ -74,12 +178,13 @@ export default function AdminGalleryPage() {
     handleFiles(e.dataTransfer.files);
   }, [handleFiles]);
 
-  const onDragOver = (e: DragEvent) => { e.preventDefault(); setDragging(true); };
+  const onDragOver  = (e: DragEvent) => { e.preventDefault(); setDragging(true); };
   const onDragLeave = () => setDragging(false);
 
   const updateQueue = (id: string, patch: Partial<QueueItem>) =>
     setQueue((prev) => prev.map((q) => q.id === id ? { ...q, ...patch } : q));
 
+  // Upload a single queue item to Supabase
   const uploadItem = async (item: QueueItem) => {
     updateQueue(item.id, { status: 'uploading', progress: 30 });
     try {
@@ -104,27 +209,31 @@ export default function AdminGalleryPage() {
   };
 
   const removeQueued = (id: string) => {
-    setQueue((prev) => {
-      const item = prev.find((q) => q.id === id);
-      if (item?.preview) URL.revokeObjectURL(item.preview);
-      return prev.filter((q) => q.id !== id);
-    });
+    setQueue((prev) => prev.filter((q) => q.id !== id));
   };
 
+  // Delete an image from Supabase
   const deleteImage = async (img: GalleryItem) => {
     if (!confirm(`Delete "${img.title}"? This cannot be undone.`)) return;
-    URL.revokeObjectURL(img.objectUrl);
-    await deleteGalleryImage(img.id);
+    const row = rawRows.get(img.id);
+    if (row) {
+      await deleteGalleryImage(img.id, row);
+    } else {
+      // Fallback: fetch fresh list to get row data
+      await deleteGalleryImage(img.id, { id: img.id } as GalleryRow);
+    }
     setItems((prev) => prev.filter((i) => i.id !== img.id));
+    setRawRows((prev) => { const m = new Map(prev); m.delete(img.id); return m; });
   };
 
   const openEdit = (img: GalleryItem) => {
     setEditState({ img, title: img.title, categories: [...img.categories] });
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!editState) return;
-    updateGalleryMeta(editState.img.id, {
+    setSavingEdit(true);
+    await updateGalleryMeta(editState.img.id, {
       title:      editState.title,
       categories: editState.categories,
     });
@@ -135,6 +244,7 @@ export default function AdminGalleryPage() {
           : i,
       ),
     );
+    setSavingEdit(false);
     setEditState(null);
   };
 
@@ -152,6 +262,10 @@ export default function AdminGalleryPage() {
     });
   };
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────────────────────────
+
   return (
     <div className="min-h-screen bg-jgt-bg text-jgt-text font-sans">
       {/* Header */}
@@ -164,35 +278,47 @@ export default function AdminGalleryPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-12">
-        {/* Info note */}
-        <div className="mb-8 p-5 border border-blue-500/30 bg-blue-500/5">
-          <div className="flex items-start gap-3">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" className="mt-0.5 flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <div>
-              <p className="font-sans text-blue-400 text-sm font-500 mb-1">IndexedDB Storage</p>
-              <p className="font-sans text-blue-400/70 text-xs leading-relaxed">
-                Images are stored locally in your browser&apos;s IndexedDB. They persist across sessions and are synced with the public Gallery automatically.
-              </p>
+
+        {/* Supabase config check */}
+        {!supabaseReady && <SetupInstructions />}
+
+        {/* Storage info banner (when configured) */}
+        {supabaseReady && (
+          <div className="mb-8 p-5 border border-emerald-500/30 bg-emerald-500/5">
+            <div className="flex items-start gap-3">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" className="mt-0.5 flex-shrink-0">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              <div>
+                <p className="font-sans text-emerald-400 text-sm font-semibold mb-1">Supabase Connected</p>
+                <p className="font-sans text-emerald-400/70 text-xs leading-relaxed">
+                  Images upload to Supabase Storage and are instantly visible on all devices — phones, computers, and visitors.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Page title */}
         <div className="mb-10">
           <h1 className="font-display text-4xl text-jgt-text mb-2">Gallery Manager</h1>
           <p className="font-sans text-jgt-muted text-sm">
-            Drag and drop photos to add them to your gallery. Images are automatically compressed to 1600×1600px before storage.
-            Choose categories manually — including whether each image appears in <strong className="text-jgt-text">All Projects</strong>.
+            Upload photos to add them to the public gallery. Images are compressed to 1600×1600px and saved to shared storage —
+            visible on every device. Choose categories manually, including whether each image appears in{' '}
+            <strong className="text-jgt-text">All Projects</strong>.
           </p>
         </div>
 
         {/* ── UPLOAD ZONE ──────────────────────────────── */}
         <div
-          className={`drop-zone border-2 border-dashed border-jgt-border rounded-none p-12 text-center cursor-pointer transition-all mb-8 ${dragging ? 'drag-active' : 'hover:border-jgt-gold/40'}`}
+          className={`drop-zone border-2 border-dashed border-jgt-border rounded-none p-12 text-center cursor-pointer transition-all mb-8 ${
+            dragging ? 'drag-active' : 'hover:border-jgt-gold/40'
+          } ${!supabaseReady ? 'opacity-50 pointer-events-none' : ''}`}
           onDrop={onDrop}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => supabaseReady && fileInputRef.current?.click()}
         >
           <div className="flex flex-col items-center gap-4">
             <div className="w-16 h-16 flex items-center justify-center glass-light">
@@ -204,10 +330,10 @@ export default function AdminGalleryPage() {
             </div>
             <div>
               <p className="font-sans text-jgt-text text-sm font-500 mb-1">
-                Drop photos here or click to browse
+                {supabaseReady ? 'Drop photos here or click to browse' : 'Configure Supabase to enable uploads'}
               </p>
               <p className="font-sans text-jgt-muted text-xs">
-                JPG, PNG, WebP — auto-compressed to 1600px max, stored locally in IndexedDB
+                JPG, PNG, WebP — compressed to 1600px max, saved to Supabase (public, all devices)
               </p>
             </div>
           </div>
@@ -239,29 +365,45 @@ export default function AdminGalleryPage() {
                   <div className="relative aspect-video overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={item.preview} alt="Preview" className="w-full h-full object-cover" />
-                    {/* Status overlay */}
+
+                    {/* Uploading overlay */}
                     {item.status === 'uploading' && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                        <div className="w-16 h-1.5 bg-jgt-border rounded-full overflow-hidden">
+                      <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2">
+                        <div className="w-20 h-1.5 bg-jgt-border rounded-full overflow-hidden">
                           <div className="h-full bg-jgt-gold transition-all duration-300" style={{ width: `${item.progress}%` }} />
                         </div>
+                        <span className="font-sans text-[10px] text-jgt-gold tracking-wider">Uploading…</span>
                       </div>
                     )}
+
+                    {/* Done overlay */}
                     {item.status === 'done' && (
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A056" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-1.5">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span className="font-sans text-[10px] text-emerald-400 tracking-wider">Saved live</span>
                       </div>
                     )}
+
+                    {/* Error overlay */}
                     {item.status === 'error' && (
                       <div className="absolute inset-0 bg-red-900/40 flex items-center justify-center">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <line x1="15" y1="9" x2="9" y2="15"/>
+                          <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
                       </div>
                     )}
+
+                    {/* Remove button */}
                     <button
                       onClick={() => removeQueued(item.id)}
                       className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center glass text-jgt-text hover:text-red-400 transition-colors cursor-pointer"
                     >
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
                     </button>
                   </div>
 
@@ -272,16 +414,24 @@ export default function AdminGalleryPage() {
                       value={item.title}
                       onChange={(e) => updateQueue(item.id, { title: e.target.value })}
                       placeholder="Image title"
-                      className="w-full bg-transparent border border-jgt-border px-3 py-2 font-sans text-xs text-jgt-text placeholder:text-jgt-muted/50 focus:outline-none focus:border-jgt-gold transition-colors"
+                      disabled={item.status === 'uploading' || item.status === 'done'}
+                      className="w-full bg-transparent border border-jgt-border px-3 py-2 font-sans text-xs text-jgt-text placeholder:text-jgt-muted/50 focus:outline-none focus:border-jgt-gold transition-colors disabled:opacity-50"
                     />
-                    {/* All 8 categories including All Projects — fully manual */}
+
+                    {/* Categories */}
                     <div className="space-y-1.5">
                       <p className="font-sans text-[10px] text-jgt-muted tracking-wider uppercase mb-1">Categories</p>
                       {GALLERY_CATEGORIES.map((cat) => (
-                        <label key={cat} className={`flex items-center gap-2 cursor-pointer ${cat === 'All Projects' ? 'border-b border-jgt-border/30 pb-1.5 mb-1' : ''}`}>
+                        <label
+                          key={cat}
+                          className={`flex items-center gap-2 cursor-pointer ${
+                            cat === 'All Projects' ? 'border-b border-jgt-border/30 pb-1.5 mb-1' : ''
+                          }`}
+                        >
                           <input
                             type="checkbox"
                             checked={item.categories.includes(cat)}
+                            disabled={item.status === 'uploading' || item.status === 'done'}
                             onChange={(e) => {
                               const cats = e.target.checked
                                 ? [...item.categories, cat]
@@ -290,17 +440,24 @@ export default function AdminGalleryPage() {
                             }}
                             className="w-3 h-3 accent-jgt-gold cursor-pointer"
                           />
-                          <span className={`font-sans text-xs ${cat === 'All Projects' ? 'text-jgt-gold' : 'text-jgt-text'}`}>{cat}</span>
+                          <span className={`font-sans text-xs ${cat === 'All Projects' ? 'text-jgt-gold' : 'text-jgt-text'}`}>
+                            {cat}
+                          </span>
                         </label>
                       ))}
                     </div>
+
+                    {/* Status / action */}
+                    <StatusBadge status={item.status} error={item.error} />
                     {item.status === 'pending' && (
                       <button onClick={() => uploadItem(item)} className="w-full btn-gold text-xs py-2">
                         Upload
                       </button>
                     )}
-                    {item.status === 'error' && item.error && (
-                      <p className="font-sans text-xs text-red-400">{item.error}</p>
+                    {item.status === 'error' && (
+                      <button onClick={() => uploadItem(item)} className="w-full btn-outline text-xs py-2">
+                        Retry
+                      </button>
                     )}
                   </div>
                 </div>
@@ -324,7 +481,11 @@ export default function AdminGalleryPage() {
           ) : items.length === 0 ? (
             <div className="text-center py-16 border border-jgt-border/30">
               <p className="font-sans text-jgt-muted text-sm">No images in gallery yet.</p>
-              <p className="font-sans text-jgt-muted/50 text-xs mt-2">Drop photos above to get started.</p>
+              <p className="font-sans text-jgt-muted/50 text-xs mt-2">
+                {supabaseReady
+                  ? 'Drop photos above to get started.'
+                  : 'Configure Supabase above to enable shared gallery storage.'}
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -340,6 +501,15 @@ export default function AdminGalleryPage() {
                     />
                   </div>
 
+                  {/* Public indicator */}
+                  {img.isPublic && (
+                    <div className="absolute top-2 left-2">
+                      <span className="font-sans text-[9px] text-emerald-400 bg-black/60 px-1.5 py-0.5 tracking-wider uppercase">
+                        Live
+                      </span>
+                    </div>
+                  )}
+
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-3">
                     <p className="font-sans text-jgt-text text-xs text-center line-clamp-2">{img.title}</p>
@@ -351,14 +521,22 @@ export default function AdminGalleryPage() {
                         onClick={() => openEdit(img)}
                         className="flex items-center gap-1.5 font-sans text-xs text-jgt-gold hover:text-jgt-text border border-jgt-gold/30 px-3 py-1.5 transition-colors cursor-pointer"
                       >
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
                         Edit
                       </button>
                       <button
                         onClick={() => deleteImage(img)}
                         className="flex items-center gap-1.5 font-sans text-xs text-red-400 hover:text-red-300 border border-red-400/30 px-3 py-1.5 transition-colors cursor-pointer"
                       >
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="3 6 5 6 21 6"/>
+                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                          <path d="M10 11v6M14 11v6"/>
+                          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                        </svg>
                         Delete
                       </button>
                     </div>
@@ -372,8 +550,8 @@ export default function AdminGalleryPage() {
         {/* Footer note */}
         <div className="mt-12 p-5 border border-jgt-border/30">
           <p className="font-sans text-jgt-muted text-xs leading-relaxed">
-            <strong className="text-jgt-text">Security note:</strong> This admin page has no authentication in the current build.
-            Gallery data is stored locally in IndexedDB — to secure access, add a password check in <code>src/app/admin-gallery/page.tsx</code>.
+            <strong className="text-jgt-text">Note:</strong> This admin page has no login protection in the current build.
+            To secure it, add a password check or use Supabase Auth in <code>src/app/admin-gallery/page.tsx</code>.
           </p>
         </div>
       </div>
@@ -392,7 +570,10 @@ export default function AdminGalleryPage() {
                 onClick={() => setEditState(null)}
                 className="w-7 h-7 flex items-center justify-center text-jgt-muted hover:text-jgt-text transition-colors cursor-pointer"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
               </button>
             </div>
 
@@ -414,14 +595,16 @@ export default function AdminGalleryPage() {
               />
             </div>
 
-            {/* Categories — all 8, including All Projects */}
+            {/* Categories */}
             <div>
               <label className="font-sans text-[10px] text-jgt-muted tracking-wider uppercase block mb-2">Categories</label>
               <div className="space-y-1.5">
                 {GALLERY_CATEGORIES.map((cat) => (
                   <label
                     key={cat}
-                    className={`flex items-center gap-2.5 cursor-pointer py-0.5 ${cat === 'All Projects' ? 'border-b border-jgt-border/30 pb-2 mb-1' : ''}`}
+                    className={`flex items-center gap-2.5 cursor-pointer py-0.5 ${
+                      cat === 'All Projects' ? 'border-b border-jgt-border/30 pb-2 mb-1' : ''
+                    }`}
                   >
                     <input
                       type="checkbox"
@@ -441,15 +624,24 @@ export default function AdminGalleryPage() {
             <div className="flex gap-3 pt-1">
               <button
                 onClick={() => setEditState(null)}
-                className="flex-1 btn-outline text-xs py-2.5"
+                disabled={savingEdit}
+                className="flex-1 btn-outline text-xs py-2.5 disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={saveEdit}
-                className="flex-1 btn-gold text-xs py-2.5"
+                disabled={savingEdit}
+                className="flex-1 btn-gold text-xs py-2.5 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                Save Changes
+                {savingEdit ? (
+                  <>
+                    <span className="inline-block w-2 h-2 rounded-full bg-current animate-pulse" />
+                    Saving…
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
               </button>
             </div>
           </div>
