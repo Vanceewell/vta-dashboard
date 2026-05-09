@@ -4,7 +4,7 @@ import { useRef } from 'react';
 
 // AI-EDITABLE: film benefits data
 const BENEFITS = [
-  { label: 'Heat Rejection',       pct: 96, desc: 'Block up to 96% of solar heat for a dramatically cooler interior.' },
+  { label: 'Heat Rejection',       pct: 80, desc: 'Block up to 80% of heat for a dramatically cooler interior.' },
   { label: 'UV Protection',        pct: 99, desc: 'Block 99.9% of harmful UV rays — the leading cause of interior fade and skin damage.' },
   { label: 'Interior Protection',  pct: 87, desc: 'Protect leather, plastics, and upholstery from sun-related cracking and discoloration.' },
   { label: 'Glare Reduction',      pct: 90, desc: 'Reduce eye strain and improve visibility on Southern California\'s bright coastal roads.' },
