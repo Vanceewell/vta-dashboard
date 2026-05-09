@@ -47,10 +47,6 @@ export default function Page() {
       ]}
       faqs={[
         {
-          q: 'How much does automotive window tinting cost in San Clemente?',
-          a: 'Most standard passenger vehicles range from $150–$350 for a full tint package. High-end ceramic film on larger vehicles or performance cars can run $350–$550+. Jason will give you an honest quote before any work begins.',
-        },
-        {
           q: 'How long does a car tint take?',
           a: 'Most standard installs take 2–4 hours. Vehicles with complex rear windows, multiple curves, or extra panels may take longer. Jason does not rush the process.',
         },

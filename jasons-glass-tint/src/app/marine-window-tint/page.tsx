@@ -47,10 +47,6 @@ export default function Page() {
       ]}
       faqs={[
         {
-          q: 'How much does marine window tinting cost?',
-          a: "Marine tinting is typically priced by the window or by complexity rather than simple square footage, since boat glass tends to involve curved surfaces and custom shapes. Most marine installs run $400–$1,200+ depending on the vessel size and number of windows. Jason will inspect your vessel and provide an accurate estimate.",
-        },
-        {
           q: 'Can Jason come to my slip at Dana Point Harbor?',
           a: "Yes. Jason can typically come directly to the marina for marine installations, eliminating the need to haul the boat. Contact him to arrange access and scheduling.",
         },

@@ -47,10 +47,6 @@ export default function Page() {
       ]}
       faqs={[
         {
-          q: 'How much does commercial window tinting cost in Orange County?',
-          a: "Commercial tinting is priced by square footage and film specification. For standard solar control film, pricing typically runs $6–$16 per square foot installed. Specialty films (high-rejection, decorative, security) are priced higher. Jason provides detailed commercial estimates with transparent per-square-foot pricing.",
-        },
-        {
           q: 'Can commercial tinting be done during business hours?',
           a: "Jason can often schedule commercial installs during off-hours or on weekends to minimize business disruption. For larger projects, he'll work with you to develop a phased installation schedule.",
         },

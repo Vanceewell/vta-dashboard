@@ -18,11 +18,6 @@ const faqSchema = {
   mainEntity: [
     {
       '@type':          'Question',
-      name:             'How much does window tint cost in San Clemente?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Automotive tint in San Clemente typically ranges from $150–$500 depending on vehicle size, film type, and number of windows. Residential pricing varies by square footage. Jason provides free, honest estimates — text him at (949) 496-8468.' },
-    },
-    {
-      '@type':          'Question',
       name:             'Does Jason install tint himself or does he use subcontractors?',
       acceptedAnswer: { '@type': 'Answer', text: 'Jason personally installs every single job. He has no employees and uses no subcontractors. The person you talk to on the phone is the person who shows up and does the work.' },
     },
@@ -66,10 +61,6 @@ export default function Page() {
         ]}
         faqs={[
           {
-            q: 'How much does window tint cost in San Clemente?',
-            a: "Automotive tint typically ranges from $150–$500 depending on vehicle size, film tier, and the number of windows being tinted. Residential pricing is based on square footage. Jason provides free consultations and honest estimates with no pressure — text him at (949) 496-8468 to get started.",
-          },
-          {
             q: "What type of window film does Jason use?",
             a: "Jason installs only professional-grade film from manufacturers including 3M, Llumar, and Huper Optik. He does not stock or install bargain-bin film. The right film for your project depends on your goals — heat rejection, UV protection, privacy, or aesthetics — and Jason will walk you through the options.",
           },
@@ -80,10 +71,6 @@ export default function Page() {
           {
             q: "Does Jason offer residential window tinting in San Clemente?",
             a: "Yes. Residential tinting is one of Jason's most requested services in San Clemente, especially for homes with west-facing windows and ocean views. Film options include solar control (heat and UV reduction), privacy film, and decorative frost film.",
-          },
-          {
-            q: "How do I get a quote from Jason?",
-            a: "The fastest way is to text Jason directly at (949) 496-8468. Describe your project — type of vehicle, number of windows, or square footage of home — and he'll respond personally with a recommendation and price.",
           },
         ]}
         relatedLinks={[
