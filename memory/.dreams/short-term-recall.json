@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-08T18:02:29.392Z",
+  "updatedAt": "2026-05-08T22:05:25.132Z",
   "entries": {
     "memory:memory/2026-04-24.md:64:85": {
       "key": "memory:memory/2026-04-24.md:64:85",
@@ -42,16 +42,17 @@
       "endLine": 40,
       "source": "memory",
       "snippet": "# 2026-04-24 - Jason's Glass Tint Website Project ## Session Work Built a premium, modern website for Jason's Glass Tint (Vance's father's business) in Orange County, CA. ### Project Details - **Business:** Jason's Glass Tint - window tinting specialist - **Phone:** 949-496-8468 - **Service Areas:** San Clemente, Talega, Dana Point, San Juan Capistrano, Laguna Niguel, Orange County - **Specialties:** Tesla & luxury vehicle tinting, residential, commercial, marine tint - **Brand:** 30+ years experience, one-man shop (Jason only), 100,000+ windows tinted, premium film only ### Website Features Delivered 1. **Premium Design** - Dark/light gradient hero with overlay - Cyan accent color",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-07T20:25:25.119Z",
-      "lastRecalledAt": "2026-05-08T04:20:04.316Z",
+      "lastRecalledAt": "2026-05-08T22:05:25.132Z",
       "queryHashes": [
         "951dfc67a112",
-        "b8bebf9c5bec"
+        "b8bebf9c5bec",
+        "b8b4837fc437"
       ],
       "recallDays": [
         "2026-05-07",
@@ -75,20 +76,22 @@
       "endLine": 40,
       "source": "memory",
       "snippet": "# Daily Memory - May 7, 2026 ## Website Projects Completed ### Fancy Fuimaono's Restaurant Website - **Client:** Tatum Fuimaono (Vance's cousin) - **Location:** Newport Beach, CA - **Tagline:** \"If your feeling fancy come to my resturant and go dancing\" - **Cuisine:** Fancy food - **Contact:** (949) 456-3911 **Build Process:** 1. Initial site built with Sonnet (dark luxury, black/gold, cinematic hero, chef spotlight, menu, gallery, reservation CTA) 2. Updated with Tatum's actual chef photo (replaced stock images) 3. Tatum's image saved as `tatum-fuimaono.jpg` in repo 4. Final live URL: https://vanceewell.github.io/vta-dashboard/fancy-fuimaonoS.html **Site Features:** - Dark luxury aesthe",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-07T22:13:46.215Z",
-      "lastRecalledAt": "2026-05-07T23:21:39.611Z",
+      "lastRecalledAt": "2026-05-08T22:05:25.132Z",
       "queryHashes": [
         "f3b51c5b1d5d",
         "c1a2d945cd81",
-        "23c0b5044c66"
+        "23c0b5044c66",
+        "b8b4837fc437"
       ],
       "recallDays": [
-        "2026-05-07"
+        "2026-05-07",
+        "2026-05-08"
       ],
       "conceptTags": [
         "456-3911",
@@ -108,15 +111,16 @@
       "endLine": 81,
       "source": "memory",
       "snippet": "- `/automotive-window-tint` - `/residential-window-tint` - `/commercial-window-tint` - `/marine-window-tint` - `/talega-window-tint` - `/dana-point-window-tint` - `/san-juan-capistrano-window-tint` ### Admin Gallery (`/admin-gallery`) - Drag-and-drop upload zone - Client-side image compression (Canvas API) - Supabase storage + DB integration - Category tagging, delete capability - Graceful fallback when Supabase not configured ### Design system - Colors: matte black `#0F0F0F`, gold accent `#C5A056`, warm text `#F0EDE8` - Fonts: Cormorant Garamond (display) + Outfit (sans) - All icons: SVG inline (no emojis) - Glassmorphism cards, parallax hero, Framer Motion animations throughout ### SEO",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-08T04:20:04.316Z",
-      "lastRecalledAt": "2026-05-08T04:20:04.316Z",
+      "lastRecalledAt": "2026-05-08T22:05:25.132Z",
       "queryHashes": [
-        "b8bebf9c5bec"
+        "b8bebf9c5bec",
+        "b8b4837fc437"
       ],
       "recallDays": [
         "2026-05-08"
@@ -170,15 +174,16 @@
       "endLine": 71,
       "source": "memory",
       "snippet": "- Tesla & Luxury Vehicle Specialist section (dark, cyan accents) - Gallery with filterable portfolio - Interactive lightbox (click-to-expand) - Why Choose Jason (6 value points) - Service Areas (6 locations highlighted) - About Jason (30+ years story) - Contact section (TEXT & CALL only, no form) - Footer 4. **Gallery** - 18 real photos embedded as base64 - Categories: Automotive (7), Residential (2), Commercial (2), Marine (2), vehicles (5) - Filter buttons: All, Automotive, Residential, Commercial, Marine - Hover zoom + overlay text - Click opens lightbox modal 5. **SEO Optimization** - Meta tags for San Clemente, car tint, Tesla tint, Orange Cou",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-08T04:20:04.316Z",
-      "lastRecalledAt": "2026-05-08T04:20:04.316Z",
+      "lastRecalledAt": "2026-05-08T22:05:25.132Z",
       "queryHashes": [
-        "b8bebf9c5bec"
+        "b8bebf9c5bec",
+        "b8b4837fc437"
       ],
       "recallDays": [
         "2026-05-08"
@@ -201,17 +206,18 @@
       "endLine": 47,
       "source": "memory",
       "snippet": "# Memory — 2026-05-08 ## Fancy Fuimaono Website Update - Subagent task completed: updated `fancy-fuimaonoS.html` in `Vanceewell/vta-dashboard` repo - Replaced chef image with Tatum Fuimaono's photo (`tatum-fuimaono.jpg`) - Updated chef name from \"Chef Alexandre Renauld\" to \"Tatum Fuimaono\" - Commit: `eb2e0b2` — \"Update: Tatum Fuimaono hero image\" - Live URL: https://vanceewell.github.io/vta-dashboard/fancy-fuimaonoS.html --- ## Jason's Glass Tint — Full Website Build **Repo:** `Vanceewell/vta-dashboard/tree/main/jasons-glass-tint` **Stack:** Next.js 14, TypeScript, Tailwind CSS, Framer Motion, Supabase ### What was built - Full luxury website for Jason's Glass Tint, San Clemente CA (sinc",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-08T04:20:04.316Z",
-      "lastRecalledAt": "2026-05-08T18:02:29.392Z",
+      "lastRecalledAt": "2026-05-08T22:05:25.132Z",
       "queryHashes": [
         "b8bebf9c5bec",
         "d8933fc2626b",
-        "84b426496b25"
+        "84b426496b25",
+        "b8b4837fc437"
       ],
       "recallDays": [
         "2026-05-08"
