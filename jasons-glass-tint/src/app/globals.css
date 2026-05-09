@@ -177,10 +177,13 @@ h1, h2, h3, h4 {
 ═══════════════════════════════════════════════════════════ */
 
 /* Desktop: 8 equal-width tiles in one horizontal row */
+/* ═══════════════════════════════════════════════════════════
+   GALLERY FILTER — PREMIUM TILES
+═══════════════════════════════════════════════════════════ */
 .gallery-filter-row {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  gap: 8px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -188,61 +191,85 @@ h1, h2, h3, h4 {
 .gallery-filter-tile {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 18px 8px;
-  border: 1px solid var(--border);
-  background: transparent;
+  gap: 10px;
+  padding: 28px 10px;
+  min-height: 110px;
+  border: 1px solid rgba(197, 160, 86, 0.35);
+  background: #0d0d0d;
   cursor: pointer;
   transition:
-    background 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.18s ease;
+    background 0.28s ease,
+    border-color 0.28s ease,
+    box-shadow 0.28s ease,
+    transform 0.2s ease;
   overflow: hidden;
 }
 
-/* Shimmer pseudo-element on hover */
+/* Gold shimmer sweep on hover */
 .gallery-filter-tile::before {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
     135deg,
-    transparent 30%,
-    rgba(197, 160, 86, 0.06) 50%,
-    transparent 70%
+    transparent 20%,
+    rgba(197, 160, 86, 0.08) 50%,
+    transparent 80%
   );
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.35s ease;
 }
 
 .gallery-filter-tile:hover::before {
   opacity: 1;
 }
 
+/* Icon container */
+.gallery-filter-tile__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  position: relative;
+  z-index: 1;
+  transition: color 0.28s ease;
+}
+
 .gallery-filter-tile__label {
   font-family: var(--font-outfit, sans-serif);
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   line-height: 1.2;
   text-align: center;
   white-space: nowrap;
   position: relative;
   z-index: 1;
+  transition: color 0.28s ease;
 }
 
 /* Inactive state */
 .gallery-filter-tile--inactive {
-  color: var(--muted);
+  color: rgba(255,255,255,0.45);
+}
+.gallery-filter-tile--inactive .gallery-filter-tile__icon {
+  color: rgba(197, 160, 86, 0.5);
 }
 .gallery-filter-tile--inactive:hover {
-  border-color: rgba(197, 160, 86, 0.55);
-  color: var(--text);
-  box-shadow: 0 0 18px rgba(197, 160, 86, 0.12), inset 0 0 0 1px rgba(197, 160, 86, 0.12);
-  transform: translateY(-2px);
+  border-color: rgba(197, 160, 86, 0.75);
+  color: rgba(255,255,255,0.9);
+  box-shadow:
+    0 0 24px rgba(197, 160, 86, 0.18),
+    inset 0 0 0 1px rgba(197, 160, 86, 0.18);
+  transform: translateY(-3px);
+}
+.gallery-filter-tile--inactive:hover .gallery-filter-tile__icon {
+  color: rgba(197, 160, 86, 0.85);
 }
 
 /* Active state */
@@ -250,36 +277,53 @@ h1, h2, h3, h4 {
   background: var(--gold);
   border-color: var(--gold);
   color: #080808;
-  box-shadow: 0 4px 20px rgba(197, 160, 86, 0.35);
+  box-shadow:
+    0 6px 28px rgba(197, 160, 86, 0.45),
+    0 2px 8px rgba(197, 160, 86, 0.25);
+}
+.gallery-filter-tile--active .gallery-filter-tile__icon {
+  color: #080808;
 }
 .gallery-filter-tile--active .gallery-filter-tile__label {
-  font-weight: 600;
+  font-weight: 700;
+  color: #080808;
+}
+
+/* Desktop: 8 equal columns in one row */
+@media (min-width: 1025px) {
+  .gallery-filter-row {
+    grid-template-columns: repeat(8, 1fr);
+  }
 }
 
 /* Tablet: 4 columns × 2 rows */
 @media (max-width: 1024px) {
   .gallery-filter-row {
     grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
   .gallery-filter-tile {
-    padding: 16px 8px;
+    padding: 22px 8px;
+    min-height: 96px;
   }
   .gallery-filter-tile__label {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
   }
 }
 
-/* Mobile: 2 columns × 4 rows, horizontally scrollable if tight */
+/* Mobile: 2 columns × 4 rows */
 @media (max-width: 480px) {
   .gallery-filter-row {
     grid-template-columns: repeat(2, 1fr);
     gap: 6px;
   }
   .gallery-filter-tile {
-    padding: 14px 6px;
+    padding: 20px 8px;
+    min-height: 88px;
   }
   .gallery-filter-tile__label {
     font-size: 0.58rem;
+    letter-spacing: 0.14em;
   }
 }
 

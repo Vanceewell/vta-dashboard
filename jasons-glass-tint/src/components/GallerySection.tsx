@@ -15,6 +15,68 @@ import {
    • Revokes object URLs on unmount to avoid memory leaks.
 ───────────────────────────────────────────────────────────────────────────── */
 
+/* Premium SVG icons — one per category, luxury/minimal style */
+const CATEGORY_ICONS: Record<string, JSX.Element> = {
+  'All Projects': (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7"/>
+      <rect x="14" y="3" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/>
+    </svg>
+  ),
+  'Automotive': (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 17H3v-5l2-5h14l2 5v5h-2"/>
+      <circle cx="7.5" cy="17.5" r="2.5"/>
+      <circle cx="16.5" cy="17.5" r="2.5"/>
+    </svg>
+  ),
+  'Residential': (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12L12 3l9 9"/>
+      <path d="M9 21V12h6v9"/>
+    </svg>
+  ),
+  'Commercial': (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="7" width="20" height="14"/>
+      <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+      <line x1="12" y1="12" x2="12" y2="17"/>
+      <line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/>
+    </svg>
+  ),
+  'Marine': (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 17l3-9 6 4 6-4 3 9"/>
+      <path d="M2 20h20"/>
+    </svg>
+  ),
+  'RV': (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="6" width="18" height="11" rx="1"/>
+      <path d="M19 10h3l1 4v2h-4"/>
+      <circle cx="6" cy="19" r="2"/>
+      <circle cx="16" cy="19" r="2"/>
+    </svg>
+  ),
+  'Frost': (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="2" x2="12" y2="22"/>
+      <path d="M7 7l5 5 5-5"/>
+      <path d="M7 17l5-5 5 5"/>
+      <line x1="2" y1="12" x2="22" y2="12"/>
+      <path d="M7 7L2 12l5 5"/>
+      <path d="M17 7l5 5-5 5"/>
+    </svg>
+  ),
+  'Safety Film': (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+    </svg>
+  ),
+};
+
 interface RenderItem extends GalleryItem {
   tall: boolean;
 }
@@ -66,8 +128,9 @@ export default function GallerySection() {
           transition={{ duration: 0.7 }}
           className="mb-12"
         >
-          <span className="section-label">Project Gallery</span>
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mt-4 gap-4">
+          {/* Eyebrow label — upper-left, above the heading */}
+          <span className="section-label">40+ years of craftsmanship</span>
+          <div className="mt-3">
             <h2 className="font-display text-jgt-text" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}>
               40+ Years of Craftsmanship
             </h2>
@@ -85,6 +148,11 @@ export default function GallerySection() {
                 active === cat ? 'gallery-filter-tile--active' : 'gallery-filter-tile--inactive'
               }`}
             >
+              {CATEGORY_ICONS[cat] && (
+                <span className="gallery-filter-tile__icon">
+                  {CATEGORY_ICONS[cat]}
+                </span>
+              )}
               <span className="gallery-filter-tile__label">{cat}</span>
             </button>
           ))}
