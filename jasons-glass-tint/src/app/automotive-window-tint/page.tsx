@@ -26,11 +26,11 @@ export default function Page() {
       sections={[
         {
           heading: "Automotive Tinting That Looks Factory-Installed",
-          body: "Jason has tinted tens of thousands of vehicles over his career — sedans, trucks, SUVs, coupes, convertibles, and high-performance sports cars. Every automotive tint install comes down to the same principles: the right film for the application, meticulous surface preparation, and patience during installation. Jason doesn't rush. He takes the time needed to ensure clean edges, no bubbles, no lifting, and a result that looks like the windows came from the factory tinted. San Clemente residents driving Porsches, BMWs, Maserati, and even daily commuter vehicles all return to Jason because they know the result will be right the first time.",
+          body: "Jason has tinted tens of thousands of vehicles over his career — sedans, trucks, SUVs, coupes, convertibles, and high-performance sports cars. Every automotive tint install comes down to the same principles: the right film for the application, meticulous surface preparation, and patience during installation. Jason doesn't rush. He takes the time needed to ensure clean edges, no bubbles, no lifting, and a result that looks like the windows came from the factory tinted. From Porsches to Raptors, Teslas to Sprinter vans, San Clemente residents know where to go to get tint done right the first time.",
         },
         {
           heading: "Film Options for Every Automotive Need",
-          body: "Not all window film is the same, and the right choice depends on your priorities. Jason works exclusively with premium American-made film — offering the highest heat rejection (up to 96%), maximum UV protection (99.9%), and no signal interference with GPS or cell service. The film is completely color-stable, meaning it won't purple or fade over time. Jason will walk you through all options and recommend the best fit for your vehicle and goals — without upselling you on something you don't need.",
+          body: "Not all window film is the same, and the right choice depends on your priorities. Jason works exclusively with premium American-made film — offering high heat rejection and maximum UV protection. The film is completely color-stable, meaning it won't purple or fade over time. Jason will walk you through all options and recommend the best fit for your vehicle and goals — without upselling you on something you don't need.",
         },
       ]}
       benefits={[
