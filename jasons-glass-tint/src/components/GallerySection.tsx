@@ -126,7 +126,7 @@ export default function GallerySection() {
         </motion.div>
 
         {/* Filter Tiles */}
-        <div className="gallery-filter-row mb-10">
+        <div id="project-gallery" className="gallery-filter-row mb-10">
           {GALLERY_CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -232,9 +232,15 @@ export default function GallerySection() {
             className="text-center mt-12"
           >
             <p className="font-sans text-jgt-muted text-sm mb-4">Want results like these for your vehicle, home, or business?</p>
-            <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4">
-              Text Jason for a Quote
-            </a>
+            <button
+              className="btn-gold text-xs px-8 py-4"
+              onClick={() => {
+                const el = document.getElementById('project-gallery');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              See More Images
+            </button>
           </motion.div>
         )}
       </div>
