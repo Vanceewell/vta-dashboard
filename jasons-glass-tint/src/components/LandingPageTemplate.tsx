@@ -19,11 +19,12 @@ export interface LPProps {
   intro:    string;
   sections: { heading: string; body: string }[];
   benefits: string[];
+  benefitsHeading?: string;
   faqs:     FAQ[];
   relatedLinks: { label: string; href: string }[];
 }
 
-export default function LandingPageTemplate({ hero, intro, sections, benefits, faqs, relatedLinks }: LPProps) {
+export default function LandingPageTemplate({ hero, intro, sections, benefits, benefitsHeading, faqs, relatedLinks }: LPProps) {
   const [heroImgUrl, setHeroImgUrl] = useState(hero.img);
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export default function LandingPageTemplate({ hero, intro, sections, benefits, f
                 viewport={{ once: true }}
                 className="glass-light p-8"
               >
-                <h3 className="font-display text-jgt-text text-2xl mb-6">Why Choose Jason's?</h3>
+                <h3 className="font-display text-jgt-text text-2xl mb-6">{benefitsHeading ?? "Why Choose Jason's?"}</h3>
                 <ul className="space-y-3">
                   {benefits.map((b, i) => (
                     <li key={i} className="flex items-start gap-3">

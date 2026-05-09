@@ -22,11 +22,11 @@ export default function Page() {
         img:      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1400&q=80",
         slot:     'residentialPageHero',
       }}
-      intro="San Clemente's coastal location is a blessing and a challenge. The same sun that makes outdoor living spectacular also drives up cooling bills, fades hardwood floors and furniture, and makes west-facing rooms uncomfortably hot in the afternoon. Quality residential window film solves all three."
+      intro="San Clemente's coastal location is a blessing and a challenge. The same sun that makes outdoor living spectacular also drives up cooling bills, fades hardwood floors and furniture, and can make a room uncomfortably hot. It also solves privacy issues. Quality residential window film solves many problems."
       sections={[
         {
           heading: "Residential Window Film for San Clemente Homes",
-          body: "Jason has been installing residential window film throughout San Clemente and South Orange County since 1989. He understands the specific challenges of coastal California homes — intense UV exposure year-round, glare off the Pacific on western exposures, and the need to preserve views while controlling heat. Whether you live in a Talega hillside home, a downtown San Clemente bungalow, or a Dana Point cliff-side property, the right window film can transform your indoor environment without altering the exterior appearance of your home.",
+          body: "Jason has been installing residential window film throughout Orange County and San Clemente since 1989. He understands the specific challenges of coastal California homes — intense UV exposure year-round, glare off the Pacific on western exposures, and the need to preserve views while controlling heat. Whether you live in a Talega hillside home, a downtown San Clemente bungalow, or a Dana Point cliff-side property, the right window film can transform your indoor environment without even noticing the film is there.",
         },
         {
           heading: "Solar Control Film: Comfort and Energy Savings",
@@ -60,6 +60,7 @@ export default function Page() {
           a: "Yes, with some considerations. Certain high-heat-rejection films can cause thermal stress in some dual-pane configurations. Jason will assess your specific windows and recommend a film that is safe and compatible. Most modern dual-pane windows are fully compatible with residential film.",
         },
       ]}
+      benefitsHeading="Why Tint Your Home?"
       relatedLinks={[
         { label: 'Talega Window Tint',   href: '/talega-window-tint'        },
         { label: 'San Clemente Tint',    href: '/san-clemente-window-tint'  },
