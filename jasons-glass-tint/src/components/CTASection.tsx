@@ -27,7 +27,8 @@ export default function CTASection() {
       {/* Gold line top */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[1px] bg-jgt-gold" />
 
-      <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      {/* Widened to max-w-5xl so the headline has room to stay on one line */}
+      <div className="relative max-w-5xl mx-auto px-6 lg:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -38,11 +39,16 @@ export default function CTASection() {
 
           <h2
             className="font-display text-jgt-text mt-6 mb-6"
-            style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
+            style={{ fontSize: 'clamp(2.5rem, 5.5vw, 5.5rem)', lineHeight: 1.15 }}
           >
-            Premium Tint. Installed Right.
-            <br />
-            <em className="text-jgt-gold">The First Time.</em>
+            {/* whitespace-nowrap keeps this on a single line on desktop;
+                on narrow mobile it will wrap naturally once the font scales down */}
+            <span style={{ whiteSpace: 'nowrap', display: 'block' }}>
+              Premium Tint. Installed Right.
+            </span>
+            <em className="text-jgt-gold" style={{ display: 'block', marginTop: '0.15em' }}>
+              The First Time.
+            </em>
           </h2>
 
           <p className="font-sans font-light text-jgt-muted max-w-xl mx-auto mb-10 text-[0.95rem] leading-relaxed">
