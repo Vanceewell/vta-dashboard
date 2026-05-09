@@ -65,7 +65,7 @@ const SERVICES = [
     icon:  <AnchorIcon />,
   },
   {
-    slug:       '#contact',
+    slug:       '/frost-film',
     overrideId: 'service-frost',
     title: 'Frost Film',
     desc:  'Elegant frosted privacy film for bathroom windows, office partitions, and interior glass. Professional aesthetics with zero permanent commitment.',
@@ -73,7 +73,7 @@ const SERVICES = [
     icon:  <FrostIcon />,
   },
   {
-    slug:       '#contact',
+    slug:       '/safety-film',
     overrideId: 'service-safety',
     title: 'Safety Film',
     desc:  'Shatter-resistant safety film holds glass together on impact — essential for homes, schools, storefronts, and vehicles. Code-compliant options available.',
