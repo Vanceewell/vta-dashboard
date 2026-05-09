@@ -94,6 +94,15 @@ export type SiteFramingMap = Partial<Record<SiteImageSlot, ImageFraming>>;
 // Fetch all site images
 // ─────────────────────────────────────────────────────────────────────────────
 
+/** Error codes Supabase returns when the table does not exist */
+function isTableMissingError(error: { code?: string; message?: string }): boolean {
+  return (
+    error.code === '42P01' ||
+    (error.message ?? '').includes('does not exist') ||
+    (error.message ?? '').includes('relation "site_images"')
+  );
+}
+
 export async function fetchSiteImages(): Promise<{
   urls:    SiteImageMap;
   framing: SiteFramingMap;
@@ -105,7 +114,11 @@ export async function fetchSiteImages(): Promise<{
     .select('*');
 
   if (error) {
-    console.error('[siteImages] fetch error:', error);
+    if (isTableMissingError(error)) {
+      console.warn('[siteImages] site_images table not found — run setup SQL in Supabase.');
+    } else {
+      console.error('[siteImages] fetch error:', error);
+    }
     return { urls: {}, framing: {} };
   }
 
@@ -171,7 +184,7 @@ export async function uploadSiteImage(
 
   if (storageErr) {
     console.error('[siteImages] storage upload error:', storageErr);
-    return { ok: false, error: `Upload failed: ${storageErr.message}` };
+    return { ok: false, error: `Storage upload failed: ${storageErr.message}` };
   }
 
   // Get public URL
@@ -198,6 +211,9 @@ export async function uploadSiteImage(
     console.error('[siteImages] db upsert error:', dbErr);
     // Cleanup new storage blob since DB failed
     await supabase.storage.from(STORAGE_BUCKET).remove([path]);
+    if (isTableMissingError(dbErr)) {
+      return { ok: false, error: 'Supabase site_images table or permissions need setup. Run the setup SQL in your Supabase SQL editor.' };
+    }
     return { ok: false, error: `Database error: ${dbErr.message}` };
   }
 

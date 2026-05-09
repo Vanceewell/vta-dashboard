@@ -397,10 +397,12 @@ export default function AdminHeroLayout() {
             style={{ background: isSaved ? '#22c55e' : '#C5A056', color: '#0a0a0a' }}
           >
             {isSaved
-              ? '✓ Saved'
+              ? '✓ Saved Live'
               : activeTab === 'positioning'
-                ? 'Save to This Browser'
-                : 'Auto-Saving to Supabase'}
+                ? 'Save Layout'
+                : activeTab === 'images'
+                ? 'Saves on Upload'
+                : 'Gallery Auto-Saves'}
           </button>
         </div>
       </header>
@@ -409,9 +411,9 @@ export default function AdminHeroLayout() {
       <div className="bg-white/5 border-b border-white/10 px-5 py-2">
         <p className="text-[11px] text-white/40">
           {activeTab === 'positioning'
-            ? '💾 Layout saved to this browser only. Visit the homepage here to see your changes.'
+            ? '💾 Layout positioning is saved to this browser only (localStorage).'
             : activeTab === 'images'
-            ? '☁️ Images upload to Supabase Storage and are instantly visible on all devices.'
+            ? '☁️ Images save to Supabase Storage — visible on ALL devices after upload. Click ↑ Save Image Live on any slot.'
             : '☁️ Gallery images are stored in Supabase and visible on all devices.'}
         </p>
       </div>
@@ -759,7 +761,8 @@ function ImageCard({
       {/* Error message */}
       {slotStatus.status === 'error' && (
         <div className="mx-3 mt-3 px-3 py-2 rounded border border-red-500/40 bg-red-500/10">
-          <p className="text-[11px] text-red-400 leading-snug">⚠ {slotStatus.error ?? 'Upload failed.'}</p>
+          <p className="text-[11px] text-red-400 leading-snug font-semibold mb-0.5">⚠ Save failed</p>
+          <p className="text-[11px] text-red-400/80 leading-snug">{slotStatus.error ?? 'Upload failed.'}</p>
         </div>
       )}
 
@@ -795,7 +798,7 @@ function ImageCard({
         {slotStatus.status === 'error' && (
           <div className="flex items-center gap-1.5 text-[10px] text-red-400 mb-2">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-            Upload failed
+            {(slotStatus.error ?? '').includes('site_images') ? 'Table setup needed — see error above' : 'Save failed — see error above'}
           </div>
         )}
 
@@ -811,7 +814,7 @@ function ImageCard({
               cursor:      (busy || !supabaseReady) ? 'not-allowed'           : 'pointer',
             }}
           >
-            {busy ? 'Uploading…' : '↑ Replace'}
+            {busy ? 'Uploading…' : '↑ Save Image Live'}
           </button>
           {isCustom && !busy && (
             <button
