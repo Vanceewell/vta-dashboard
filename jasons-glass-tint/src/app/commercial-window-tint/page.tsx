@@ -20,6 +20,7 @@ export default function Page() {
         headline: "Commercial Tinting for South Orange County Businesses",
         sub:      "Reduce energy costs, improve employee comfort, enhance your building's appearance, and protect inventory from UV damage — all with professional commercial window film installed by Jason himself.",
         img:      "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1400&q=80",
+        slot:     'commercialPageHero',
       }}
       intro="Commercial window tinting is one of the most impactful investments a South Orange County business can make. The ROI on energy savings alone often justifies the cost within two to three years — and that's before accounting for improved comfort, reduced glare, and enhanced building aesthetics."
       sections={[

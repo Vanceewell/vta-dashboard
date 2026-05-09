@@ -1,13 +1,25 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { fetchSiteImages } from '@/lib/siteImages';
+
+const CTA_BG_DEFAULT = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80';
 
 export default function CTASection() {
+  const [bgUrl, setBgUrl] = useState(CTA_BG_DEFAULT);
+
+  useEffect(() => {
+    fetchSiteImages().then(({ urls }) => {
+      if (urls.ctaBackground) setBgUrl(urls.ctaBackground);
+    }).catch(() => {});
+  }, []);
+
   return (
     <section id="contact" className="py-24 lg:py-32 relative overflow-hidden bg-jgt-black">
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80')` }}
+        style={{ backgroundImage: `url('${bgUrl}')` }}
       />
       <div className="absolute inset-0 bg-gradient-to-br from-black/95 via-black/80 to-jgt-navy/30" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(197,160,86,0.08),transparent_70%)]" />

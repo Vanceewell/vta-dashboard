@@ -1,9 +1,11 @@
 'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
 import Footer from './Footer';
 import FloatingCTA from './FloatingCTA';
+import { fetchSiteImages, type SiteImageSlot } from '@/lib/siteImages';
 
 export interface FAQ     { q: string; a: string; }
 export interface LPProps {
@@ -11,7 +13,8 @@ export interface LPProps {
     label:    string;
     headline: string;
     sub:      string;
-    img:      string;
+    img:      string;       // default/fallback
+    slot?:    SiteImageSlot; // Supabase override slot
   };
   intro:    string;
   sections: { heading: string; body: string }[];
@@ -21,13 +24,22 @@ export interface LPProps {
 }
 
 export default function LandingPageTemplate({ hero, intro, sections, benefits, faqs, relatedLinks }: LPProps) {
+  const [heroImgUrl, setHeroImgUrl] = useState(hero.img);
+
+  useEffect(() => {
+    if (!hero.slot) return;
+    fetchSiteImages().then(({ urls }) => {
+      if (urls[hero.slot!]) setHeroImgUrl(urls[hero.slot!]!);
+    }).catch(() => {});
+  }, [hero.slot]);
+
   return (
     <>
       <Navigation />
 
       {/* ── HERO ──── */}
       <section className="relative min-h-[70vh] flex items-end pb-20 lg:pb-28 overflow-hidden bg-jgt-black">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${hero.img}')` }} />
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${heroImgUrl}')` }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/40" />
         <div className="relative max-w-5xl mx-auto px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>

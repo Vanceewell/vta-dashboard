@@ -34,6 +34,7 @@ export default function Page() {
           headline: "Window Tinting in San Clemente",
           sub:      "Jason's Glass Tint has served San Clemente since 1989. Over 40 years of professional film installation — automotive, residential, commercial, and marine — all personally installed by Jason.",
           img:      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1400&q=80",
+          slot:     'sanClementePageHero',
         }}
         intro="San Clemente has been Jason's home and his primary service area for over four decades. He's tinted windows on everything from daily commuters to oceanfront estates — and he's built his reputation one clean install at a time."
         sections={[

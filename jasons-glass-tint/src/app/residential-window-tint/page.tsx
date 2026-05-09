@@ -20,6 +20,7 @@ export default function Page() {
         headline: "Home Window Tinting in San Clemente",
         sub:      "Protect your home from coastal UV exposure, reduce cooling costs, and preserve your interior furnishings — without sacrificing the views that make South Orange County worth living in.",
         img:      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1400&q=80",
+        slot:     'residentialPageHero',
       }}
       intro="San Clemente's coastal location is a blessing and a challenge. The same sun that makes outdoor living spectacular also drives up cooling bills, fades hardwood floors and furniture, and makes west-facing rooms uncomfortably hot in the afternoon. Quality residential window film solves all three."
       sections={[

@@ -20,6 +20,7 @@ export default function Page() {
         headline: "Window Tinting in Dana Point",
         sub:      "From the harbor to the bluffs, Dana Point is one of South Orange County's most beautiful communities — and one of the most UV-intense. Jason has served Dana Point residents and marina clients for over three decades.",
         img:      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1400&q=80",
+        slot:     'danaPointPageHero',
       }}
       intro="Dana Point's coastal location creates particularly demanding conditions for windows, glass, and vehicles. Reflection off the ocean amplifies UV exposure, and the combination of marine air, heat, and sun demands premium materials and professional installation."
       sections={[

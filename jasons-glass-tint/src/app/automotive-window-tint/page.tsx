@@ -20,6 +20,7 @@ export default function Page() {
         headline: "Car Window Tinting in San Clemente",
         sub:      "From daily drivers to high-end sports cars, Jason brings 40+ years of automotive tint experience to every install. Ceramic film, carbon film, and standard options — all installed with factory precision.",
         img:      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=80",
+        slot:     'automotivePageHero',
       }}
       intro="Automotive window tinting is the most common request Jason receives — and also the one where quality of installation matters most. Factory-look tint on a luxury vehicle isn't something you want to trust to a chain shop or a part-time installer."
       sections={[

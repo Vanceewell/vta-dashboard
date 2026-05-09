@@ -20,6 +20,7 @@ export default function Page() {
         headline: "Marine Window Tinting for Dana Point & San Clemente",
         sub:      "Boats and yachts face some of the most demanding UV and heat conditions in existence. Jason installs marine-grade window film engineered specifically for the coastal marine environment.",
         img:      "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1400&q=80",
+        slot:     'marinePageHero',
       }}
       intro="Water reflects and amplifies UV radiation — meaning UV exposure on the water can be 50% higher than on land. Marine window film isn't just a comfort upgrade; it's a meaningful protection investment for passengers, interior materials, and the vessel itself."
       sections={[

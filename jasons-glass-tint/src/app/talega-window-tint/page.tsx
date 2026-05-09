@@ -20,6 +20,7 @@ export default function Page() {
         headline: "Window Tinting in Talega",
         sub:      "Talega's hillside homes enjoy stunning views and year-round California sunshine. Premium window film protects those homes from UV damage, excessive heat, and energy loss — without affecting the aesthetic or the views.",
         img:      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=80",
+        slot:     'talegaPageHero',
       }}
       intro="Talega is one of San Clemente's most sought-after communities — and one of Jason's most consistent service areas. Hillside exposure and large windows are beautiful, but they come with heat and UV challenges that premium window film solves elegantly."
       sections={[

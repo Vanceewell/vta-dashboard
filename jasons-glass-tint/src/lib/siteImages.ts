@@ -42,7 +42,16 @@ export type SiteImageSlot =
   | 'commercialServiceImage'
   | 'marineServiceImage'
   | 'frostServiceImage'
-  | 'safetyServiceImage';
+  | 'safetyServiceImage'
+  | 'ctaBackground'
+  | 'automotivePageHero'
+  | 'residentialPageHero'
+  | 'commercialPageHero'
+  | 'marinePageHero'
+  | 'sanClementePageHero'
+  | 'sanJuanPageHero'
+  | 'talegaPageHero'
+  | 'danaPointPageHero';
 
 /** Map from slot name → legacy admin panel id (for migration awareness only) */
 export const SLOT_TO_LEGACY_ID: Record<SiteImageSlot, string> = {
@@ -55,6 +64,15 @@ export const SLOT_TO_LEGACY_ID: Record<SiteImageSlot, string> = {
   marineServiceImage:      'service-marine',
   frostServiceImage:       'service-frost',
   safetyServiceImage:      'service-safety',
+  ctaBackground:           'cta-background',
+  automotivePageHero:      'page-hero-automotive',
+  residentialPageHero:     'page-hero-residential',
+  commercialPageHero:      'page-hero-commercial',
+  marinePageHero:          'page-hero-marine',
+  sanClementePageHero:     'page-hero-san-clemente',
+  sanJuanPageHero:         'page-hero-san-juan',
+  talegaPageHero:          'page-hero-talega',
+  danaPointPageHero:       'page-hero-dana-point',
 };
 
 /** All known slots in display order */
@@ -68,6 +86,15 @@ export const ALL_SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   'marineServiceImage',
   'frostServiceImage',
   'safetyServiceImage',
+  'ctaBackground',
+  'automotivePageHero',
+  'residentialPageHero',
+  'commercialPageHero',
+  'marinePageHero',
+  'sanClementePageHero',
+  'sanJuanPageHero',
+  'talegaPageHero',
+  'danaPointPageHero',
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

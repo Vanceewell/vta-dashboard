@@ -20,6 +20,7 @@ export default function Page() {
         headline: "Window Tinting in San Juan Capistrano",
         sub:      "San Juan Capistrano's mix of historic properties, modern neighborhoods, and thriving commercial district makes it one of South OC's most diverse tinting markets. Jason has served SJC clients for over 40 years.",
         img:      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80",
+        slot:     'sanJuanPageHero',
       }}
       intro="San Juan Capistrano is a community with deep roots and a growing modern character. Whether you're in a historic Capistrano Beach home, a newer Vermejo or Pacifica neighborhood, or running a business on Ortega Highway, Jason's Glass Tint brings the same premium service to SJC that it has for San Clemente since 1989."
       sections={[

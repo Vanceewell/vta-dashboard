@@ -89,6 +89,19 @@ const IMAGE_REGISTRY: ImageEntry[] = [
 
   // ── About ─────────────────────────────────────────────────────────────────
   { slot: 'aboutPortrait', label: 'About — Jason Portrait', group: 'About', original: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80' },
+
+  // ── CTA ───────────────────────────────────────────────────────────────────
+  { slot: 'ctaBackground', label: 'CTA Section Background', group: 'CTA', original: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80' },
+
+  // ── Page Heroes ───────────────────────────────────────────────────────────
+  { slot: 'automotivePageHero',  label: 'Page Hero — Automotive',          group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=80' },
+  { slot: 'residentialPageHero', label: 'Page Hero — Residential',         group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1400&q=80' },
+  { slot: 'commercialPageHero',  label: 'Page Hero — Commercial',          group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1400&q=80' },
+  { slot: 'marinePageHero',      label: 'Page Hero — Marine',              group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1400&q=80' },
+  { slot: 'sanClementePageHero', label: 'Page Hero — San Clemente',        group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1400&q=80' },
+  { slot: 'sanJuanPageHero',     label: 'Page Hero — San Juan Capistrano', group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80' },
+  { slot: 'talegaPageHero',      label: 'Page Hero — Talega',              group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=80' },
+  { slot: 'danaPointPageHero',   label: 'Page Hero — Dana Point',          group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1400&q=80' },
 ];
 
 const IMAGE_GROUPS = Array.from(new Set(IMAGE_REGISTRY.map((e) => e.group)));
@@ -688,6 +701,25 @@ function ImagesPanel({
           </div>
         </div>
       ))}
+      {/* Coverage Check */}
+      <div className="border border-jgt-border rounded p-4">
+        <h3 className="font-sans text-xs tracking-[0.16em] uppercase text-jgt-gold mb-1">Coverage Check</h3>
+        <p className="font-sans text-jgt-muted text-[10px] mb-3">Green ✓ = custom image saved · Gold ○ = showing default stock image</p>
+        <div className="space-y-1">
+          {IMAGE_REGISTRY.map((entry) => {
+            const hasOverride = !!siteImageUrls[entry.slot];
+            return (
+              <div key={entry.slot} className="flex items-center gap-2 font-sans text-[11px]">
+                <span className={hasOverride ? 'text-green-400' : 'text-jgt-gold'}>
+                  {hasOverride ? '✓' : '○'}
+                </span>
+                <span className={hasOverride ? 'text-jgt-text' : 'text-jgt-muted'}>{entry.label}</span>
+                {!hasOverride && <span className="text-jgt-muted/40 ml-auto text-[10px]">default</span>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
       <div className="h-8" />
     </div>
   );
