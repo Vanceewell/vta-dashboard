@@ -97,14 +97,9 @@ export default function ServiceAreaSection() {
                 className="flex flex-col glass-light p-5 group hover:border-jgt-gold/40 transition-all duration-300 h-full"
               >
                 {/* Top: pin icon */}
-                <div className="mb-3">
+                <div className="mb-4">
                   <MapPinIcon />
                 </div>
-
-                {/* Badge */}
-                <span className="inline-block font-sans text-[9px] tracking-[0.16em] uppercase text-jgt-gold border border-jgt-gold/30 px-2 py-0.5 mb-3 self-start leading-tight">
-                  {area.note}
-                </span>
 
                 {/* Name */}
                 <h3 className="font-display text-jgt-text text-lg leading-tight group-hover:text-jgt-gold transition-colors mb-3">
