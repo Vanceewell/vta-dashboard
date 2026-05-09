@@ -106,7 +106,7 @@ function SetupInstructions() {
   title         text not null default '',
   categories    text[] not null default '{}',
   framing       jsonb,
-  display_order integer not null default 0,
+  display_order bigint not null default 0,
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );

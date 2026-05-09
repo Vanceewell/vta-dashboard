@@ -51,7 +51,7 @@ export interface ImageFraming {
  *   title         text not null default '',
  *   categories    text[] not null default '{}',
  *   framing       jsonb,
- *   display_order integer not null default 0,
+ *   display_order bigint not null default 0,  -- BIGINT: stores Date.now() ms values (too large for INTEGER)
  *   created_at    timestamptz not null default now(),
  *   updated_at    timestamptz not null default now()
  * );
@@ -73,6 +73,7 @@ export interface GalleryRow {
   title:         string;
   categories:    GalleryCategory[];
   framing:       ImageFraming | null;
+  /** BIGINT in Postgres — stores Date.now() ms values. JS number handles up to 2^53 safely. */
   display_order: number;
   created_at:    string;
   updated_at:    string;

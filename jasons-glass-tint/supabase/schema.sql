@@ -1,10 +1,15 @@
 -- ═══════════════════════════════════════════════════════════
--- Jason's Glass Tint — Supabase Schema (v2)
+-- Jason's Glass Tint — Supabase Schema (v3)
 -- Run this in your Supabase SQL Editor
 -- ═══════════════════════════════════════════════════════════
 
 -- 1. Create the gallery_images table
 --    Columns match the GalleryRow interface in src/lib/supabase.ts
+--
+--    NOTE: display_order is BIGINT (not INTEGER) because it stores
+--    Date.now() values (~1.78 trillion ms) which exceed INTEGER max
+--    (~2.1 billion). Using INTEGER caused: "value is out of range for
+--    type integer" errors on every upload.
 CREATE TABLE IF NOT EXISTS gallery_images (
   id             UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   storage_path   TEXT NOT NULL UNIQUE,
@@ -13,7 +18,7 @@ CREATE TABLE IF NOT EXISTS gallery_images (
   title          TEXT NOT NULL DEFAULT '',
   categories     TEXT[] NOT NULL DEFAULT '{}',
   framing        JSONB,
-  display_order  INTEGER DEFAULT 0,
+  display_order  BIGINT DEFAULT 0,
   created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -56,6 +61,13 @@ CREATE TRIGGER gallery_images_updated_at
 
 -- 8. Indexes
 CREATE INDEX IF NOT EXISTS gallery_images_order_idx ON gallery_images (display_order DESC, created_at DESC);
+
+-- ═══════════════════════════════════════════════════════════
+-- MIGRATION (if table already exists with INTEGER display_order)
+-- Run this if you see: "value is out of range for type integer"
+-- ═══════════════════════════════════════════════════════════
+-- ALTER TABLE gallery_images ALTER COLUMN display_order TYPE BIGINT;
+-- ═══════════════════════════════════════════════════════════
 
 -- ═══════════════════════════════════════════════════════════
 -- STORAGE BUCKET SETUP (if not already done)
