@@ -104,6 +104,8 @@ const IMAGE_REGISTRY: ImageEntry[] = [
   { slot: 'danaPointPageHero',   label: 'Page Hero — Dana Point',          group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1400&q=80' },
   { slot: 'frostPageHero',        label: 'Page Hero — Frost Film',          group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80' },
   { slot: 'safetyPageHero',       label: 'Page Hero — Safety Film',         group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80' },
+  { slot: 'laderaRanchPageHero',  label: 'Page Hero — Ladera Ranch',        group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=80' },
+  { slot: 'campPendletonPageHero',label: 'Page Hero — Camp Pendleton',      group: 'Page Heroes', original: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1400&q=80' },
 ];
 
 const IMAGE_GROUPS = Array.from(new Set(IMAGE_REGISTRY.map((e) => e.group)));

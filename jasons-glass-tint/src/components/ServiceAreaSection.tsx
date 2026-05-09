@@ -30,13 +30,13 @@ const AREAS = [
   },
   {
     name:    'Ladera Ranch',
-    slug:    '#contact',
+    slug:    '/ladera-ranch-window-tint',
     desc:    "Ladera Ranch\u2019s newer communities and well-maintained homes are a natural fit for premium residential and automotive window film. Jason serves the area directly.",
     note:    'Residential & Automotive',
   },
   {
     name:    'Camp Pendleton',
-    slug:    '#contact',
+    slug:    '/camp-pendleton-window-tint',
     desc:    "Jason proudly serves the Marines and military families at Camp Pendleton. Straightforward pricing, no runaround, and quality work done right \u2014 every time.",
     note:    'Military Welcome',
   },

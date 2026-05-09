@@ -17,6 +17,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/talega-window-tint',             priority: 0.8,  changeFrequency: 'monthly' as const },
     { path: '/dana-point-window-tint',         priority: 0.8,  changeFrequency: 'monthly' as const },
     { path: '/san-juan-capistrano-window-tint',priority: 0.8,  changeFrequency: 'monthly' as const },
+    { path: '/ladera-ranch-window-tint',       priority: 0.8,  changeFrequency: 'monthly' as const },
+    { path: '/camp-pendleton-window-tint',     priority: 0.8,  changeFrequency: 'monthly' as const },
   ];
 
   return routes.map(({ path, priority, changeFrequency }) => ({
