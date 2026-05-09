@@ -36,8 +36,6 @@ export default function Page() {
       benefits={[
         'Jason installs every automotive tint himself — no subcontractors',
         'Premium American-made film options available for every budget and vehicle',
-        'Factory-precise installation with no visible edges or bubbles',
-        'Full compliance with California window tint laws',
         'All vehicle types: sedans, SUVs, trucks, sports cars, exotics',
         'Film brand: Madico Window Film',
         'Manufacturer warranty included',
@@ -49,15 +47,15 @@ export default function Page() {
         },
         {
           q: 'Can I wash my car right after tinting?',
-          a: 'You should wait at least 3–5 days before washing the car and avoid rolling the windows down during this period. The film needs time to fully cure. Jason will give you specific care instructions for your install.',
+          a: 'You should wait a couple days before rolling the windows down so the film has time to fully cure.',
         },
         {
           q: 'What kind of film does Jason use?',
           a: 'Jason installs premium American-made window film on every vehicle. The film provides high heat rejection, maximum UV protection (up to 99.9%), and no interference with GPS, cell phones, or EV charging systems. It is color-stable and built to last — it will not purple, fade, or peel over time.',
         },
         {
-          q: 'Does Jason tint luxury and exotic vehicles?',
-          a: "Yes. Jason regularly works on high-end vehicles including Porsche, BMW M-series, Maserati, McLaren, and others. He understands the precision required for these vehicles and approaches every high-end install with the care they deserve.",
+          q: 'How long should I wait to roll down my windows?',
+          a: 'Typically a couple days.',
         },
       ]}
       relatedLinks={[
