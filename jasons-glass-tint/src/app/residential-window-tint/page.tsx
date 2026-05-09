@@ -49,7 +49,7 @@ export default function Page() {
       faqs={[
         {
           q: 'Will residential window tinting affect my view?',
-          a: "No — quality solar control film is engineered to maintain high visible light transmission while blocking heat and UV. From the inside, the view is virtually unchanged. From the outside, the film gives a subtle, uniform appearance that many homeowners prefer to untreated glass.",
+          a: "Often times the view is enhanced. Quality solar control film is engineered to maintain high visible light transmission while blocking heat and UV. From the inside, the view is virtually unchanged. From the outside, the film gives a subtle, uniform appearance that many homeowners prefer to untreated glass.",
         },
         {
           q: 'Can I tint just a few windows instead of the whole house?',
