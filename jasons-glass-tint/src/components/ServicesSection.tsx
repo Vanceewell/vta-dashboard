@@ -36,7 +36,7 @@ const SERVICES = [
     slug:       '/automotive-window-tint',
     overrideId: 'service-automotive',
     title: 'Automotive Tint',
-    desc:  'Factory-precise installation on sedans, trucks, SUVs, and sports cars. Premium American-made film for heat rejection and UV protection.',
+    desc:  'Factory-precise installation on sedans, trucks, SUVs, and sports cars. Premium American-made film for heat rejection, glare reduction, and UV protection.',
     img:   'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80',
     icon:  <CarIcon />,
   },
