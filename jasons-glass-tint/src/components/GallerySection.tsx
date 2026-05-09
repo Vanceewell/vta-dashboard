@@ -231,20 +231,20 @@ export default function GallerySection() {
             viewport={{ once: true }}
             className="text-center mt-12"
           >
-            <p className="font-sans text-jgt-muted text-sm mb-4">Want results like these for your vehicle, home, or business?</p>
-            <button
-              className="btn-gold text-xs px-8 py-4"
-              onClick={() => {
-                const el = document.getElementById('project-gallery');
-                if (el) {
-                  const elTop = el.getBoundingClientRect().top + window.scrollY;
-                  const offset = Math.round(window.innerHeight * 0.25);
-                  window.scrollTo({ top: elTop - offset, behavior: 'smooth' });
-                }
+            <p className="font-sans text-jgt-muted text-sm mb-6">Want results like these for your vehicle, home, or business?</p>
+            <a
+              href="#gallery"
+              className="btn-gold inline-flex items-center justify-center"
+              style={{
+                fontSize: '0.95rem',
+                letterSpacing: '0.18em',
+                padding: '1.25rem 3.5rem',
+                minWidth: '280px',
+                minHeight: '64px',
               }}
             >
-              See More Images
-            </button>
+              SEE MORE IMAGES
+            </a>
           </motion.div>
         )}
       </div>
