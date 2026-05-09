@@ -30,7 +30,7 @@ export default function Page() {
         },
         {
           heading: "HOA Compliance and Exterior Aesthetics",
-          body: "Talega is an HOA community, and exterior modifications — including window film — are subject to approval guidelines. Jason is familiar with the Talega HOA requirements and installs film that meets both performance goals and exterior appearance standards. Professional window film from 3M and Llumar is designed to present a clean, neutral exterior appearance that is indistinguishable from standard glass in most community assessments. Jason can advise on film options that are most likely to be HOA-compliant based on his experience in the community.",
+          body: "Talega is an HOA community, and exterior modifications — including window film — are subject to approval guidelines. Jason is familiar with the Talega HOA requirements and installs film that meets both performance goals and exterior appearance standards. Professional window film from Madico Window Film is designed to present a clean, neutral exterior appearance that is indistinguishable from standard glass in most community assessments. Jason can advise on film options that are most likely to be HOA-compliant based on his experience in the community.",
         },
         {
           heading: "Automotive Tinting for Talega Residents",

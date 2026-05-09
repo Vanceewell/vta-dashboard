@@ -53,7 +53,7 @@ export default function Page() {
         },
         {
           q: 'Is commercial window film compliant with building codes?',
-          a: "Professional commercial film from manufacturers like 3M and Llumar meets California energy code requirements and building standards. Jason is familiar with local requirements and can advise on compliant specifications.",
+          a: "Professional commercial film from Madico Window Film meets California energy code requirements and building standards. Jason is familiar with local requirements and can advise on compliant specifications.",
         },
         {
           q: 'What types of commercial buildings does Jason tint?',

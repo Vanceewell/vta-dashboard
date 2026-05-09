@@ -57,7 +57,7 @@ export default function Page() {
         },
         {
           q: 'What residential film is best for Dana Point ocean views?',
-          a: "Jason typically recommends neutral solar control film (such as 3M Prestige series) for ocean-view homes — it provides maximum heat and UV rejection with very high visible light transmission, preserving the view clarity that makes coastal homes valuable.",
+          a: "Jason typically recommends neutral solar control film from Madico Window Film for ocean-view homes — it provides maximum heat and UV rejection with very high visible light transmission, preserving the view clarity that makes coastal homes valuable.",
         },
       ]}
       relatedLinks={[

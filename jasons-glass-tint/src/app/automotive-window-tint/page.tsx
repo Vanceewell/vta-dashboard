@@ -32,10 +32,6 @@ export default function Page() {
           heading: "Film Options for Every Automotive Need",
           body: "Not all window film is the same, and the right choice depends on your priorities. Ceramic film is the top tier — it offers the highest heat rejection (up to 96%), maximum UV protection (99.9%), and no signal interference with GPS or cell service. It's also completely color-stable, meaning it won't purple or fade over time. Carbon film provides excellent performance at a slightly lower price point and is a strong choice for most standard vehicles. Standard dyed film is the entry-level option that provides privacy and basic heat reduction. Jason will walk you through all options and recommend the best fit for your vehicle and goals — without upselling you on something you don't need.",
         },
-        {
-          heading: "California Window Tint Laws",
-          body: "California allows tinting on rear side windows and the rear window to any level. The front side windows must allow at least 70% of light through (very light or clear film only). The windshield may only be tinted in a narrow band at the top. Jason knows California's tint laws inside and out and will help you choose a legal configuration that still gives you maximum benefits. He will not install illegal tint and risk a fix-it ticket for his clients.",
-        },
       ]}
       benefits={[
         'Jason installs every automotive tint himself — no subcontractors',
@@ -43,7 +39,7 @@ export default function Page() {
         'Factory-precise installation with no visible edges or bubbles',
         'Full compliance with California window tint laws',
         'All vehicle types: sedans, SUVs, trucks, sports cars, exotics',
-        'Film brands: 3M, Llumar, Huper Optik',
+        'Film brand: Madico Window Film',
         'Manufacturer warranty included',
       ]}
       faqs={[

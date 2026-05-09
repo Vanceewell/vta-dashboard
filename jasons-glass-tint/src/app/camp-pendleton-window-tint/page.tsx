@@ -38,7 +38,7 @@ export default function Page() {
         },
         {
           heading: "Durable Film Built for Hard Use",
-          body: "Jason installs only professional-grade film from manufacturers including 3M, Llumar, and Huper Optik -- the same brands used in commercial and government applications. These films are built to handle the Southern California climate: color-stable, scratch-resistant, and backed by manufacturer warranties. For military families who move periodically, quality film is an investment that enhances the vehicle or home while they're there -- and increases the value for the next occupant. Jason's installs are done right the first time, with no shortcuts.",
+          body: "Jason installs only professional-grade film from Madico Window Film -- the same brand used in commercial and government applications. These films are built to handle the Southern California climate: color-stable, scratch-resistant, and backed by manufacturer warranties. For military families who move periodically, quality film is an investment that enhances the vehicle or home while they're there -- and increases the value for the next occupant. Jason's installs are done right the first time, with no shortcuts.",
         },
       ]}
       benefits={[
@@ -47,7 +47,7 @@ export default function Page() {
         'Glare reduction for driving and interior living comfort',
         'Residential solar control film for base-area housing',
         'Privacy film available for residential windows',
-        'Premium film brands: 3M, Llumar, Huper Optik',
+        'Premium film brand: Madico Window Film',
         'Manufacturer warranty on all installed film',
         'Straight talk -- honest pricing, quality work, no runaround',
       ]}

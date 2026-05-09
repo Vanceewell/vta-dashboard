@@ -55,7 +55,7 @@ export default function Page() {
           '40+ years serving San Clemente exclusively',
           'Jason personally installs every project',
           'No subcontractors, no crew turnover',
-          'Premium film brands only — 3M, Llumar, Huper Optik',
+          'Premium film brand — Madico Window Film',
           'Transparent pricing with no hidden fees',
           'Manufacturer warranty on all installed film',
           'Automotive, residential, commercial, and marine',
@@ -63,7 +63,7 @@ export default function Page() {
         faqs={[
           {
             q: "What type of window film does Jason use?",
-            a: "Jason installs only professional-grade film from manufacturers including 3M, Llumar, and Huper Optik. He does not stock or install bargain-bin film. The right film for your project depends on your goals — heat rejection, UV protection, privacy, or aesthetics — and Jason will walk you through the options.",
+            a: "Jason installs only professional-grade film from Madico Window Film. He does not stock or install bargain-bin film. The right film for your project depends on your goals — heat rejection, UV protection, privacy, or aesthetics — and Jason will walk you through the options.",
           },
           {
             q: "How long does automotive window tinting take?",

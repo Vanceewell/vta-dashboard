@@ -85,7 +85,7 @@ export default function FilmBenefitsSection() {
           className="text-center mt-14"
         >
           <p className="font-sans text-jgt-muted text-sm mb-6">
-            Jason uses only premium-grade film from manufacturers like 3M, Llumar, and Huper Optik.
+            Jason uses only premium-grade film from Madico Window Film.
             Ask about the right film for your application.
           </p>
           <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4">

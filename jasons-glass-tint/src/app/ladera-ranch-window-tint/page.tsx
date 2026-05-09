@@ -45,7 +45,7 @@ export default function Page() {
         'Jason personally installs every Ladera Ranch project -- no subcontractors',
         'Solar control film blocks up to 96% heat, 99.9% UV',
         'Residential, automotive, and commercial film available',
-        'Premium film brands: 3M, Llumar, Huper Optik',
+        'Premium film brand: Madico Window Film',
         'Privacy film and safety film also available',
         'Manufacturer warranty on all installed film',
         'Serving South Orange County communities since 1989',
@@ -57,7 +57,7 @@ export default function Page() {
         },
         {
           q: 'What film options are available for Ladera Ranch homes?',
-          a: "Jason installs solar control film (heat and UV rejection), privacy and frost film, and safety/security film. For residential applications, solar control film from 3M and Llumar is the most common choice -- providing heat rejection and UV protection while maintaining a bright interior and neutral exterior appearance.",
+          a: "Jason installs solar control film (heat and UV rejection), privacy and frost film, and safety/security film. For residential applications, solar control film from Madico Window Film is the most common choice -- providing heat rejection and UV protection while maintaining a bright interior and neutral exterior appearance.",
         },
         {
           q: "Does window film affect my home's appearance from the outside?",

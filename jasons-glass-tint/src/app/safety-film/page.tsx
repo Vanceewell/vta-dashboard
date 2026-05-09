@@ -38,7 +38,7 @@ export default function Page() {
         },
         {
           heading: "UV Protection Included",
-          body: "Professional safety films from manufacturers like 3M and Llumar include a high level of UV protection — typically 99%+ UV rejection. This is not the primary reason clients choose safety film, but it's a meaningful added benefit: the same installation that reinforces your glass also protects your interiors, furnishings, and flooring from UV fading. For South Orange County homes with significant sun exposure, the UV protection benefit of safety film is real and lasting.",
+          body: "Professional safety films from Madico Window Film include a high level of UV protection — typically 99%+ UV rejection. This is not the primary reason clients choose safety film, but it's a meaningful added benefit: the same installation that reinforces your glass also protects your interiors, furnishings, and flooring from UV fading. For South Orange County homes with significant sun exposure, the UV protection benefit of safety film is real and lasting.",
         },
       ]}
       benefits={[
