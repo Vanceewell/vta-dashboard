@@ -53,7 +53,7 @@ export default function Page() {
         },
         {
           q: 'Can I tint just a few windows instead of the whole house?',
-          a: "Absolutely. Many San Clemente homeowners start with the most problematic windows — typically west-facing living areas and bedrooms — and expand later. Jason can prioritize based on where you're experiencing the most heat or UV issues.",
+          a: "Absolutely. Many San Clemente homeowners start with the most problematic windows, typically west facing in the summer and south facing in the winter for areas like living rooms and bedrooms. You can prioritize with Jason based on where you're experiencing the most heat or UV issues.",
         },
         {
           q: 'Does residential window film work on dual-pane glass?',
