@@ -12,6 +12,14 @@ import {
   processImageForGallery,
 } from '@/lib/galleryStorage';
 import { isSupabaseConfigured, type GalleryRow } from '@/lib/supabase';
+import {
+  scanLocalGallery,
+  migrateOne,
+  clearLegacyLocalStorage,
+  clearLegacyIndexedDB,
+  type MigrationItem,
+  type ScanResult,
+} from '@/lib/localMigration';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -119,6 +127,215 @@ create policy "Anon delete" on gallery_images for delete using (true);`}</pre>
             <li>Redeploy your Vercel project</li>
           </ol>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Migration panel component
+// ─────────────────────────────────────────────────────────────────────────────
+
+type MigrationPhase = 'idle' | 'scanning' | 'preview' | 'running' | 'done' | 'empty';
+
+function MigrationPanel({ onMigrated }: { onMigrated: (items: GalleryItem[]) => void }) {
+  const [phase,   setPhase]   = useState<MigrationPhase>('idle');
+  const [scan,    setScan]    = useState<ScanResult | null>(null);
+  const [migItems, setMigItems] = useState<MigrationItem[]>([]);
+  const [cleared,  setCleared] = useState(false);
+
+  const updateItem = (localId: string, patch: Partial<MigrationItem>) =>
+    setMigItems((prev) =>
+      prev.map((m) => m.localId === localId ? { ...m, ...patch } : m),
+    );
+
+  const handleScan = async () => {
+    setPhase('scanning');
+    const result = await scanLocalGallery();
+    setScan(result);
+    if (result.items.length === 0) {
+      setPhase('empty');
+    } else {
+      setMigItems(result.items);
+      setPhase('preview');
+    }
+  };
+
+  const handleMigrateAll = async () => {
+    if (!scan) return;
+    setPhase('running');
+    const newItems: GalleryItem[] = [];
+    for (const item of migItems) {
+      if (item.status === 'done') continue;
+      await migrateOne(item, scan._blobs, (patch) => {
+        updateItem(item.localId, patch);
+        if (patch.supabaseItem) newItems.push(patch.supabaseItem);
+      });
+    }
+    if (newItems.length > 0) onMigrated(newItems);
+    setPhase('done');
+  };
+
+  const handleClearLocal = async () => {
+    if (!confirm('Clear all old local storage data? This removes the local copies but your Supabase images are already safe.')) return;
+    await clearLegacyLocalStorage();
+    await clearLegacyIndexedDB();
+    setCleared(true);
+  };
+
+  const done    = migItems.filter((m) => m.status === 'done').length;
+  const errors  = migItems.filter((m) => m.status === 'error').length;
+  const pending = migItems.filter((m) => m.status === 'pending' || m.status === 'uploading').length;
+
+  return (
+    <div className="mb-8 border border-jgt-border/50 bg-jgt-surface/30">
+      {/* Header row */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-jgt-border/30">
+        <div className="flex items-center gap-3">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C5A056" strokeWidth="1.8">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          <span className="font-sans text-sm font-semibold text-jgt-text">Migrate Local Gallery to Supabase</span>
+        </div>
+        {phase === 'idle' && (
+          <button
+            onClick={handleScan}
+            className="btn-outline text-xs px-4 py-2 flex items-center gap-2"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Scan Local Storage
+          </button>
+        )}
+      </div>
+
+      <div className="px-5 py-4">
+        {/* Idle state */}
+        {phase === 'idle' && (
+          <p className="font-sans text-jgt-muted text-xs leading-relaxed">
+            If you had gallery images before Supabase was connected, they&apos;re still stored locally in your
+            browser (localStorage or IndexedDB). Click <strong className="text-jgt-text">Scan Local Storage</strong> to
+            find them and migrate them into Supabase so they&apos;re permanently saved and visible on all devices.
+          </p>
+        )}
+
+        {/* Scanning */}
+        {phase === 'scanning' && (
+          <div className="flex items-center gap-2 text-jgt-muted">
+            <span className="inline-block w-2 h-2 rounded-full bg-jgt-gold animate-pulse" />
+            <span className="font-sans text-xs">Scanning localStorage and IndexedDB…</span>
+          </div>
+        )}
+
+        {/* Nothing found */}
+        {phase === 'empty' && (
+          <div className="flex items-center gap-2 text-jgt-muted">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span className="font-sans text-xs">No local gallery images found. Nothing to migrate.</span>
+          </div>
+        )}
+
+        {/* Preview + controls */}
+        {(phase === 'preview' || phase === 'running' || phase === 'done') && (
+          <div className="space-y-4">
+            {/* Summary bar */}
+            <div className="flex flex-wrap items-center gap-4">
+              <span className="font-sans text-xs text-jgt-muted">
+                Found <strong className="text-jgt-text">{migItems.length}</strong> local image{migItems.length !== 1 ? 's' : ''}
+                {scan?.hasLocalStorage && ' (localStorage)'}
+                {scan?.hasLocalStorage && scan?.hasIndexedDB && ' + '}
+                {scan?.hasIndexedDB && ' (IndexedDB)'}
+              </span>
+              {phase === 'preview' && (
+                <button onClick={handleMigrateAll} className="btn-gold text-xs px-5 py-2 flex items-center gap-2">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  Upload All to Supabase
+                </button>
+              )}
+              {phase === 'running' && (
+                <span className="flex items-center gap-1.5 font-sans text-xs text-jgt-gold">
+                  <span className="inline-block w-2 h-2 rounded-full bg-jgt-gold animate-pulse" />
+                  Uploading… ({done}/{migItems.length} done{errors > 0 ? `, ${errors} failed` : ''})
+                </span>
+              )}
+              {phase === 'done' && (
+                <span className="flex items-center gap-1.5 font-sans text-xs text-emerald-400">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Migration complete — {done} uploaded{errors > 0 ? `, ${errors} failed` : ''}
+                </span>
+              )}
+            </div>
+
+            {/* Image grid */}
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2">
+              {migItems.map((m) => (
+                <div key={m.localId} className="relative group">
+                  <div className="aspect-video overflow-hidden bg-jgt-surface">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={m.previewUrl}
+                      alt={m.title}
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Status overlay */}
+                    {m.status === 'uploading' && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <span className="inline-block w-2.5 h-2.5 rounded-full bg-jgt-gold animate-pulse" />
+                      </div>
+                    )}
+                    {m.status === 'done' && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      </div>
+                    )}
+                    {m.status === 'error' && (
+                      <div className="absolute inset-0 bg-red-900/50 flex items-center justify-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                      </div>
+                    )}
+                  </div>
+                  {/* Tooltip on hover */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/70 px-1 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <p className="font-sans text-[9px] text-jgt-text truncate">{m.title}</p>
+                    {m.status === 'error' && m.error && (
+                      <p className="font-sans text-[8px] text-red-400 truncate">{m.error}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Clear local data (shown after done) */}
+            {phase === 'done' && !cleared && pending === 0 && (
+              <div className="pt-2 border-t border-jgt-border/30">
+                <p className="font-sans text-jgt-muted text-xs mb-2">
+                  Your images are now in Supabase. You can optionally clear the old local browser storage to free up space.
+                </p>
+                <button
+                  onClick={handleClearLocal}
+                  className="btn-outline text-xs px-4 py-2 text-red-400 border-red-400/30 hover:border-red-400/60"
+                >
+                  Clear Old Local Storage
+                </button>
+              </div>
+            )}
+            {cleared && (
+              <p className="font-sans text-xs text-emerald-400 flex items-center gap-1.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Local storage cleared.
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -298,6 +515,15 @@ export default function AdminGalleryPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Migration tool — only shown when Supabase is ready */}
+        {supabaseReady && (
+          <MigrationPanel
+            onMigrated={(newItems) =>
+              setItems((prev) => [...newItems, ...prev])
+            }
+          />
         )}
 
         {/* Page title */}
