@@ -30,7 +30,7 @@ export default function Page() {
         },
         {
           heading: "Automotive Window Tinting in Ranch Mission Viejo",
-          body: "Ranch Mission Viejo families drive. Whether it's daily commutes, school runs, or weekend trips through South OC, vehicles parked and driven in direct Southern California sun accumulate significant heat and UV exposure. Jason installs ceramic and carbon film on all vehicle types — SUVs, sedans, trucks, and family vehicles. Ceramic film provides the highest heat rejection (up to 96%) and UV protection (99.9%) with no interference with GPS, Bluetooth, or vehicle electronics. It won't fade, purple, or peel over time. Carbon film delivers excellent performance at a slightly lower price point. Jason works on every vehicle himself and takes the time to ensure clean edges, no bubbles, and a factory-look result.",
+          body: "Ranch Mission Viejo families drive. Whether it's daily commutes, school runs, or weekend trips through South OC, vehicles parked and driven in direct Southern California sun accumulate significant heat and UV exposure. Jason installs premium American-made film on all vehicle types — SUVs, sedans, trucks, and family vehicles. The film provides the highest heat rejection (up to 96%) and UV protection (99.9%) with no interference with GPS, Bluetooth, or vehicle electronics. It won't fade, purple, or peel over time. Jason works on every vehicle himself and takes the time to ensure clean edges, no bubbles, and a factory-look result.",
         },
         {
           heading: "Privacy Film and Energy Efficiency",
@@ -45,7 +45,7 @@ export default function Page() {
         'Jason personally installs every Ranch Mission Viejo project — no subcontractors',
         'Solar control film blocks up to 96% heat and 99.9% UV',
         'Residential film for new-construction open-plan homes',
-        'Automotive ceramic and carbon film for all vehicle types',
+        'Premium American-made automotive film for all vehicle types',
         'Privacy and frost film for bathrooms, offices, and street-facing windows',
         'Premium film from Madico Window Film',
         'Manufacturer warranty on all installed film',

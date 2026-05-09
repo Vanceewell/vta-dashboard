@@ -26,7 +26,7 @@ export default function Page() {
       sections={[
         {
           heading: "Automotive Tinting for Marines and Military Families",
-          body: "Vehicles parked on base or in base-area neighborhoods sit in direct Southern California sun for hours at a time. The interior heat buildup, UV damage to upholstery and dashboards, and glare reduction challenges are real -- and ceramic window film addresses all of them. Jason installs ceramic and carbon film on all vehicle types: personal vehicles, trucks, SUVs, and family cars. Ceramic film provides the highest heat rejection (up to 96%) and UV protection (99.9%) with no interference with GPS or electronic systems. It's built to last and won't fade, purple, or peel. Jason stands behind his work and installs every vehicle himself.",
+          body: "Vehicles parked on base or in base-area neighborhoods sit in direct Southern California sun for hours at a time. The interior heat buildup, UV damage to upholstery and dashboards, and glare reduction challenges are real -- and premium window film addresses all of them. Jason installs premium American-made film on all vehicle types: personal vehicles, trucks, SUVs, and family cars. The film provides the highest heat rejection (up to 96%) and UV protection (99.9%) with no interference with GPS or electronic systems. It's built to last and won't fade, purple, or peel. Jason stands behind his work and installs every vehicle himself.",
         },
         {
           heading: "Residential and Base-Area Housing",
@@ -43,7 +43,7 @@ export default function Page() {
       ]}
       benefits={[
         'Jason personally installs every project -- no subcontractors',
-        'Automotive ceramic film -- up to 96% heat rejection, 99.9% UV protection',
+        'Premium American-made automotive film -- up to 96% heat rejection, 99.9% UV protection',
         'Glare reduction for driving and interior living comfort',
         'Residential solar control film for base-area housing',
         'Privacy film available for residential windows',
@@ -58,7 +58,7 @@ export default function Page() {
         },
         {
           q: 'What is the best window film for a vehicle parked on base?',
-          a: "For vehicles that see significant daily sun exposure, ceramic film is the top recommendation. It provides the highest heat rejection and UV protection, has no interference with GPS or electronic systems, and is color-stable -- it will not fade or purple over time. Jason can walk you through the options based on your vehicle and priorities.",
+          a: "For vehicles that see significant daily sun exposure, Jason's premium American-made film is the top recommendation. It provides the highest heat rejection and UV protection, has no interference with GPS or electronic systems, and is color-stable -- it will not fade or purple over time. Jason can walk you through the options based on your vehicle and priorities.",
         },
         {
           q: 'Can Jason tint base-area housing?',
@@ -66,7 +66,7 @@ export default function Page() {
         },
         {
           q: 'Does window film interfere with GPS or radio on military vehicles?',
-          a: "Ceramic film is specifically non-metallic and does not interfere with GPS, radio, or electronic systems. Jason recommends ceramic film for all vehicles where signal integrity matters. He does not install metallic film that could interfere with electronics.",
+          a: "Jason's premium American-made film is non-metallic and does not interfere with GPS, radio, or electronic systems. He recommends this film for all vehicles where signal integrity matters and does not install metallic film that could interfere with electronics.",
         },
         {
           q: 'How long does automotive tinting take?',

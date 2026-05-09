@@ -30,7 +30,7 @@ export default function Page() {
         },
         {
           heading: "Automotive Tinting in Ladera Ranch",
-          body: "Jason serves Ladera Ranch automotive clients with the same precision and premium film he brings to every vehicle project. Whether you're driving an SUV, a luxury sedan, or a daily commuter, ceramic film provides the highest level of heat rejection and UV protection while maintaining optical clarity. Carbon film is an excellent option for most vehicles -- providing strong performance at a slightly lower tier. Jason works on all vehicle types and takes the time to ensure every install is factory-precise with clean edges and no bubbles. Ladera Ranch clients can text Jason directly to arrange a time.",
+          body: "Jason serves Ladera Ranch automotive clients with the same precision and premium film he brings to every vehicle project. Whether you're driving an SUV, a luxury sedan, or a daily commuter, Jason installs premium American-made film that provides the highest level of heat rejection and UV protection while maintaining optical clarity. Jason works on all vehicle types and takes the time to ensure every install is factory-precise with clean edges and no bubbles. Ladera Ranch clients can text Jason directly to arrange a time.",
         },
         {
           heading: "Commercial Window Tinting for Ladera Ranch Businesses",

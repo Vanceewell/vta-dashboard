@@ -34,7 +34,7 @@ export default function Page() {
         },
         {
           heading: "Automotive Tinting for San Juan Capistrano Residents",
-          body: "Jason serves automotive clients throughout San Juan Capistrano, from the Stoneridge and Marbella communities to the downtown area. Many SJC residents choose Jason over closer options because his reputation for quality and personal installation is well-established throughout South Orange County. Ceramic film installs on luxury vehicles are a particular specialty — Jason understands that a high-end car deserves the same level of care from its installer as from its manufacturer.",
+          body: "Jason serves automotive clients throughout San Juan Capistrano, from the Stoneridge and Marbella communities to the downtown area. Many SJC residents choose Jason over closer options because his reputation for quality and personal installation is well-established throughout South Orange County. Premium American-made film installs on luxury vehicles are a particular specialty — Jason understands that a high-end car deserves the same level of care from its installer as from its manufacturer.",
         },
       ]}
       benefits={[

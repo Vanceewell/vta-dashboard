@@ -3,10 +3,10 @@ import LandingPageTemplate from '@/components/LandingPageTemplate';
 
 export const metadata: Metadata = {
   title: "Automotive Window Tinting San Clemente | Jason's Glass Tint",
-  description: "Professional automotive window tinting in San Clemente. Jason personally installs ceramic, carbon, and standard film on all vehicle types. Call (949) 496-8468 for a quote.",
+  description: "Professional automotive window tinting in San Clemente. Jason personally installs premium American-made film on all vehicle types. Call (949) 496-8468 for a quote.",
   openGraph: {
     title: "Automotive Window Tinting San Clemente | Jason's Glass Tint",
-    description: "40+ years tinting cars, trucks, and SUVs in San Clemente. Ceramic film, carbon film, factory-precise installation by Jason himself.",
+    description: "40+ years tinting cars, trucks, and SUVs in San Clemente. Premium American-made film, factory-precise installation by Jason himself.",
     url: 'https://jasonsglasstint.com/automotive-window-tint',
   },
   alternates: { canonical: 'https://jasonsglasstint.com/automotive-window-tint' },
@@ -18,7 +18,7 @@ export default function Page() {
       hero={{
         label:    "Automotive Window Tinting",
         headline: "Car Window Tinting in San Clemente",
-        sub:      "From daily drivers to high-end sports cars, Jason brings 40+ years of automotive tint experience to every install. Ceramic film, carbon film, and standard options — all installed with factory precision.",
+        sub:      "From daily drivers to high-end sports cars, Jason brings 40+ years of automotive tint experience to every install. Premium American-made film — all installed with factory precision.",
         img:      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=80",
         slot:     'automotivePageHero',
       }}
@@ -30,12 +30,12 @@ export default function Page() {
         },
         {
           heading: "Film Options for Every Automotive Need",
-          body: "Not all window film is the same, and the right choice depends on your priorities. Ceramic film is the top tier — it offers the highest heat rejection (up to 96%), maximum UV protection (99.9%), and no signal interference with GPS or cell service. It's also completely color-stable, meaning it won't purple or fade over time. Carbon film provides excellent performance at a slightly lower price point and is a strong choice for most standard vehicles. Standard dyed film is the entry-level option that provides privacy and basic heat reduction. Jason will walk you through all options and recommend the best fit for your vehicle and goals — without upselling you on something you don't need.",
+          body: "Not all window film is the same, and the right choice depends on your priorities. Jason works exclusively with premium American-made film — offering the highest heat rejection (up to 96%), maximum UV protection (99.9%), and no signal interference with GPS or cell service. The film is completely color-stable, meaning it won't purple or fade over time. Jason will walk you through all options and recommend the best fit for your vehicle and goals — without upselling you on something you don't need.",
         },
       ]}
       benefits={[
         'Jason installs every automotive tint himself — no subcontractors',
-        'Ceramic, carbon, and standard film options available',
+        'Premium American-made film options available for every budget and vehicle',
         'Factory-precise installation with no visible edges or bubbles',
         'Full compliance with California window tint laws',
         'All vehicle types: sedans, SUVs, trucks, sports cars, exotics',
@@ -52,8 +52,8 @@ export default function Page() {
           a: 'You should wait at least 3–5 days before washing the car and avoid rolling the windows down during this period. The film needs time to fully cure. Jason will give you specific care instructions for your install.',
         },
         {
-          q: 'What is the difference between ceramic and carbon tint?',
-          a: 'Ceramic film uses nano-ceramic particles to block heat without metallic interference — meaning no signal disruption to GPS, cell phones, or EV charging systems. It offers the highest heat rejection and UV protection. Carbon film is non-metallic and provides excellent performance at a lower price point. Both are premium-tier; the right choice depends on your priorities and budget.',
+          q: 'What kind of film does Jason use?',
+          a: 'Jason installs premium American-made window film on every vehicle. The film provides high heat rejection, maximum UV protection (up to 99.9%), and no interference with GPS, cell phones, or EV charging systems. It is color-stable and built to last — it will not purple, fade, or peel over time.',
         },
         {
           q: 'Does Jason tint luxury and exotic vehicles?',

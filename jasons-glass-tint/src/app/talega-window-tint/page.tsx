@@ -34,7 +34,7 @@ export default function Page() {
         },
         {
           heading: "Automotive Tinting for Talega Residents",
-          body: "While residential tinting is the primary request in Talega, automotive work is equally common. Talega residents with premium vehicles — SUVs, sports cars, luxury sedans — regularly turn to Jason for ceramic film installs that provide heat rejection and UV protection on their vehicles. Jason's home base in San Clemente means Talega is an easy service area for both residential and automotive projects.",
+          body: "While residential tinting is the primary request in Talega, automotive work is equally common. Talega residents with premium vehicles — SUVs, sports cars, luxury sedans — regularly turn to Jason for premium American-made film installs that provide heat rejection and UV protection on their vehicles. Jason's home base in San Clemente means Talega is an easy service area for both residential and automotive projects.",
         },
       ]}
       benefits={[
