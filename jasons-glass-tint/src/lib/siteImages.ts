@@ -55,7 +55,8 @@ export type SiteImageSlot =
   | 'frostPageHero'
   | 'safetyPageHero'
   | 'laderaRanchPageHero'
-  | 'campPendletonPageHero';
+  | 'campPendletonPageHero'
+  | 'ranchMissionViejoPageHero';
 
 /** Map from slot name → legacy admin panel id (for migration awareness only) */
 export const SLOT_TO_LEGACY_ID: Record<SiteImageSlot, string> = {
@@ -79,8 +80,9 @@ export const SLOT_TO_LEGACY_ID: Record<SiteImageSlot, string> = {
   danaPointPageHero:       'page-hero-dana-point',
   frostPageHero:            'page-hero-frost',
   safetyPageHero:           'page-hero-safety',
-  laderaRanchPageHero:      'page-hero-ladera-ranch',
-  campPendletonPageHero:    'page-hero-camp-pendleton',
+  laderaRanchPageHero:         'page-hero-ladera-ranch',
+  campPendletonPageHero:       'page-hero-camp-pendleton',
+  ranchMissionViejoPageHero:   'page-hero-ranch-mission-viejo',
 };
 
 /** All known slots in display order */
@@ -107,6 +109,7 @@ export const ALL_SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   'safetyPageHero',
   'laderaRanchPageHero',
   'campPendletonPageHero',
+  'ranchMissionViejoPageHero',
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

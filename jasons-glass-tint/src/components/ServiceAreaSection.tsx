@@ -2,68 +2,74 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-// AI-EDITABLE: service areas — 6 boxes, clean 3×2 grid
+// AI-EDITABLE: service areas — 7 cards, single horizontal row
 const AREAS = [
   {
-    name:    'San Clemente',
-    slug:    '/san-clemente-window-tint',
-    desc:    "Home base. Jason has served San Clemente\u2019s residential, commercial, and automotive tinting needs since 1989. Local knowledge, community trust.",
-    note:    'Primary Service Area',
+    name: 'San Clemente',
+    slug: '/san-clemente-window-tint',
+    desc: "Home base since 1989. Automotive, residential, commercial, and marine — all personally installed by Jason.",
+    note: 'Primary Service Area',
   },
   {
-    name:    'Talega',
-    slug:    '/talega-window-tint',
-    desc:    "Talega\u2019s hillside homes and coastal views deserve premium protection. Jason regularly serves Talega homeowners seeking energy efficiency and UV protection.",
-    note:    'Residential Focus',
+    name: 'Talega',
+    slug: '/talega-window-tint',
+    desc: "Hillside homes and coastal views. Premium protection for Talega's premier community.",
+    note: 'Residential Focus',
   },
   {
-    name:    'Dana Point',
-    slug:    '/dana-point-window-tint',
-    desc:    "From the harbor to the bluffs, Dana Point presents unique coastal sun challenges. Jason covers automotive, residential, and marine tinting for Dana Point clients.",
-    note:    'Marine & Automotive',
+    name: 'Dana Point',
+    slug: '/dana-point-window-tint',
+    desc: "Harbor to the bluffs. Automotive, residential, and marine tinting for Dana Point clients.",
+    note: 'Marine & Automotive',
   },
   {
-    name:    'San Juan Capistrano',
-    slug:    '/san-juan-capistrano-window-tint',
-    desc:    "San Juan Capistrano\u2019s mix of historic properties and modern homes benefit from professional tint. Jason serves both residential and commercial clients here.",
-    note:    'Residential & Commercial',
+    name: 'San Juan Capistrano',
+    slug: '/san-juan-capistrano-window-tint',
+    desc: "Historic properties and modern homes. Residential and commercial tinting throughout SJC.",
+    note: 'Residential & Commercial',
   },
   {
-    name:    'Ladera Ranch',
-    slug:    '/ladera-ranch-window-tint',
-    desc:    "Ladera Ranch\u2019s newer communities and well-maintained homes are a natural fit for premium residential and automotive window film. Jason serves the area directly.",
-    note:    'Residential & Automotive',
+    name: 'Ladera Ranch',
+    slug: '/ladera-ranch-window-tint',
+    desc: "Newer communities, larger windows. Premium residential and automotive film for Ladera Ranch.",
+    note: 'Residential & Automotive',
   },
   {
-    name:    'Camp Pendleton',
-    slug:    '/camp-pendleton-window-tint',
-    desc:    "Jason proudly serves the Marines and military families at Camp Pendleton. Straightforward pricing, no runaround, and quality work done right \u2014 every time.",
-    note:    'Military Welcome',
+    name: 'Ranch Mission Viejo',
+    slug: '/ranch-mission-viejo-window-tint',
+    desc: "Family-focused living with modern homes built for California sun. Premium residential and automotive tinting.",
+    note: 'Family-Focused Living',
+  },
+  {
+    name: 'Camp Pendleton',
+    slug: '/camp-pendleton-window-tint',
+    desc: "Proudly serving Marines and military families. Quality work, honest pricing — every time.",
+    note: 'Military Welcome',
   },
 ];
 
 export default function ServiceAreaSection() {
   return (
     <section id="service-areas" className="py-24 lg:py-32 bg-jgt-bg">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-8">
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="mb-16"
+          className="mb-14"
         >
           <span className="section-label">Where We Serve</span>
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mt-4 gap-4">
             <h2 className="font-display text-jgt-text" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}>
               Window Tinting in San Clemente
               <br />
-              <em className="text-jgt-gold">& South Orange County</em>
+              <em className="text-jgt-gold">&amp; South Orange County</em>
             </h2>
           </div>
           <div className="w-12 h-[1px] bg-jgt-gold mt-6" />
-
           <p className="font-sans font-light text-jgt-muted max-w-2xl mt-6 text-sm leading-relaxed">
             Jason's Glass Tint is based in San Clemente and serves the surrounding South Orange
             County communities. Because Jason works alone, he keeps his service area focused —
@@ -71,33 +77,49 @@ export default function ServiceAreaSection() {
           </p>
         </motion.div>
 
-        {/* Area Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+        {/* ── 7-card single-row grid ──
+            Desktop  : 7 equal columns, 1 row
+            Tablet   : 4 columns (4+3)
+            Mobile   : 1 column stacked
+        */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 lg:gap-4">
           {AREAS.map((area, i) => (
             <motion.div
               key={area.name}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: (i % 3) * 0.1 }}
+              transition={{ duration: 0.5, delay: i * 0.06 }}
+              className="h-full"
             >
               <Link
                 href={area.slug}
-                className="block glass-light p-6 group hover:border-jgt-gold/30 transition-all duration-300 h-full"
+                className="flex flex-col glass-light p-5 group hover:border-jgt-gold/40 transition-all duration-300 h-full"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-display text-jgt-text text-xl group-hover:text-jgt-gold transition-colors">
-                    {area.name}
-                  </h3>
+                {/* Top: pin icon */}
+                <div className="mb-3">
                   <MapPinIcon />
                 </div>
-                <span className="inline-block font-sans text-[10px] tracking-[0.18em] uppercase text-jgt-gold border border-jgt-gold/30 px-2 py-0.5 mb-3">
+
+                {/* Badge */}
+                <span className="inline-block font-sans text-[9px] tracking-[0.16em] uppercase text-jgt-gold border border-jgt-gold/30 px-2 py-0.5 mb-3 self-start leading-tight">
                   {area.note}
                 </span>
-                <p className="font-sans text-jgt-muted text-xs leading-relaxed">{area.desc}</p>
-                <div className="mt-4 flex items-center gap-2 font-sans text-xs tracking-[0.14em] uppercase text-jgt-gold group-hover:gap-3 transition-all">
+
+                {/* Name */}
+                <h3 className="font-display text-jgt-text text-lg leading-tight group-hover:text-jgt-gold transition-colors mb-3">
+                  {area.name}
+                </h3>
+
+                {/* Description — flex-1 pushes CTA to bottom */}
+                <p className="font-sans text-jgt-muted text-[11px] leading-relaxed flex-1">
+                  {area.desc}
+                </p>
+
+                {/* CTA arrow — always at bottom */}
+                <div className="mt-4 flex items-center gap-1.5 font-sans text-[10px] tracking-[0.14em] uppercase text-jgt-gold group-hover:gap-2.5 transition-all">
                   Learn More
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
               </Link>
             </motion.div>
@@ -131,6 +153,7 @@ export default function ServiceAreaSection() {
             </p>
           </div>
         </motion.div>
+
       </div>
     </section>
   );
