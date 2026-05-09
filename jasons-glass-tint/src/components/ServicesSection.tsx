@@ -2,18 +2,33 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { fetchSiteImages, type SiteImageMap } from '@/lib/siteImages';
 
 const IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
 function useImageOverrides() {
-  const [imgs, setImgs] = useState<Record<string, string>>({});
+  const [legacyImgs, setLegacyImgs] = useState<Record<string, string>>({});
+  const [supabaseImgs, setSupabaseImgs] = useState<SiteImageMap>({});
   useEffect(() => {
+    // Legacy localStorage fallback
     try {
       const raw = localStorage.getItem(IMAGE_STORAGE_KEY);
-      if (raw) setImgs(JSON.parse(raw));
+      if (raw) setLegacyImgs(JSON.parse(raw));
     } catch { /* ignore */ }
+    // Supabase — primary source
+    fetchSiteImages().then(({ urls }) => setSupabaseImgs(urls)).catch(() => {});
   }, []);
-  return imgs;
+  return { legacyImgs, supabaseImgs };
 }
+
+// Map from legacy override id to Supabase slot name
+const OVERRIDE_TO_SLOT: Record<string, import('@/lib/siteImages').SiteImageSlot> = {
+  'service-automotive':  'automotiveServiceImage',
+  'service-residential': 'residentialServiceImage',
+  'service-commercial':  'commercialServiceImage',
+  'service-marine':      'marineServiceImage',
+  'service-frost':       'frostServiceImage',
+  'service-safety':      'safetyServiceImage',
+};
 
 // AI-EDITABLE: services list (6 cards — 3×2 grid)
 const SERVICES = [
@@ -68,11 +83,11 @@ const SERVICES = [
 ];
 
 export default function ServicesSection() {
-  const imgs = useImageOverrides();
-  // Apply any saved image overrides to service cards
+  const { legacyImgs, supabaseImgs } = useImageOverrides();
+  // Apply image overrides: Supabase first, then legacy localStorage, then default
   const services = SERVICES.map((s) => ({
     ...s,
-    img: imgs[s.overrideId] ?? s.img,
+    img: supabaseImgs[OVERRIDE_TO_SLOT[s.overrideId]] ?? legacyImgs[s.overrideId] ?? s.img,
   }));
   return (
     <section id="services" className="py-24 lg:py-32 bg-jgt-bg">

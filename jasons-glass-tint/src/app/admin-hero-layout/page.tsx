@@ -24,6 +24,15 @@ import {
   getGalleryMeta,
   processImageForGallery,
 } from '@/lib/galleryStorage';
+import {
+  fetchSiteImages,
+  uploadSiteImage,
+  deleteSiteImage,
+  processSiteImageFile,
+  type SiteImageSlot,
+  type SiteImageMap,
+} from '@/lib/siteImages';
+import { isSupabaseConfigured } from '@/lib/supabase';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    POSITIONING — slider config
@@ -55,168 +64,40 @@ const SCROLL_Y_MIN = -200;
 const SCROLL_Y_MAX =  200;
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   IMAGES — registry & safe localStorage helpers
+   IMAGES — registry (Supabase-backed slots)
 ───────────────────────────────────────────────────────────────────────────── */
-const IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
-
-/** Absolute maximum size (bytes) we allow in localStorage per key. ~4 MB */
-const MAX_STORED_BYTES = 4 * 1024 * 1024;
-
-/** Accepted MIME types (others are rejected before any processing). */
-const ACCEPTED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-const ACCEPTED_EXT   = ['.jpg', '.jpeg', '.png', '.webp'];
 
 interface ImageEntry {
-  id: string;
-  label: string;
-  group: string;
+  slot:     SiteImageSlot;
+  label:    string;
+  group:    string;
   original: string;
 }
 
 const IMAGE_REGISTRY: ImageEntry[] = [
   // ── Hero ──────────────────────────────────────────────────────────────────
-  { id: 'hero-bg',           label: 'Hero Background',            group: 'Hero',     original: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80' },
-  { id: 'hero-logo',         label: 'Hero Logo',                  group: 'Hero',     original: '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png' },
+  { slot: 'heroBackground', label: 'Hero Background',            group: 'Hero',     original: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80' },
+  { slot: 'heroLogo',       label: 'Hero Logo',                  group: 'Hero',     original: '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png' },
 
   // ── Services ──────────────────────────────────────────────────────────────
-  { id: 'service-automotive', label: 'Service — Automotive Tint', group: 'Services', original: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80' },
-  { id: 'service-residential',label: 'Service — Residential Tint',group: 'Services', original: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80' },
-  { id: 'service-commercial', label: 'Service — Commercial Tint', group: 'Services', original: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80' },
-  { id: 'service-marine',     label: 'Service — Marine Tint',     group: 'Services', original: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80' },
-  { id: 'service-frost',      label: 'Service — Frost Film',      group: 'Services', original: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80' },
-  { id: 'service-safety',     label: 'Service — Safety Film',     group: 'Services', original: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80' },
+  { slot: 'automotiveServiceImage',  label: 'Service — Automotive Tint',  group: 'Services', original: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80' },
+  { slot: 'residentialServiceImage', label: 'Service — Residential Tint', group: 'Services', original: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80' },
+  { slot: 'commercialServiceImage',  label: 'Service — Commercial Tint',  group: 'Services', original: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80' },
+  { slot: 'marineServiceImage',      label: 'Service — Marine Tint',      group: 'Services', original: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80' },
+  { slot: 'frostServiceImage',       label: 'Service — Frost Film',       group: 'Services', original: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80' },
+  { slot: 'safetyServiceImage',      label: 'Service — Safety Film',      group: 'Services', original: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80' },
 
   // ── About ─────────────────────────────────────────────────────────────────
-  { id: 'about-portrait',    label: 'About — Jason Portrait',     group: 'About',    original: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80' },
-
-  // ── Gallery ───────────────────────────────────────────────────────────────
-  { id: 'gallery-1',  label: 'Gallery 1 — Luxury Sedan',    group: 'Gallery', original: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80' },
-  { id: 'gallery-2',  label: 'Gallery 2 — Porsche 911',     group: 'Gallery', original: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80' },
-  { id: 'gallery-3',  label: 'Gallery 3 — Modern Home',     group: 'Gallery', original: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80' },
-  { id: 'gallery-4',  label: 'Gallery 4 — BMW Ceramic',     group: 'Gallery', original: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80' },
-  { id: 'gallery-5',  label: 'Gallery 5 — Office Complex',  group: 'Gallery', original: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80' },
-  { id: 'gallery-6',  label: 'Gallery 6 — Luxury Yacht',    group: 'Gallery', original: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80' },
-  { id: 'gallery-7',  label: 'Gallery 7 — McLaren',         group: 'Gallery', original: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&q=80' },
-  { id: 'gallery-8',  label: 'Gallery 8 — Talega Estate',   group: 'Gallery', original: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
-  { id: 'gallery-9',  label: 'Gallery 9 — Motorhome',       group: 'Gallery', original: 'https://images.unsplash.com/photo-1600298882525-26ffb3a3d31f?w=800&q=80' },
-  { id: 'gallery-10', label: 'Gallery 10 — Maserati',       group: 'Gallery', original: 'https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=800&q=80' },
-  { id: 'gallery-11', label: 'Gallery 11 — Retail Storefront', group: 'Gallery', original: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80' },
-  { id: 'gallery-12', label: 'Gallery 12 — Office Frost',   group: 'Gallery', original: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80' },
+  { slot: 'aboutPortrait', label: 'About — Jason Portrait', group: 'About', original: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80' },
 ];
 
-/* ─── Safe localStorage helpers ─────────────────────────────────────────── */
+const IMAGE_GROUPS = Array.from(new Set(IMAGE_REGISTRY.map((e) => e.group)));
 
-function loadImageOverrides(): Record<string, string> {
-  if (typeof window === 'undefined') return {};
-  try {
-    const raw = localStorage.getItem(IMAGE_STORAGE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw);
-    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return {};
-    const safe: Record<string, string> = {};
-    for (const [key, val] of Object.entries(parsed)) {
-      if (typeof val !== 'string') continue;
-      if (!val.startsWith('data:image/')) continue;
-      if (val.length > MAX_STORED_BYTES) {
-        console.warn(`[ImageOverrides] Skipping "${key}": too large.`);
-        continue;
-      }
-      safe[key] = val;
-    }
-    return safe;
-  } catch (err) {
-    console.warn('[ImageOverrides] Failed to load:', err);
-    return {};
-  }
-}
-
-function saveImageOverrides(overrides: Record<string, string>): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(overrides));
-    return true;
-  } catch (err) {
-    console.error('[ImageOverrides] Failed to save:', err);
-    return false;
-  }
-}
-
-function clearImageOverrides(): void {
-  if (typeof window === 'undefined') return;
-  try { localStorage.removeItem(IMAGE_STORAGE_KEY); } catch { /* noop */ }
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   IMAGE compression helper (used by Images panel; gallery uses galleryStorage.ts)
-───────────────────────────────────────────────────────────────────────────── */
-
-interface CompressOptions {
-  maxWidth:  number;
-  maxHeight: number;
-  quality:   number;
-  hasAlpha:  boolean;
-}
-
-function compressImage(file: File, opts: CompressOptions): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img  = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      try {
-        let { width, height } = img;
-        if (width > opts.maxWidth || height > opts.maxHeight) {
-          const ratio = Math.min(opts.maxWidth / width, opts.maxHeight / height);
-          width  = Math.round(width  * ratio);
-          height = Math.round(height * ratio);
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width  = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) { reject(new Error('Could not get canvas 2D context.')); return; }
-        if (!opts.hasAlpha) {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, width, height);
-        }
-        ctx.drawImage(img, 0, 0, width, height);
-        let dataUrl = canvas.toDataURL('image/webp', opts.quality);
-        if (opts.hasAlpha && dataUrl.length > MAX_STORED_BYTES) {
-          dataUrl = canvas.toDataURL('image/png');
-        }
-        resolve(dataUrl);
-      } catch (err) { reject(err); }
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Failed to load image.')); };
-    img.src = url;
-  });
-}
-
-function fileHasAlpha(file: File): boolean {
-  return file.type === 'image/png';
-}
-
-async function processImageFile(file: File): Promise<string> {
-  const mime = file.type.toLowerCase();
-  const name = file.name.toLowerCase();
-  const extOk  = ACCEPTED_EXT.some((ext) => name.endsWith(ext));
-  const mimeOk = ACCEPTED_TYPES.includes(mime);
-  if (!extOk && !mimeOk) {
-    const isHeic = name.endsWith('.heic') || name.endsWith('.heif') || mime.includes('heic');
-    const isTiff = name.endsWith('.tiff') || name.endsWith('.tif')  || mime.includes('tiff');
-    const isRaw  = name.endsWith('.raw')  || name.endsWith('.cr2')  || name.endsWith('.nef') || name.endsWith('.arw') || name.endsWith('.dng');
-    if (isHeic) throw new Error('HEIC files are not supported. Please convert to JPG or PNG first.');
-    if (isTiff) throw new Error('TIFF files are not supported. Please use JPG, PNG, or WebP.');
-    if (isRaw)  throw new Error('RAW camera files are not supported. Please export as JPG or PNG.');
-    throw new Error('Unsupported file type. Please upload JPG, PNG, or WebP.');
-  }
-  const dataUrl = await compressImage(file, {
-    maxWidth: 1800, maxHeight: 1800, quality: 0.82, hasAlpha: fileHasAlpha(file),
-  });
-  if (dataUrl.length > MAX_STORED_BYTES) {
-    throw new Error('Image is still too large after compression. Please choose a smaller image.');
-  }
-  return dataUrl;
+/** Upload status for each slot */
+type SlotUploadStatus = 'idle' | 'uploading' | 'saved' | 'error';
+interface SlotStatus {
+  status: SlotUploadStatus;
+  error?: string;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -260,8 +141,6 @@ const NAV_ITEMS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   },
 ];
 
-const IMAGE_GROUPS = Array.from(new Set(IMAGE_REGISTRY.map((e) => e.group)));
-
 /* ─────────────────────────────────────────────────────────────────────────────
    MAIN COMPONENT
 ───────────────────────────────────────────────────────────────────────────── */
@@ -272,9 +151,10 @@ export default function AdminHeroLayout() {
   const [cfg, setCfg]             = useState<HeroConfig>(DEFAULT_CONFIG);
   const [layoutSaved, setLayoutSaved] = useState(false);
 
-  /* ── Images state ── */
-  const [imgOverrides, setImgOverrides] = useState<Record<string, string>>({});
-  const [imgSaved, setImgSaved]         = useState(false);
+  /* ── Images state (Supabase) ── */
+  const [siteImageUrls, setSiteImageUrls] = useState<SiteImageMap>({});
+  const [slotStatuses, setSlotStatuses]   = useState<Record<string, SlotStatus>>({});
+  const supabaseReady = isSupabaseConfigured();
 
   /* ── Gallery state ── */
   const [galleryItems,  setGalleryItems]  = useState<GalleryItem[]>([]);
@@ -286,14 +166,15 @@ export default function AdminHeroLayout() {
   /* ── Load on mount ── */
   useEffect(() => {
     try { setCfg(loadHeroConfig()); } catch { /* fall back to DEFAULT_CONFIG */ }
-    setImgOverrides(loadImageOverrides());
-    // Load gallery from IndexedDB
+    // Load site images from Supabase
+    fetchSiteImages().then(({ urls }) => setSiteImageUrls(urls)).catch(() => {});
+    // Load gallery from Supabase
     setGalleryLoading(true);
     loadGallery().then((items) => {
       galleryObjectUrls.current = items.map((i) => i.objectUrl);
       setGalleryItems(items);
     }).catch(() => {
-      setGalleryError('Failed to load gallery from IndexedDB.');
+      setGalleryError('Failed to load gallery.');
     }).finally(() => setGalleryLoading(false));
   }, []);
 
@@ -322,40 +203,47 @@ export default function AdminHeroLayout() {
     setLayoutSaved(false);
   };
 
-  /* ── Image handlers ── */
-  const handleReplaceImage = useCallback(
-    (id: string, dataUrl: string) => {
-      setImgOverrides((prev) => {
-        const next = { ...prev, [id]: dataUrl };
-        saveImageOverrides(next);
-        return next;
-      });
-      setImgSaved(false);
-    },
-    [],
-  );
-
-  const handleResetImage = useCallback((id: string) => {
-    setImgOverrides((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      saveImageOverrides(next);
-      return next;
-    });
+  /* ── Site image handlers (Supabase) ── */
+  const setSlotStatus = useCallback((slot: string, s: SlotStatus) => {
+    setSlotStatuses((prev) => ({ ...prev, [slot]: s }));
   }, []);
 
-  const handleResetAllImages = () => {
-    clearImageOverrides();
-    setImgOverrides({});
+  const handleReplaceImage = useCallback(
+    async (slot: SiteImageSlot, file: File) => {
+      setSlotStatus(slot, { status: 'uploading' });
+      try {
+        const blob   = await processSiteImageFile(file);
+        const result = await uploadSiteImage(slot, blob);
+        if (result.ok && result.publicUrl) {
+          setSiteImageUrls((prev) => ({ ...prev, [slot]: result.publicUrl! }));
+          setSlotStatus(slot, { status: 'saved' });
+          setTimeout(() => setSlotStatus(slot, { status: 'idle' }), 3000);
+        } else {
+          setSlotStatus(slot, { status: 'error', error: result.error ?? 'Upload failed.' });
+        }
+      } catch (err: unknown) {
+        setSlotStatus(slot, { status: 'error', error: err instanceof Error ? err.message : 'Upload failed.' });
+      }
+    },
+    [setSlotStatus],
+  );
+
+  const handleResetImage = useCallback(async (slot: SiteImageSlot) => {
+    setSlotStatus(slot, { status: 'uploading' });
+    await deleteSiteImage(slot);
+    setSiteImageUrls((prev) => { const n = { ...prev }; delete n[slot]; return n; });
+    setSlotStatus(slot, { status: 'idle' });
+  }, [setSlotStatus]);
+
+  const handleResetAllImages = async () => {
+    if (!confirm('Reset ALL site images to defaults? This removes them from Supabase.')) return;
+    await Promise.all(IMAGE_REGISTRY.map((e) => deleteSiteImage(e.slot)));
+    setSiteImageUrls({});
+    setSlotStatuses({});
   };
 
-  const handleSaveImages = () => {
-    const ok = saveImageOverrides(imgOverrides);
-    if (ok) {
-      setImgSaved(true);
-      setTimeout(() => setImgSaved(false), 2500);
-    }
-  };
+  /* Images tab: Supabase-backed, auto-saves on upload (no explicit save button needed) */
+  const imgSaved = Object.values(slotStatuses).some((s) => s.status === 'saved');
 
   /* ── Gallery: show save toast helper ── */
   const showGallerySaved = useCallback(() => {
@@ -443,8 +331,7 @@ export default function AdminHeroLayout() {
   /* ── Unified save button ── */
   const handleSave = () => {
     if (activeTab === 'positioning') handleSaveLayout();
-    else if (activeTab === 'images') handleSaveImages();
-    // Gallery auto-saves; this just triggers visible feedback
+    // Images and Gallery auto-save to Supabase on upload
     else showGallerySaved();
   };
 
@@ -511,9 +398,9 @@ export default function AdminHeroLayout() {
           >
             {isSaved
               ? '✓ Saved'
-              : activeTab === 'gallery'
-                ? 'Save Gallery'
-                : 'Save to This Browser'}
+              : activeTab === 'positioning'
+                ? 'Save to This Browser'
+                : 'Auto-Saving to Supabase'}
           </button>
         </div>
       </header>
@@ -521,7 +408,11 @@ export default function AdminHeroLayout() {
       {/* ════════════════════ INFO BANNER ════════════════════ */}
       <div className="bg-white/5 border-b border-white/10 px-5 py-2">
         <p className="text-[11px] text-white/40">
-          💾 All changes are saved to this browser only. The homepage will reflect your saved values when you visit it here.
+          {activeTab === 'positioning'
+            ? '💾 Layout saved to this browser only. Visit the homepage here to see your changes.'
+            : activeTab === 'images'
+            ? '☁️ Images upload to Supabase Storage and are instantly visible on all devices.'
+            : '☁️ Gallery images are stored in Supabase and visible on all devices.'}
         </p>
       </div>
 
@@ -574,7 +465,9 @@ export default function AdminHeroLayout() {
               <PositioningPanel cfg={cfg} update={update} />
             ) : (
               <ImagesPanel
-                overrides={imgOverrides}
+                siteImageUrls={siteImageUrls}
+                slotStatuses={slotStatuses}
+                supabaseReady={supabaseReady}
                 onReplace={handleReplaceImage}
                 onReset={handleResetImage}
               />
@@ -605,7 +498,10 @@ export default function AdminHeroLayout() {
                 <span className="text-[10px] font-mono tracking-widest uppercase text-white/50">Live Preview</span>
               </div>
               <div className="w-full h-full overflow-hidden">
-                <HeroSection config={cfg} imageOverrides={imgOverrides} />
+                <HeroSection config={cfg} imageOverrides={{
+                  'hero-bg':   siteImageUrls['heroBackground'] ?? '',
+                  'hero-logo': siteImageUrls['heroLogo']       ?? '',
+                }} />
               </div>
             </div>
           )}
@@ -737,25 +633,39 @@ function PositioningPanel({
    IMAGES PANEL
 ───────────────────────────────────────────────────────────────────────────── */
 function ImagesPanel({
-  overrides,
+  siteImageUrls,
+  slotStatuses,
+  supabaseReady,
   onReplace,
   onReset,
 }: {
-  overrides: Record<string, string>;
-  onReplace: (id: string, dataUrl: string) => void;
-  onReset:   (id: string) => void;
+  siteImageUrls: SiteImageMap;
+  slotStatuses:  Record<string, SlotStatus>;
+  supabaseReady: boolean;
+  onReplace: (slot: SiteImageSlot, file: File) => Promise<void>;
+  onReset:   (slot: SiteImageSlot) => Promise<void>;
 }) {
+  const groups = Array.from(new Set(IMAGE_REGISTRY.map((e) => e.group)));
   return (
     <div className="p-5 space-y-8">
-      <div className="p-3 border border-white/10 rounded bg-white/3">
-        <p className="text-[10px] text-white/40 leading-relaxed">
-          🖼 Replace images for your browser only. Original files are never deleted.
-          <br />Supports JPG, PNG, WebP. HEIC, TIFF, and RAW files are not supported.
-          <br />Large images are automatically resized and compressed before saving.
-        </p>
-      </div>
+      {/* Banner */}
+      {!supabaseReady ? (
+        <div className="p-3 border border-amber-500/40 rounded bg-amber-500/5">
+          <p className="text-[10px] text-amber-400 leading-relaxed font-semibold mb-1">⚠ Supabase Not Configured</p>
+          <p className="text-[10px] text-amber-400/70 leading-relaxed">
+            Images cannot be saved until Supabase environment variables are set and the site is redeployed.
+          </p>
+        </div>
+      ) : (
+        <div className="p-3 border border-emerald-500/30 rounded bg-emerald-500/5">
+          <p className="text-[10px] text-emerald-400 leading-relaxed">
+            ✅ Images upload to Supabase Storage — permanently visible on all devices after upload.
+            <br />Supports JPG, PNG, WebP. Large images are automatically compressed.
+          </p>
+        </div>
+      )}
 
-      {IMAGE_GROUPS.map((group) => (
+      {groups.map((group) => (
         <div key={group}>
           <div className="flex items-center gap-3 mb-4">
             <span className="text-[10px] tracking-[0.2em] uppercase text-white/30 font-medium">{group}</span>
@@ -764,9 +674,11 @@ function ImagesPanel({
           <div className="space-y-4">
             {IMAGE_REGISTRY.filter((e) => e.group === group).map((entry) => (
               <ImageCard
-                key={entry.id}
+                key={entry.slot}
                 entry={entry}
-                overrideSrc={overrides[entry.id]}
+                currentUrl={siteImageUrls[entry.slot]}
+                slotStatus={slotStatuses[entry.slot] ?? { status: 'idle' }}
+                supabaseReady={supabaseReady}
                 onReplace={onReplace}
                 onReset={onReset}
               />
@@ -780,40 +692,33 @@ function ImagesPanel({
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   IMAGE CARD — with full safe upload pipeline
+   IMAGE CARD — Supabase upload pipeline
 ───────────────────────────────────────────────────────────────────────────── */
 function ImageCard({
   entry,
-  overrideSrc,
+  currentUrl,
+  slotStatus,
+  supabaseReady,
   onReplace,
   onReset,
 }: {
-  entry: ImageEntry;
-  overrideSrc?: string;
-  onReplace: (id: string, dataUrl: string) => void;
-  onReset:   (id: string) => void;
+  entry:         ImageEntry;
+  currentUrl?:   string;
+  slotStatus:    SlotStatus;
+  supabaseReady: boolean;
+  onReplace: (slot: SiteImageSlot, file: File) => Promise<void>;
+  onReset:   (slot: SiteImageSlot) => Promise<void>;
 }) {
-  const fileRef = useRef<HTMLInputElement>(null);
-  const isCustom = !!overrideSrc;
-  const displaySrc = overrideSrc ?? entry.original;
-
-  const [processing, setProcessing] = useState(false);
-  const [error, setError]           = useState<string | null>(null);
+  const fileRef  = useRef<HTMLInputElement>(null);
+  const isCustom = !!currentUrl;
+  const displaySrc = currentUrl ?? entry.original;
+  const busy = slotStatus.status === 'uploading';
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
-    setError(null);
-    setProcessing(true);
-    try {
-      const dataUrl = await processImageFile(file);
-      onReplace(entry.id, dataUrl);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Unknown error processing image.');
-    } finally {
-      setProcessing(false);
-    }
+    await onReplace(entry.slot, file);
   };
 
   return (
@@ -821,6 +726,7 @@ function ImageCard({
       className="rounded overflow-hidden border transition-colors"
       style={{ borderColor: isCustom ? 'rgba(197,160,86,0.4)' : 'rgba(255,255,255,0.08)', background: '#0e0e0e' }}
     >
+      {/* Thumbnail */}
       <div className="relative w-full bg-black/30" style={{ aspectRatio: '16/7' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -830,54 +736,86 @@ function ImageCard({
           style={{ objectPosition: 'center' }}
           onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.15'; }}
         />
-        {isCustom && (
-          <div className="absolute top-2 right-2 bg-yellow-400/90 text-black text-[9px] tracking-widest uppercase px-2 py-0.5 rounded font-semibold">
-            Custom
+        {/* Status overlay */}
+        {slotStatus.status === 'uploading' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/70">
+            <div className="w-5 h-5 border-2 border-yellow-400/40 border-t-yellow-400 rounded-full animate-spin" />
+            <span className="text-[11px] tracking-widest uppercase text-yellow-400 animate-pulse">Uploading…</span>
           </div>
         )}
-        {processing && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/70">
-            <span className="text-[11px] tracking-widest uppercase text-yellow-400 animate-pulse">Processing image…</span>
+        {slotStatus.status === 'saved' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-black/60">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span className="text-[11px] tracking-widest uppercase text-emerald-400">Saved live</span>
+          </div>
+        )}
+        {isCustom && slotStatus.status === 'idle' && (
+          <div className="absolute top-2 right-2 bg-yellow-400/90 text-black text-[9px] tracking-widest uppercase px-2 py-0.5 rounded font-semibold">
+            Supabase
           </div>
         )}
       </div>
-      {error && (
+
+      {/* Error message */}
+      {slotStatus.status === 'error' && (
         <div className="mx-3 mt-3 px-3 py-2 rounded border border-red-500/40 bg-red-500/10">
-          <p className="text-[11px] text-red-400 leading-snug">⚠ {error}</p>
+          <p className="text-[11px] text-red-400 leading-snug">⚠ {slotStatus.error ?? 'Upload failed.'}</p>
         </div>
       )}
+
       <div className="px-3 py-3">
         <div className="mb-2">
           <p className="text-[12px] text-white/80 font-medium leading-tight">{entry.label}</p>
           <p
             className="text-[10px] font-mono mt-0.5 truncate"
             style={{ color: isCustom ? '#C5A056' : 'rgba(255,255,255,0.25)' }}
-            title={isCustom ? '(custom override)' : entry.original}
+            title={isCustom ? currentUrl : entry.original}
           >
             {isCustom
-              ? '(custom override active)'
+              ? 'supabase.co • public URL active'
               : entry.original
                   .replace('https://images.unsplash.com/', 'unsplash/')
                   .replace('/images/', '/')}
           </p>
         </div>
-        <div className="flex items-center gap-2 mt-3">
+
+        {/* Status message row */}
+        {slotStatus.status === 'uploading' && (
+          <div className="flex items-center gap-1.5 text-[10px] text-yellow-400 mb-2">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+            Uploading…
+          </div>
+        )}
+        {slotStatus.status === 'saved' && (
+          <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 mb-2">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Saved live
+          </div>
+        )}
+        {slotStatus.status === 'error' && (
+          <div className="flex items-center gap-1.5 text-[10px] text-red-400 mb-2">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            Upload failed
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 mt-2">
           <button
-            onClick={() => { setError(null); fileRef.current?.click(); }}
-            disabled={processing}
+            onClick={() => { if (!busy && supabaseReady) fileRef.current?.click(); }}
+            disabled={busy || !supabaseReady}
             className="flex-1 py-2 text-[10px] tracking-widest uppercase rounded transition-all border font-medium"
             style={{
-              background:  processing ? 'rgba(197,160,86,0.3)' : '#C5A056',
-              color:       processing ? 'rgba(0,0,0,0.4)'       : '#0a0a0a',
-              borderColor: processing ? 'rgba(197,160,86,0.3)' : '#C5A056',
-              cursor:      processing ? 'not-allowed'           : 'pointer',
+              background:  (busy || !supabaseReady) ? 'rgba(197,160,86,0.3)' : '#C5A056',
+              color:       (busy || !supabaseReady) ? 'rgba(0,0,0,0.4)'       : '#0a0a0a',
+              borderColor: (busy || !supabaseReady) ? 'rgba(197,160,86,0.3)' : '#C5A056',
+              cursor:      (busy || !supabaseReady) ? 'not-allowed'           : 'pointer',
             }}
           >
-            {processing ? 'Processing…' : '↑ Replace'}
+            {busy ? 'Uploading…' : '↑ Replace'}
           </button>
-          {isCustom && !processing && (
+          {isCustom && !busy && (
             <button
-              onClick={() => { setError(null); onReset(entry.id); }}
+              onClick={() => onReset(entry.slot)}
               className="py-2 px-3 text-[10px] tracking-widest uppercase rounded transition-all border"
               style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}
             >
@@ -898,7 +836,7 @@ function ImageCard({
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   GALLERY PANEL — IndexedDB-backed gallery management
+   GALLERY PANEL — Supabase-backed gallery management
 ───────────────────────────────────────────────────────────────────────────── */
 function GalleryPanel({
   items,
@@ -931,7 +869,7 @@ function GalleryPanel({
     setTimeout(() => setSavedToast(false), 2500);
   };
 
-  /* ── Upload new image to IndexedDB ── */
+  /* ── Upload new image to Supabase ── */
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -984,7 +922,7 @@ function GalleryPanel({
           )}
         </div>
         <p className="text-[11px] text-white/35">
-          Images are stored in IndexedDB — no size limits. Changes persist after refresh.
+          Images upload to Supabase Storage — visible on all devices instantly after upload.
           Choose categories manually — including whether each image appears in &quot;All Projects&quot;.
         </p>
       </div>
@@ -1102,7 +1040,7 @@ function GalleryPanel({
             </svg>
           </div>
           <p className="text-[13px] text-white/30 tracking-wide">No gallery images yet</p>
-          <p className="text-[11px] text-white/20 mt-1">Click &quot;Add Image&quot; to get started. Images store in IndexedDB — no size limit.</p>
+          <p className="text-[11px] text-white/20 mt-1">Click &quot;Add Image&quot; to get started. Images are stored in Supabase and visible on all devices.</p>
         </div>
       )}
 

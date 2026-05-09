@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import HeroLogo from './HeroLogo';
 import { loadHeroConfig, DEFAULT_CONFIG, type HeroConfig } from '@/lib/heroConfig';
+import { fetchSiteImages, type SiteImageMap } from '@/lib/siteImages';
 
 const LOGO_SRC_DEFAULT = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png';
 const HERO_BG_DEFAULT   = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80';
@@ -34,17 +35,22 @@ export default function HeroSection({
 
   const [storedCfg, setStoredCfg]     = useState<HeroConfig>(DEFAULT_CONFIG);
   const [storedImgs, setStoredImgs]   = useState<Record<string, string>>({});
+  const [supabaseImgs, setSupabaseImgs] = useState<SiteImageMap>({});
   useEffect(() => {
     setStoredCfg(loadHeroConfig());
+    // Legacy localStorage fallback
     try {
       const raw = localStorage.getItem('jgt_image_overrides_v1');
       if (raw) setStoredImgs(JSON.parse(raw));
     } catch { /* ignore */ }
+    // Supabase — primary source
+    fetchSiteImages().then(({ urls }) => setSupabaseImgs(urls)).catch(() => {});
   }, []);
   const L    = propConfig   ?? storedCfg;
   const imgs = propOverrides ?? storedImgs;
-  const heroBg   = imgs['hero-bg']   ?? HERO_BG_DEFAULT;
-  const heroLogo = imgs['hero-logo'] ?? LOGO_SRC_DEFAULT;
+  // Supabase URLs take priority, then localStorage override, then default
+  const heroBg   = supabaseImgs['heroBackground'] ?? imgs['hero-bg']   ?? HERO_BG_DEFAULT;
+  const heroLogo = supabaseImgs['heroLogo']        ?? imgs['hero-logo'] ?? LOGO_SRC_DEFAULT;
 
   // Responsive marginBottom: mobile ≈ 60% of desktop value
   const mb = (desktop: number) =>
