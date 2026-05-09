@@ -236,7 +236,11 @@ export default function GallerySection() {
               className="btn-gold text-xs px-8 py-4"
               onClick={() => {
                 const el = document.getElementById('project-gallery');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (el) {
+                  const elTop = el.getBoundingClientRect().top + window.scrollY;
+                  const offset = Math.round(window.innerHeight * 0.25);
+                  window.scrollTo({ top: elTop - offset, behavior: 'smooth' });
+                }
               }}
             >
               See More Images
