@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-09T21:22:13.159Z",
+  "updatedAt": "2026-05-10T23:46:44.375Z",
   "entries": {
     "memory:memory/2026-04-24.md:64:85": {
       "key": "memory:memory/2026-04-24.md:64:85",
@@ -9,17 +9,19 @@
       "endLine": 85,
       "source": "memory",
       "snippet": "- Vanilla JavaScript for interactivity (filters, lightbox, smooth scroll) - No dependencies - File: `/data/.openclaw/workspace/jasons-glass-tint-premium.html` - Ready to copy as `index.html` ### Business Context - Vance is helping his father Jason build a premium online presence - High-end clientele (luxury vehicles, wealthy homeowners) - Focus on quality > quantity, direct contact (text first) - Established business (30+ years) positioning itself online for the first time - Complements Vance's cleaning business partnership (Orange County operations) ### Key Decisions - Used red Porsche as hero (most eye-catching luxury vehicle) - Cyan accent for premium tech feel (aligns with Tesla market",
-      "recallCount": 3,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-04-28T15:00:20.448Z",
-      "lastRecalledAt": "2026-05-09T19:22:48.582Z",
+      "lastRecalledAt": "2026-05-09T23:19:49.789Z",
       "queryHashes": [
         "3c4f7b50705a",
         "b8bebf9c5bec",
-        "ced26f9e1ed6"
+        "ced26f9e1ed6",
+        "d3f5d16aedc6",
+        "af549715a562"
       ],
       "recallDays": [
         "2026-04-28",
@@ -44,25 +46,30 @@
       "endLine": 40,
       "source": "memory",
       "snippet": "# 2026-04-24 - Jason's Glass Tint Website Project ## Session Work Built a premium, modern website for Jason's Glass Tint (Vance's father's business) in Orange County, CA. ### Project Details - **Business:** Jason's Glass Tint - window tinting specialist - **Phone:** 949-496-8468 - **Service Areas:** San Clemente, Talega, Dana Point, San Juan Capistrano, Laguna Niguel, Orange County - **Specialties:** Tesla & luxury vehicle tinting, residential, commercial, marine tint - **Brand:** 30+ years experience, one-man shop (Jason only), 100,000+ windows tinted, premium film only ### Website Features Delivered 1. **Premium Design** - Dark/light gradient hero with overlay - Cyan accent color",
-      "recallCount": 6,
+      "recallCount": 10,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 6,
+      "totalScore": 10,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-07T20:25:25.119Z",
-      "lastRecalledAt": "2026-05-09T21:22:09.040Z",
+      "lastRecalledAt": "2026-05-10T23:46:44.375Z",
       "queryHashes": [
         "951dfc67a112",
         "b8bebf9c5bec",
         "b8b4837fc437",
         "9f543ceee0cc",
         "07349a9535f9",
-        "04687c04f789"
+        "04687c04f789",
+        "b13e52eaf168",
+        "d3f5d16aedc6",
+        "af549715a562",
+        "bbd684324c9c"
       ],
       "recallDays": [
         "2026-05-07",
         "2026-05-08",
-        "2026-05-09"
+        "2026-05-09",
+        "2026-05-10"
       ],
       "conceptTags": [
         "949-496-8468",
@@ -82,13 +89,13 @@
       "endLine": 40,
       "source": "memory",
       "snippet": "# Daily Memory - May 7, 2026 ## Website Projects Completed ### Fancy Fuimaono's Restaurant Website - **Client:** Tatum Fuimaono (Vance's cousin) - **Location:** Newport Beach, CA - **Tagline:** \"If your feeling fancy come to my resturant and go dancing\" - **Cuisine:** Fancy food - **Contact:** (949) 456-3911 **Build Process:** 1. Initial site built with Sonnet (dark luxury, black/gold, cinematic hero, chef spotlight, menu, gallery, reservation CTA) 2. Updated with Tatum's actual chef photo (replaced stock images) 3. Tatum's image saved as `tatum-fuimaono.jpg` in repo 4. Final live URL: https://vanceewell.github.io/vta-dashboard/fancy-fuimaonoS.html **Site Features:** - Dark luxury aesthe",
-      "recallCount": 9,
+      "recallCount": 10,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 9,
+      "totalScore": 10,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-07T22:13:46.215Z",
-      "lastRecalledAt": "2026-05-09T21:22:13.159Z",
+      "lastRecalledAt": "2026-05-10T23:46:44.375Z",
       "queryHashes": [
         "f3b51c5b1d5d",
         "c1a2d945cd81",
@@ -98,12 +105,14 @@
         "9f543ceee0cc",
         "07349a9535f9",
         "dd744c2ed6d5",
-        "62f244978018"
+        "62f244978018",
+        "bbd684324c9c"
       ],
       "recallDays": [
         "2026-05-07",
         "2026-05-08",
-        "2026-05-09"
+        "2026-05-09",
+        "2026-05-10"
       ],
       "conceptTags": [
         "456-3911",
@@ -123,20 +132,23 @@
       "endLine": 81,
       "source": "memory",
       "snippet": "- `/automotive-window-tint` - `/residential-window-tint` - `/commercial-window-tint` - `/marine-window-tint` - `/talega-window-tint` - `/dana-point-window-tint` - `/san-juan-capistrano-window-tint` ### Admin Gallery (`/admin-gallery`) - Drag-and-drop upload zone - Client-side image compression (Canvas API) - Supabase storage + DB integration - Category tagging, delete capability - Graceful fallback when Supabase not configured ### Design system - Colors: matte black `#0F0F0F`, gold accent `#C5A056`, warm text `#F0EDE8` - Fonts: Cormorant Garamond (display) + Outfit (sans) - All icons: SVG inline (no emojis) - Glassmorphism cards, parallax hero, Framer Motion animations throughout ### SEO",
-      "recallCount": 6,
+      "recallCount": 9,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 6,
+      "totalScore": 9,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-08T04:20:04.316Z",
-      "lastRecalledAt": "2026-05-09T21:22:09.040Z",
+      "lastRecalledAt": "2026-05-09T23:19:49.789Z",
       "queryHashes": [
         "b8bebf9c5bec",
         "b8b4837fc437",
         "18ddb72d8b67",
         "9f543ceee0cc",
         "07349a9535f9",
-        "04687c04f789"
+        "04687c04f789",
+        "b13e52eaf168",
+        "d3f5d16aedc6",
+        "af549715a562"
       ],
       "recallDays": [
         "2026-05-08",
@@ -160,20 +172,22 @@
       "endLine": 104,
       "source": "memory",
       "snippet": "- Removed all \"Get Quote\" buttons/forms — replaced with \"Text Jason\" / \"Text Jason Now\" - Services section: removed RV Tint, now exactly 6 cards in clean 3×2 grid - Automotive · Residential · Commercial · Marine · Frost Film · Safety Film ### Round 2 - Hero: removed center \"Send a Text\" button, kept \"Text Jason Now\" (gold) + \"View Projects\" (outline) ### Round 3 - About quote updated to: *\"Anybody can sell window tint. The difference is who's installing it.\"* - Service Areas: 5 boxes → 6 boxes in 3×2 layout - Added: Ladera Ranch, Camp Pendleton (military-respectful copy) - Removed: South Orange County (generic) - Final 6: San Clemente · Talega · Dana Point · San Juan Capistrano · L",
-      "recallCount": 6,
+      "recallCount": 8,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 6,
+      "totalScore": 8,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-08T04:20:04.316Z",
-      "lastRecalledAt": "2026-05-09T21:22:09.040Z",
+      "lastRecalledAt": "2026-05-09T23:19:49.789Z",
       "queryHashes": [
         "b8bebf9c5bec",
         "ced26f9e1ed6",
         "18ddb72d8b67",
         "9f543ceee0cc",
         "96acc589b31e",
-        "04687c04f789"
+        "04687c04f789",
+        "d3f5d16aedc6",
+        "af549715a562"
       ],
       "recallDays": [
         "2026-05-08",
@@ -197,13 +211,13 @@
       "endLine": 71,
       "source": "memory",
       "snippet": "- Tesla & Luxury Vehicle Specialist section (dark, cyan accents) - Gallery with filterable portfolio - Interactive lightbox (click-to-expand) - Why Choose Jason (6 value points) - Service Areas (6 locations highlighted) - About Jason (30+ years story) - Contact section (TEXT & CALL only, no form) - Footer 4. **Gallery** - 18 real photos embedded as base64 - Categories: Automotive (7), Residential (2), Commercial (2), Marine (2), vehicles (5) - Filter buttons: All, Automotive, Residential, Commercial, Marine - Hover zoom + overlay text - Click opens lightbox modal 5. **SEO Optimization** - Meta tags for San Clemente, car tint, Tesla tint, Orange Cou",
-      "recallCount": 7,
+      "recallCount": 10,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 7,
+      "totalScore": 10,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-08T04:20:04.316Z",
-      "lastRecalledAt": "2026-05-09T21:22:13.159Z",
+      "lastRecalledAt": "2026-05-09T23:19:49.789Z",
       "queryHashes": [
         "b8bebf9c5bec",
         "b8b4837fc437",
@@ -211,7 +225,10 @@
         "9f543ceee0cc",
         "07349a9535f9",
         "dd744c2ed6d5",
-        "62f244978018"
+        "62f244978018",
+        "b13e52eaf168",
+        "d3f5d16aedc6",
+        "af549715a562"
       ],
       "recallDays": [
         "2026-05-08",
@@ -235,13 +252,13 @@
       "endLine": 47,
       "source": "memory",
       "snippet": "# Memory — 2026-05-08 ## Fancy Fuimaono Website Update - Subagent task completed: updated `fancy-fuimaonoS.html` in `Vanceewell/vta-dashboard` repo - Replaced chef image with Tatum Fuimaono's photo (`tatum-fuimaono.jpg`) - Updated chef name from \"Chef Alexandre Renauld\" to \"Tatum Fuimaono\" - Commit: `eb2e0b2` — \"Update: Tatum Fuimaono hero image\" - Live URL: https://vanceewell.github.io/vta-dashboard/fancy-fuimaonoS.html --- ## Jason's Glass Tint — Full Website Build **Repo:** `Vanceewell/vta-dashboard/tree/main/jasons-glass-tint` **Stack:** Next.js 14, TypeScript, Tailwind CSS, Framer Motion, Supabase ### What was built - Full luxury website for Jason's Glass Tint, San Clemente CA (sinc",
-      "recallCount": 9,
+      "recallCount": 12,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 9,
+      "totalScore": 12,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-08T04:20:04.316Z",
-      "lastRecalledAt": "2026-05-09T21:22:09.040Z",
+      "lastRecalledAt": "2026-05-10T23:46:44.375Z",
       "queryHashes": [
         "b8bebf9c5bec",
         "d8933fc2626b",
@@ -251,11 +268,15 @@
         "9f543ceee0cc",
         "96acc589b31e",
         "07349a9535f9",
-        "04687c04f789"
+        "04687c04f789",
+        "d3f5d16aedc6",
+        "af549715a562",
+        "bbd684324c9c"
       ],
       "recallDays": [
         "2026-05-08",
-        "2026-05-09"
+        "2026-05-09",
+        "2026-05-10"
       ],
       "conceptTags": [
         "fancy-fuimaonos.html",
