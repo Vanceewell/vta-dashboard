@@ -51,15 +51,16 @@
 **Every time Vance asks to build a website:**
 1. Build website files locally (single-file HTML with inline CSS, or multiple files as needed)
 2. Push to GitHub: `Vanceewell/vta-dashboard` repository
-3. GitHub Pages is pre-configured on `main` branch at root `/`
-4. After pushing, **always provide the live GitHub Pages URL** (e.g., `https://vanceewell.github.io/vta-dashboard/`)
+3. Provide the **jsDelivr CDN URL** for instant live preview (GitHub Pages builds can be slow)
+4. jsDelivr format: `https://cdn.jsdelivr.net/gh/Vanceewell/vta-dashboard@main/[filename].html`
 5. Do NOT use: localhost, Docker copy, paste.rs, or chunked HTML unless explicitly requested
 6. Keep sessions lightweight to reduce token costs
 
 **Workflow:**
-- Build → Push to GitHub → Provide live URL → Done
+- Build → Push to GitHub → Provide jsDelivr CDN URL → Done
 - No localhost links, no downloads, no attachments
-- User can view live immediately at the GitHub Pages URL
+- User can view live immediately (jsDelivr is instant)
+- GitHub Pages will eventually be live too but jsDelivr is faster
 
 ## Questions to Explore With Vance
 - What's your budget for cleaning business startup?
