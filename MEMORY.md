@@ -46,6 +46,17 @@
 - **Monday:** Pest control sales starts
 - **September 2026:** Move to Provo, Utah
 
+## Active Websites
+
+| Site | Repo | Live URL |
+|------|------|---------|
+| My Special Buddies | `Vanceewell/myspecialbuddies-site` | https://vanceewell.github.io/myspecialbuddies-site/ |
+| Jason's Glass Tint (Next.js) | `Vanceewell/vta-dashboard` (jasons-glass-tint/) | Separate deployment |
+
+**Note:** My Special Buddies lives in its own dedicated repo (`myspecialbuddies-site`) — clean, no conflicts with other projects.
+
+---
+
 ## Website Creation Workflow (Permanent Default)
 
 **Every time Vance asks to build a website:**
