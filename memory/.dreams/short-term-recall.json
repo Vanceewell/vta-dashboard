@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-10T23:46:44.375Z",
+  "updatedAt": "2026-05-13T15:00:12.863Z",
   "entries": {
     "memory:memory/2026-04-24.md:64:85": {
       "key": "memory:memory/2026-04-24.md:64:85",
@@ -9,24 +9,26 @@
       "endLine": 85,
       "source": "memory",
       "snippet": "- Vanilla JavaScript for interactivity (filters, lightbox, smooth scroll) - No dependencies - File: `/data/.openclaw/workspace/jasons-glass-tint-premium.html` - Ready to copy as `index.html` ### Business Context - Vance is helping his father Jason build a premium online presence - High-end clientele (luxury vehicles, wealthy homeowners) - Focus on quality > quantity, direct contact (text first) - Established business (30+ years) positioning itself online for the first time - Complements Vance's cleaning business partnership (Orange County operations) ### Key Decisions - Used red Porsche as hero (most eye-catching luxury vehicle) - Cyan accent for premium tech feel (aligns with Tesla market",
-      "recallCount": 5,
+      "recallCount": 6,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 5,
+      "totalScore": 6,
       "maxScore": 1,
       "firstRecalledAt": "2026-04-28T15:00:20.448Z",
-      "lastRecalledAt": "2026-05-09T23:19:49.789Z",
+      "lastRecalledAt": "2026-05-11T22:00:14.844Z",
       "queryHashes": [
         "3c4f7b50705a",
         "b8bebf9c5bec",
         "ced26f9e1ed6",
         "d3f5d16aedc6",
-        "af549715a562"
+        "af549715a562",
+        "ec2069f68d0a"
       ],
       "recallDays": [
         "2026-04-28",
         "2026-05-08",
-        "2026-05-09"
+        "2026-05-09",
+        "2026-05-11"
       ],
       "conceptTags": [
         "index.html",
@@ -89,13 +91,13 @@
       "endLine": 40,
       "source": "memory",
       "snippet": "# Daily Memory - May 7, 2026 ## Website Projects Completed ### Fancy Fuimaono's Restaurant Website - **Client:** Tatum Fuimaono (Vance's cousin) - **Location:** Newport Beach, CA - **Tagline:** \"If your feeling fancy come to my resturant and go dancing\" - **Cuisine:** Fancy food - **Contact:** (949) 456-3911 **Build Process:** 1. Initial site built with Sonnet (dark luxury, black/gold, cinematic hero, chef spotlight, menu, gallery, reservation CTA) 2. Updated with Tatum's actual chef photo (replaced stock images) 3. Tatum's image saved as `tatum-fuimaono.jpg` in repo 4. Final live URL: https://vanceewell.github.io/vta-dashboard/fancy-fuimaonoS.html **Site Features:** - Dark luxury aesthe",
-      "recallCount": 10,
+      "recallCount": 11,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 10,
+      "totalScore": 11,
       "maxScore": 1,
       "firstRecalledAt": "2026-05-07T22:13:46.215Z",
-      "lastRecalledAt": "2026-05-10T23:46:44.375Z",
+      "lastRecalledAt": "2026-05-13T15:00:12.863Z",
       "queryHashes": [
         "f3b51c5b1d5d",
         "c1a2d945cd81",
@@ -106,13 +108,15 @@
         "07349a9535f9",
         "dd744c2ed6d5",
         "62f244978018",
-        "bbd684324c9c"
+        "bbd684324c9c",
+        "c48c0e85a9c8"
       ],
       "recallDays": [
         "2026-05-07",
         "2026-05-08",
         "2026-05-09",
-        "2026-05-10"
+        "2026-05-10",
+        "2026-05-13"
       ],
       "conceptTags": [
         "456-3911",
@@ -287,6 +291,99 @@
         "fuimaono",
         "website",
         "update"
+      ]
+    },
+    "memory:memory/2026-05-11.md:1:30": {
+      "key": "memory:memory/2026-05-11.md:1:30",
+      "path": "memory/2026-05-11.md",
+      "startLine": 1,
+      "endLine": 30,
+      "source": "memory",
+      "snippet": "# Daily Session Log - May 11, 2026 ## Jason's Glass Tint Website - Domain & Deployment Crisis ### Problem Statement Vance discovered the live domain `https://www.jasonsglasstint.com` is showing the WRONG hero background image (Camaro car) when it should show the CORRECT version (two white Maseratis). ### Key Findings **Current Situation:** - Live domain: `https://www.jasonsglasstint.com` → Shows Camaro (WRONG) - Correct version visible to Vance: `vta-dashboard-git-main-vanceewells-projects.vercel.app` → Shows Maserati (CORRECT, but returns 401 to external requests) - Both versions have same page title (\"Jason's Glass Tint | Window Tinting San Clemente\") **Image Verification Results:** -",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-05-11T22:00:14.844Z",
+      "lastRecalledAt": "2026-05-11T22:00:14.844Z",
+      "queryHashes": [
+        "ec2069f68d0a"
+      ],
+      "recallDays": [
+        "2026-05-11"
+      ],
+      "conceptTags": [
+        "www.jasonsglasstint.com",
+        "log",
+        "may",
+        "jason's",
+        "glass",
+        "tint",
+        "website",
+        "domain"
+      ]
+    },
+    "memory:memory/2026-05-11.md:23:52": {
+      "key": "memory:memory/2026-05-11.md:23:52",
+      "path": "memory/2026-05-11.md",
+      "startLine": 23,
+      "endLine": 52,
+      "source": "memory",
+      "snippet": "3. `vta-dashboard-git-main-vanceewells-projects.vercel.app` → Shows Maserati version (protected, requires auth) **Domain Hosting:** - Domain currently hosted on Hostinger LiteSpeed server (NOT Vercel) - Original plan was to migrate to Vercel, but Hostinger still serving the site - This explains the disconnect between Vercel preview versions ### Core Issue The code in the GitHub repo (`Vanceewell/vta-dashboard`) shows the SAME Unsplash hero image ID in both versions: - Photo: `https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80` But the actual displayed image differs (Camaro vs Maserati). This suggests: 1. **Unsplash photo itself was updated** - unlikely but possible 2",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-05-11T22:00:14.844Z",
+      "lastRecalledAt": "2026-05-11T22:00:14.844Z",
+      "queryHashes": [
+        "ec2069f68d0a"
+      ],
+      "recallDays": [
+        "2026-05-11"
+      ],
+      "conceptTags": [
+        "vanceewell/vta-dashboard",
+        "vta",
+        "dashboard",
+        "git",
+        "vanceewells",
+        "projects.vercel.app",
+        "shows",
+        "maserati"
+      ]
+    },
+    "memory:memory/2026-05-11.md:46:79": {
+      "key": "memory:memory/2026-05-11.md:46:79",
+      "path": "memory/2026-05-11.md",
+      "startLine": 46,
+      "endLine": 79,
+      "source": "memory",
+      "snippet": "3. `/tmp/VERCEL_MIGRATION_PLAN.md` - Detailed Vercel setup instructions 4. `/tmp/VERCEL_DOMAIN_FIX_GUIDE.md` - Guide to move domain between Vercel projects 5. `/tmp/LIVE_PRODUCTION_IMAGE_AUDIT.md` - Analysis of why images were missing 6. `/tmp/IMAGE_AUDIT_RESULTS.md` - Portfolio image verification results ### Next Steps Required 1. **Vance needs to clarify the source of the Maserati version:** - Is it in a different git branch? - Is it stored in a database/admin panel? - Can Vance access the protected Vercel URL directly? 2. **Once source identified, deployment path:** - Promote the correct branch/deployment to production - Ensure live domain points to correct Vercel projec",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-05-11T22:00:14.844Z",
+      "lastRecalledAt": "2026-05-11T22:00:14.844Z",
+      "queryHashes": [
+        "ec2069f68d0a"
+      ],
+      "recallDays": [
+        "2026-05-11"
+      ],
+      "conceptTags": [
+        "tmp/vercel-migration-plan.md",
+        "tmp/vercel-domain-fix-guide.md",
+        "tmp/image-audit-results.md",
+        "database/admin",
+        "branch/deployment",
+        "tmp",
+        "vercel-migration-plan.md",
+        "detailed"
       ]
     }
   }

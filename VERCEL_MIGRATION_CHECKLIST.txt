@@ -1,0 +1,242 @@
+================================================================================
+VERCEL DOMAIN MIGRATION - QUICK CHECKLIST
+Jason's Glass Tint Website
+================================================================================
+
+CURRENT SITUATION:
+  Domain: jasonsglasstint.com
+  Current host: Hostinger (LiteSpeed)
+  Correct Vercel project: vta-dashboard-two.vercel.app
+  Status: Ready to migrate
+
+================================================================================
+STEP-BY-STEP MIGRATION
+================================================================================
+
+STEP 1: ADD DOMAINS TO VERCEL PROJECT
+==================================
+
+□ Go to: https://vercel.com/dashboard
+□ Select project: vta-dashboard-two
+□ Click: Settings → Domains
+□ Click: Add Domain
+□ Enter: jasonsglasstint.com
+□ Vercel shows nameservers:
+    ns1.vercel-dns.com
+    ns2.vercel-dns.com  
+    ns3.vercel-dns.com
+□ Click: Add Domain (again, for www)
+□ Enter: www.jasonsglasstint.com
+□ Note: Vercel provides DNS records or nameservers
+
+DNS Records Needed (Vercel will show):
+  A record:    @ → 76.76.21.21
+  CNAME record: www → cname.vercel-dns.com
+
+OR use nameservers (easier):
+  ns1.vercel-dns.com
+  ns2.vercel-dns.com
+  ns3.vercel-dns.com
+
+================================================================================
+
+STEP 2: UPDATE HOSTINGER DNS
+==========================
+
+Option A: Change to Vercel Nameservers (Recommended)
+□ Go to: hpanel.hostinger.com
+□ Select domain: jasonsglasstint.com
+□ Click: Nameservers
+□ Replace with Vercel nameservers:
+    ns1.vercel-dns.com
+    ns2.vercel-dns.com
+    ns3.vercel-dns.com
+□ Save changes
+□ Wait for propagation (15-30 min typically)
+
+Option B: Update A/CNAME Records (If keeping Hostinger nameservers)
+□ Go to: Hostinger hPanel → Domains → DNS
+□ Edit A record (@):
+    Host: @
+    Type: A
+    Value: 76.76.21.21
+    TTL: 3600
+    Save
+□ Edit or create CNAME record (www):
+    Host: www
+    Type: CNAME
+    Value: cname.vercel-dns.com
+    TTL: 3600
+    Save
+□ Delete any old/conflicting records
+
+================================================================================
+
+STEP 3: CONFIGURE VERCEL REDIRECT
+===============================
+
+□ Go to: vercel.com dashboard
+□ Select: vta-dashboard-two project
+□ Go to: Settings → Domains
+□ For jasonsglasstint.com:
+    □ Set as: Redirect to www.jasonsglasstint.com
+    □ Type: Permanent (301)
+    □ Save
+□ For www.jasonsglasstint.com:
+    □ Set as: Primary domain (canonical)
+    □ Save
+
+Expected result:
+  http://jasonsglasstint.com → 301 → https://www.jasonsglasstint.com
+  https://jasonsglasstint.com → 301 → https://www.jasonsglasstint.com
+  https://www.jasonsglasstint.com → 200 OK ✓
+
+================================================================================
+
+STEP 4: VERIFY SSL CERTIFICATE
+============================
+
+□ In Vercel dashboard → Settings → Domains
+□ Check SSL status for both domains
+□ Should show: ✓ Valid SSL Certificate
+□ (Vercel auto-renews - no action needed)
+
+================================================================================
+
+STEP 5: REMOVE HOSTINGER SITE BUILDER (Optional)
+==============================================
+
+If Hostinger site builder is conflicting:
+
+□ Go to: hpanel.hostinger.com
+□ Look for: Websites or Site Builder section
+□ Find: Jason's Glass Tint site
+□ Click: Disable or Remove Site
+□ Keep domain registration active at Hostinger
+□ (Domain registration fee continues, site builder disabled)
+
+================================================================================
+VERIFICATION TESTS
+================================================================================
+
+□ Test 1: DNS Resolution
+   nslookup jasonsglasstint.com
+   Expected: Should resolve (after propagation)
+
+□ Test 2: HTTP Redirects (should all work)
+   curl -I http://jasonsglasstint.com
+   Expected: 301 to https://www.jasonsglasstint.com
+   
+   curl -I https://jasonsglasstint.com
+   Expected: 301 to https://www.jasonsglasstint.com
+   
+   curl -I https://www.jasonsglasstint.com
+   Expected: 200 OK with Vercel headers
+
+□ Test 3: SSL Certificate
+   echo | openssl s_client -connect jasonsglasstint.com:443
+   Expected: Valid certificate from Let's Encrypt
+
+□ Test 4: Browser (Chrome)
+   Type: jasonsglasstint.com
+   Expected: Redirects to https://www.jasonsglasstint.com
+   Expected: Green lock (SSL valid)
+   Expected: Content loads from Vercel
+
+□ Test 5: Browser (Safari - Desktop)
+   Type: jasonsglasstint.com
+   Expected: Same as Chrome
+   Expected: Private mode also works
+
+□ Test 6: Mobile Safari (iPhone)
+   Settings → Safari → Clear History/Cookies
+   Type: jasonsglasstint.com
+   Expected: Loads without hanging
+   Expected: Green lock visible
+   Expected: Incognito mode also works
+
+□ Test 7: Mobile Chrome (Android)
+   Type: jasonsglasstint.com
+   Expected: Same as iPhone
+
+================================================================================
+TIMELINE
+================================================================================
+
+Time                  What Happens
+────────────────────────────────────────────────────
+0-5 minutes           Nameservers updated in Hostinger
+5-30 minutes          Most ISPs resolve to Vercel (typically fast)
+30 min - 2 hours      Regional propagation completes
+2-48 hours            Global propagation (some ISPs cache longer)
+
+To speed up:
+  - Clear browser cache
+  - Restart browser
+  - Try incognito mode
+  - Use different DNS (8.8.8.8, 1.1.1.1)
+
+================================================================================
+ROLLBACK PLAN (If something breaks)
+================================================================================
+
+Quick rollback (15 min):
+
+□ Go to: Hostinger hPanel → DNS
+□ Set A record @ to: 76.76.21.21 (Hostinger IP)
+□ Wait 15-30 minutes
+□ Site returns to working on Hostinger
+
+Or use Hostinger nameservers:
+□ Go to: Hostinger → Nameservers
+□ Restore Hostinger default nameservers
+□ Wait 15-30 minutes
+
+================================================================================
+NOTES FOR VERCEL SETUP
+================================================================================
+
+■ Vercel Project Name: vta-dashboard-two
+■ Vercel Default URL: https://vta-dashboard-two.vercel.app
+■ GitHub Repo: Vanceewell/vta-dashboard
+■ Framework: Next.js
+■ SSL: Automatic (Let's Encrypt, auto-renewed)
+■ Preferred Final URL: https://www.jasonsglasstint.com
+■ Redirect: jasonsglasstint.com → www.jasonsglasstint.com
+
+================================================================================
+QUESTIONS/ISSUES?
+================================================================================
+
+Common issues during migration:
+
+Issue: Domain shows Vercel 404 after updating DNS
+Solution: DNS not propagated yet - wait 15-30 minutes
+
+Issue: Mixed content warning (http/https)
+Solution: Vercel redirects all HTTP to HTTPS automatically
+
+Issue: Safari hangs or shows "Cannot reach server"
+Solution: Might be DNS cache - clear Safari cache, restart
+
+Issue: Certificate warning
+Solution: Vercel auto-issues SSL - might need 5-10 min to activate
+
+Issue: Redirect loop
+Solution: Check Vercel domain settings - ensure only one canonical domain
+
+Contact Vercel support: https://vercel.com/support
+
+================================================================================
+ESTIMATED TOTAL TIME: 30-50 minutes
+  Setup in Vercel: 5 min
+  Update Hostinger DNS: 5 min
+  DNS propagation: 15-30 min
+  Testing/verification: 10-20 min
+================================================================================
+
+Once complete: Domain will be fully migrated to Vercel.
+Keep Hostinger for domain registration (renew annually).
+All site hosting/deployment happens on Vercel.
+
+Good luck! 🚀

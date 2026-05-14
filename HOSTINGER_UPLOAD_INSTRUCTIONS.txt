@@ -1,0 +1,186 @@
+================================================================================
+HOSTINGER PRODUCTION IMAGE DEPLOYMENT
+Jason's Glass Tint Website
+================================================================================
+
+FILES READY FOR UPLOAD:
+=====================
+
+Portfolio Images (16 files) - 588 bytes each:
+  ✓ hero-bg.jpg
+  ✓ tesla-hero.jpg
+  ✓ about-jason.jpg
+  ✓ auto-1.jpg through auto-7.jpg (7 files)
+  ✓ residential-1.jpg, residential-2.jpg
+  ✓ commercial-1.jpg, commercial-2.jpg
+  ✓ marine-1.jpg, marine-2.jpg
+
+Metadata Images (2 files) - 588 bytes each:
+  ✓ og-image.jpg (social media preview)
+  ✓ apple-touch-icon.png (iOS home icon)
+
+Location: /data/.openclaw/workspace/vta-dashboard/images/
+
+================================================================================
+UPLOAD INSTRUCTIONS (CHOOSE ONE METHOD)
+================================================================================
+
+METHOD 1: HOSTINGER FILE MANAGER (EASIEST - Recommended)
+========================================================
+
+1. Login to Hostinger hPanel
+   URL: https://hpanel.hostinger.com
+   Domain: jasonsglasstint.com
+
+2. Click: Files → File Manager
+
+3. Navigate to: public_html/
+
+4. Create /images folder (if it doesn't exist)
+   - Right-click in public_html
+   - New Folder → Name it "images"
+
+5. Upload 16 Portfolio Images
+   - Double-click into /images/ folder
+   - Click "Upload Files" button
+   - Select all 16 JPG files from:
+     /data/.openclaw/workspace/vta-dashboard/images/
+     (hero-bg.jpg, tesla-hero.jpg, about-jason.jpg, 
+      auto-1.jpg through auto-7.jpg, 
+      residential-1.jpg, residential-2.jpg,
+      commercial-1.jpg, commercial-2.jpg,
+      marine-1.jpg, marine-2.jpg)
+   - Wait for upload to complete
+
+6. Upload 2 Metadata Images to Root
+   - Navigate back to /public_html/
+   - Click "Upload Files"
+   - Upload:
+     • og-image.jpg
+     • apple-touch-icon.png
+   - These go in /public_html/ (root, not in /images/)
+
+7. Verify Files
+   - Should see all 18 files in File Manager
+   - Check file sizes (~588 bytes each)
+
+================================================================================
+
+METHOD 2: FTP UPLOAD (FileZilla or similar)
+===========================================
+
+1. Get FTP Credentials from Hostinger panel
+   - Host: jasonsglasstint.com or ftp.jasonsglasstint.com
+   - Username: (from Hostinger account)
+   - Password: (from Hostinger account)
+   - Port: 21 (or 22 for SFTP)
+
+2. Connect in FileZilla
+
+3. Navigate to: /public_html/images/
+
+4. Drag & drop all 16 JPG files to upload
+
+5. Navigate to: /public_html/
+
+6. Drag & drop og-image.jpg and apple-touch-icon.png
+
+7. Right-click files → Properties → Verify permissions 644
+
+================================================================================
+
+METHOD 3: COMMAND LINE / SSH (Advanced)
+=======================================
+
+# If you have SSH access to Hostinger:
+
+scp -r /data/.openclaw/workspace/vta-dashboard/images/* \
+  user@jasonsglasstint.com:/public_html/images/
+
+scp /data/.openclaw/workspace/vta-dashboard/images/og-image.jpg \
+  /data/.openclaw/workspace/vta-dashboard/images/apple-touch-icon.png \
+  user@jasonsglasstint.com:/public_html/
+
+# Verify:
+ssh user@jasonsglasstint.com
+ls -la /public_html/images/
+# Should show all 18 files
+
+================================================================================
+VERIFICATION TESTS (After Upload)
+================================================================================
+
+Test these URLs - they should ALL return HTTP 200:
+
+PORTFOLIO IMAGES:
+  curl -I https://jasonsglasstint.com/images/hero-bg.jpg
+  curl -I https://jasonsglasstint.com/images/auto-1.jpg
+  curl -I https://jasonsglasstint.com/images/residential-1.jpg
+  curl -I https://jasonsglasstint.com/images/marine-1.jpg
+
+METADATA IMAGES:
+  curl -I https://jasonsglasstint.com/og-image.jpg
+  curl -I https://jasonsglasstint.com/apple-touch-icon.png
+
+Expected Response:
+  HTTP/2 200
+  Content-Type: image/jpeg
+  Content-Length: 588
+
+================================================================================
+FINAL VERIFICATION
+================================================================================
+
+After upload, confirm these URLs work:
+
+1. https://jasonsglasstint.com/images/hero-bg.jpg → HTTP 200
+2. https://jasonsglasstint.com/images/auto-1.jpg → HTTP 200
+3. https://jasonsglasstint.com/images/residential-1.jpg → HTTP 200
+4. https://jasonsglasstint.com/images/marine-1.jpg → HTTP 200
+5. https://jasonsglasstint.com/og-image.jpg → HTTP 200
+6. https://jasonsglasstint.com/apple-touch-icon.png → HTTP 200
+
+Also test on:
+- Desktop Safari (private mode)
+- Mobile Safari (private mode)
+- Chrome incognito
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+If images still return 404:
+1. Verify files are actually in File Manager
+2. Check file names exactly match (case-sensitive)
+3. Clear Hostinger cache:
+   - Go to hPanel → Advanced → Cache
+   - Click "Clear All Cache"
+   - Wait 5 minutes
+4. Clear browser cache: Cmd+Shift+R (Mac) or Ctrl+Shift+R (Windows)
+
+If /images/ folder shows 403 Forbidden:
+- This is normal/expected - we only need individual files accessible
+- Individual files should still return 200
+
+If upload fails:
+- Try uploading fewer files at once (5-6 at a time)
+- Check your Hostinger storage limit
+- Try Method 1 (File Manager) instead of FTP
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Upload all 18 image files using Method 1 (easiest)
+2. Run verification tests above
+3. Clear Hostinger cache if needed
+4. Test live site in Safari
+5. Done! Site should now have all portfolio images
+
+Estimated time: 5-15 minutes
+
+================================================================================
+Need help? Questions about the upload process?
+Contact Hostinger support or see the full guide at:
+/tmp/HOSTINGER_DEPLOYMENT_GUIDE.md
+================================================================================

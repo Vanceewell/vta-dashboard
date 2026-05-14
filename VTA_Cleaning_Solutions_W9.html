@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form W-9 - VTA Cleaning Solutions LLC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10pt;
+            line-height: 1.3;
+            background: white;
+            padding: 0;
+        }
+        
+        @page {
+            size: letter;
+            margin: 0.5in;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+        }
+        
+        .page {
+            width: 8.5in;
+            height: 11in;
+            margin: 0 auto;
+            padding: 0.5in;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.2in;
+            border-bottom: 2px solid #000;
+            padding-bottom: 0.2in;
+        }
+        
+        .header-left h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 0.05in 0;
+        }
+        
+        .header-left p {
+            font-size: 9pt;
+            margin: 0;
+        }
+        
+        .header-right {
+            text-align: right;
+            font-size: 8pt;
+        }
+        
+        .header-right p {
+            margin: 0;
+            padding: 0.05in 0;
+        }
+        
+        .irs-info {
+            font-size: 8pt;
+            margin-bottom: 0.1in;
+        }
+        
+        .section {
+            margin-bottom: 0.2in;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            font-size: 10pt;
+            margin: 0.15in 0 0.1in 0;
+            text-transform: uppercase;
+        }
+        
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.3in;
+            margin-bottom: 0.1in;
+        }
+        
+        .field {
+            margin-bottom: 0.08in;
+        }
+        
+        .field-label {
+            font-size: 9pt;
+            font-weight: normal;
+            margin-bottom: 0.03in;
+        }
+        
+        .field-value {
+            font-size: 10pt;
+            font-weight: bold;
+            padding: 0.05in;
+            border-bottom: 1px solid #000;
+            min-height: 0.2in;
+            display: flex;
+            align-items: center;
+        }
+        
+        .field-value.empty {
+            border-bottom: 1px solid #000;
+            min-height: 0.2in;
+        }
+        
+        .checkbox-group {
+            margin: 0.08in 0;
+        }
+        
+        .checkbox-item {
+            margin: 0.06in 0;
+            font-size: 10pt;
+        }
+        
+        .checkbox-item input {
+            margin-right: 0.1in;
+        }
+        
+        .checkbox-item.checked {
+            font-weight: bold;
+        }
+        
+        .cert-text {
+            font-size: 8pt;
+            line-height: 1.2;
+            margin: 0.1in 0;
+        }
+        
+        .cert-text p {
+            margin: 0.04in 0;
+        }
+        
+        .signature-section {
+            display: grid;
+            grid-template-columns: 2in 2.5in;
+            gap: 1in;
+            margin-top: 0.2in;
+            margin-bottom: 0.1in;
+        }
+        
+        .signature-block {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sig-line {
+            border-bottom: 1px solid #000;
+            height: 0.25in;
+            margin-bottom: 0.05in;
+        }
+        
+        .sig-label {
+            font-size: 9pt;
+        }
+        
+        .sig-filled {
+            font-size: 10pt;
+            font-weight: bold;
+            margin-top: 0.02in;
+        }
+        
+        .info-box {
+            background: #f5f5f5;
+            border: 1px solid #999;
+            padding: 0.08in;
+            margin: 0.1in 0;
+            font-size: 8pt;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.1in 0;
+        }
+        
+        td, th {
+            border: 1px solid #000;
+            padding: 0.06in;
+            text-align: left;
+            font-size: 9pt;
+        }
+        
+        th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>Form W-9</h1>
+                <p><strong>Request for Taxpayer</strong></p>
+                <p><strong>Identification Number and Certification</strong></p>
+            </div>
+            <div class="header-right">
+                <p><strong>OMB No. 1545-0047</strong></p>
+                <p>Department of the Treasury</p>
+                <p>Internal Revenue Service</p>
+                <p style="margin-top: 0.1in;"><strong>Rev. January 2024</strong></p>
+                <p>Catalog Number 10231X</p>
+            </div>
+        </div>
+
+        <!-- PART I: Taxpayer Identification Number -->
+        <div class="section">
+            <div class="section-title">PART I &mdash; Taxpayer Identification Number (TIN)</div>
+            
+            <div class="field-row">
+                <div class="field">
+                    <div class="field-label">Social security number</div>
+                    <div class="field-value empty"></div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Employer identification number</div>
+                    <div class="field-value">42-2366723</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PART II: Name and Address -->
+        <div class="section">
+            <div class="section-title">PART II &mdash; Name and Address</div>
+            
+            <div class="field">
+                <div class="field-label">Name (as shown on your income tax return). Name is required on this line; do not leave this line blank.</div>
+                <div class="field-value">VTA Cleaning Solutions LLC</div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">Business name/disregarded entity name, if different from above</div>
+                <div class="field-value empty"></div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">Mailing address (street address) (do not use PO Box)</div>
+                <div class="field-value">23 Via Conocido</div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">City, state, and ZIP code</div>
+                <div class="field-value">San Clemente, CA 92673</div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">Account number(s) for which the Form W–9 is being provided (optional)</div>
+                <div class="field-value empty"></div>
+            </div>
+        </div>
+
+        <!-- PART III: Federal Income Tax Classification -->
+        <div class="section">
+            <div class="section-title">PART III &mdash; Federal Income Tax Classification</div>
+            
+            <div class="field-label" style="margin-bottom: 0.1in;">Check the appropriate box for your federal income tax classification of this organization:</div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item checked">
+                    <span>☒ LLC taxed as S corporation</span>
+                </div>
+                <div class="checkbox-item">
+                    <span>☐ LLC taxed as C corporation</span>
+                </div>
+                <div class="checkbox-item">
+                    <span>☐ LLC taxed as partnership</span>
+                </div>
+                <div class="checkbox-item checked">
+                    <span>☒ LLC taxed as sole proprietorship</span>
+                </div>
+                <div class="checkbox-item">
+                    <span>☐ Other (see instructions): ________________________</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PART IV: Certification -->
+        <div class="section">
+            <div class="section-title">PART IV &mdash; Certification</div>
+            
+            <div class="cert-text">
+                <p><strong>Under penalties of perjury, I certify that:</strong></p>
+                <p>1. The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued).</p>
+                <p>2. I am not subject to backup withholding because: (a) I have not been notified by the IRS that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (b) the IRS has notified me that I am no longer subject to backup withholding.</p>
+                <p>3. I am a U.S. citizen or other U.S. person (defined in the instructions).</p>
+                <p>4. The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct.</p>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-block">
+                    <div class="sig-label">Please sign here.</div>
+                    <div class="sig-line"></div>
+                    <div class="sig-filled">Vance Weston Ewell</div>
+                    <div class="sig-label" style="margin-top: 0.1in; font-size: 8pt;">Signature</div>
+                </div>
+                <div class="signature-block">
+                    <div class="sig-label">Date</div>
+                    <div class="sig-line"></div>
+                    <div class="sig-filled" id="date-field"></div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Printed Name:</strong> Vance Weston Ewell | <strong>Title:</strong> Member-Manager
+            </div>
+        </div>
+
+        <!-- PART V: Requester's Name and Address -->
+        <div class="section">
+            <div class="section-title">PART V &mdash; Requester's Name and Address (Optional)</div>
+            
+            <table>
+                <tr>
+                    <td style="font-size: 9pt; color: #666;">(To be filled by requester. Leave blank if you are completing this form for your own records.)</td>
+                </tr>
+            </table>
+
+            <div class="field">
+                <div class="field-label">Name</div>
+                <div class="field-value empty"></div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">Business name/disregarded entity name (if applicable)</div>
+                <div class="field-value empty"></div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">Address (street)</div>
+                <div class="field-value empty"></div>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <div class="field-label">City, state, ZIP code</div>
+                    <div class="field-value empty"></div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Telephone No.</div>
+                    <div class="field-value empty"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="font-size: 8pt; color: #666; margin-top: 0.3in; padding-top: 0.1in; border-top: 1px solid #ccc; text-align: center;">
+            <p><strong>VTA Cleaning Solutions LLC | EIN: 42-2366723 | 23 Via Conocido, San Clemente, CA 92673</strong></p>
+            <p>Document generated: <span id="timestamp"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Fill in today's date
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const year = today.getFullYear();
+        document.getElementById('date-field').textContent = `${month}/${day}/${year}`;
+        
+        // Set timestamp
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        document.getElementById('timestamp').textContent = today.toLocaleDateString('en-US', options);
+    </script>
+</body>
+</html>
