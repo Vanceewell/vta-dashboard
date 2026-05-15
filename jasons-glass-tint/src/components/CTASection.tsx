@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { fetchSiteImages } from '@/lib/siteImages';
+import { trackTextJasonClick, trackPhoneCallClick } from '@/lib/gtag';
 
 const CTA_BG_DEFAULT = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80';
 
@@ -57,11 +58,11 @@ export default function CTASection() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="sms:9494968468" className="btn-gold text-xs px-10 py-4 w-full sm:w-auto justify-center">
+            <a href="sms:9494968468" onClick={() => trackTextJasonClick('cta_section')} className="btn-gold text-xs px-10 py-4 w-full sm:w-auto justify-center">
               <PhoneIcon />
               Text Jason Now
             </a>
-            <a href="tel:9494968468" className="btn-outline text-xs px-10 py-4 w-full sm:w-auto justify-center">
+            <a href="tel:9494968468" onClick={() => trackPhoneCallClick('cta_section')} className="btn-outline text-xs px-10 py-4 w-full sm:w-auto justify-center">
               Call (949) 496-8468
             </a>
           </div>

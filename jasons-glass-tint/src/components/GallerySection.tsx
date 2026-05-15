@@ -1,4 +1,5 @@
 'use client';
+import { trackTextJasonClick } from '@/lib/gtag';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -160,7 +161,7 @@ export default function GallerySection() {
             <p className="font-sans text-jgt-muted text-sm max-w-sm mx-auto">
               Jason&apos;s project photos are on the way. In the meantime, text him directly for examples of past work.
             </p>
-            <a href="sms:9494968468" className="btn-gold inline-flex mt-8 text-xs px-8 py-4">
+            <a href="sms:9494968468" onClick={() => trackTextJasonClick('gallery_section')} className="btn-gold inline-flex mt-8 text-xs px-8 py-4">
               Text Jason for Examples
             </a>
             <div className="w-12 h-[1px] bg-jgt-gold mx-auto mt-8" />

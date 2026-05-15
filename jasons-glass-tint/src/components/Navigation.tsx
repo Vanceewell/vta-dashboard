@@ -1,4 +1,5 @@
 'use client';
+import { trackTextJasonClick, trackPhoneCallClick } from '@/lib/gtag';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -59,10 +60,10 @@ export default function Navigation() {
 
             {/* Desktop CTA */}
             <div className="hidden lg:flex items-center gap-4">
-              <a href="tel:9494968468" className="font-sans text-xs tracking-wider text-jgt-muted hover:text-jgt-text transition-colors">
+              <a href="tel:9494968468" onClick={() => trackPhoneCallClick('navigation')} className="font-sans text-xs tracking-wider text-jgt-muted hover:text-jgt-text transition-colors">
                 (949) 496-8468
               </a>
-              <a href="sms:9494968468" className="btn-gold text-xs px-6 py-3">
+              <a href="sms:9494968468" onClick={() => trackTextJasonClick('navigation')} className="btn-gold text-xs px-6 py-3">
                 <PhoneIcon />
                 Text Jason
               </a>
@@ -111,7 +112,7 @@ export default function Navigation() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.36 }}
               className="btn-gold mt-4"
-              onClick={() => setMenuOpen(false)}
+              onClick={() => { setMenuOpen(false); trackTextJasonClick('mobile_menu'); }}
             >
               Text Jason Now
             </motion.a>

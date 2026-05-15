@@ -1,4 +1,5 @@
 'use client';
+import { trackTextJasonClick } from '@/lib/gtag';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { fetchSiteImages } from '@/lib/siteImages';
@@ -129,7 +130,7 @@ export default function AboutSection() {
               </footer>
             </blockquote>
 
-            <a href="sms:9494968468" className="btn-gold inline-flex mt-10 text-xs px-8 py-4">
+            <a href="sms:9494968468" onClick={() => trackTextJasonClick('about_section')} className="btn-gold inline-flex mt-10 text-xs px-8 py-4">
               <PhoneIcon />
               Text Jason Directly
             </a>

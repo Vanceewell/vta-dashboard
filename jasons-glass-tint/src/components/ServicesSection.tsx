@@ -1,4 +1,5 @@
 'use client';
+import { trackTextJasonClick } from '@/lib/gtag';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -105,7 +106,7 @@ export default function ServicesSection() {
             <h2 className="font-display text-jgt-text" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}>
               Premium Film for Every Application
             </h2>
-            <a href="sms:9494968468" className="hidden lg:inline-flex btn-gold text-xs">
+            <a href="sms:9494968468" onClick={() => trackTextJasonClick('services_section')} className="hidden lg:inline-flex btn-gold text-xs">
               <MessageIcon />
               Text Jason
             </a>

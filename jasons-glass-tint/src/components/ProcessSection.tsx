@@ -1,4 +1,5 @@
 'use client';
+import { trackTextJasonClick } from '@/lib/gtag';
 import { motion } from 'framer-motion';
 
 // AI-EDITABLE: process steps
@@ -90,7 +91,7 @@ export default function ProcessSection() {
           transition={{ duration: 0.7, delay: 0.4 }}
           className="text-center mt-14"
         >
-          <a href="sms:9494968468" className="btn-gold text-xs px-10 py-4">
+          <a href="sms:9494968468" onClick={() => trackTextJasonClick('process_section')} className="btn-gold text-xs px-10 py-4">
             Start with a Text
           </a>
         </motion.div>

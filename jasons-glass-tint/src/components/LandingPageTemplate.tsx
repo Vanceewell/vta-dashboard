@@ -6,6 +6,7 @@ import Navigation from './Navigation';
 import Footer from './Footer';
 import FloatingCTA from './FloatingCTA';
 import { fetchSiteImages, type SiteImageSlot } from '@/lib/siteImages';
+import { trackTextJasonClick, trackPhoneCallClick } from '@/lib/gtag';
 
 export interface FAQ     { q: string; a: string; }
 export interface LPProps {
@@ -52,8 +53,8 @@ export default function LandingPageTemplate({ hero, intro, sections, benefits, b
               {hero.sub}
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4">Text Jason Now</a>
-              <a href="tel:9494968468"  className="btn-outline text-xs px-8 py-4">Call (949) 496-8468</a>
+              <a href="sms:9494968468" onClick={() => trackTextJasonClick('landing_hero')} className="btn-gold text-xs px-8 py-4">Text Jason Now</a>
+              <a href="tel:9494968468" onClick={() => trackPhoneCallClick('landing_hero')} className="btn-outline text-xs px-8 py-4">Call (949) 496-8468</a>
             </div>
           </motion.div>
         </div>
@@ -120,8 +121,8 @@ export default function LandingPageTemplate({ hero, intro, sections, benefits, b
                 <p className="font-sans text-jgt-muted text-xs leading-relaxed mb-5">
                   Text Jason directly for the fastest response. He'll reply personally with a recommendation and price.
                 </p>
-                <a href="sms:9494968468" className="btn-gold w-full justify-center text-xs py-3 mb-3">Text Jason</a>
-                <a href="tel:9494968468" className="btn-outline w-full justify-center text-xs py-3">Call (949) 496-8468</a>
+                <a href="sms:9494968468" onClick={() => trackTextJasonClick('landing_sidebar')} className="btn-gold w-full justify-center text-xs py-3 mb-3">Text Jason</a>
+                <a href="tel:9494968468" onClick={() => trackPhoneCallClick('landing_sidebar')} className="btn-outline w-full justify-center text-xs py-3">Call (949) 496-8468</a>
                 <div className="mt-4 pt-4 border-t border-jgt-border/30">
                   <p className="font-sans text-jgt-muted text-xs text-center">San Clemente, California</p>
                 </div>
@@ -194,7 +195,7 @@ export default function LandingPageTemplate({ hero, intro, sections, benefits, b
             Text Jason directly — no forms, no call centers, just a real response from the person doing your install.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="sms:9494968468" className="btn-gold text-xs px-10 py-4">Text Jason Now</a>
+            <a href="sms:9494968468" onClick={() => trackTextJasonClick('landing_footer_cta')} className="btn-gold text-xs px-10 py-4">Text Jason Now</a>
             <Link href="/" className="btn-outline text-xs px-10 py-4">← Back to Home</Link>
           </div>
         </div>

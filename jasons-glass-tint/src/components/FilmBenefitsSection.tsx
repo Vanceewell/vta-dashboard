@@ -1,4 +1,5 @@
 'use client';
+import { trackTextJasonClick } from '@/lib/gtag';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
@@ -88,7 +89,7 @@ export default function FilmBenefitsSection() {
             Jason uses only premium-grade film from Madico Window Film.
             Ask about the right film for your application.
           </p>
-          <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4">
+          <a href="sms:9494968468" onClick={() => trackTextJasonClick('film_benefits')} className="btn-gold text-xs px-8 py-4">
             Ask Jason About Film Options
           </a>
         </motion.div>

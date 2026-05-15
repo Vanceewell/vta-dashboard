@@ -1,4 +1,5 @@
 'use client';
+import { trackTextJasonClick } from '@/lib/gtag';
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import HeroLogo from './HeroLogo';
@@ -166,7 +167,7 @@ export default function HeroSection({
               transition={{ duration: 0.8, delay: 0.85 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <a href="sms:9494968468" className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
+              <a href="sms:9494968468" onClick={() => trackTextJasonClick('hero')} className="btn-gold text-xs px-8 py-4 w-full sm:w-auto justify-center">
                 <PhoneIcon />
                 Text Jason Now
               </a>

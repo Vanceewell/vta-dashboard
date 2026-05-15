@@ -1,4 +1,6 @@
+'use client';
 import Link from 'next/link';
+import { trackTextJasonClick, trackPhoneCallClick } from '@/lib/gtag';
 
 // AI-EDITABLE: footer links & content
 const SERVICE_LINKS = [
@@ -51,11 +53,11 @@ export default function Footer() {
 
             {/* Contact */}
             <div className="space-y-2">
-              <a href="tel:9494968468" className="flex items-center gap-3 font-sans text-sm text-jgt-text hover:text-jgt-gold transition-colors cursor-pointer">
+              <a href="tel:9494968468" onClick={() => trackPhoneCallClick('footer')} className="flex items-center gap-3 font-sans text-sm text-jgt-text hover:text-jgt-gold transition-colors cursor-pointer">
                 <PhoneIcon />
                 (949) 496-8468
               </a>
-              <a href="sms:9494968468" className="flex items-center gap-3 font-sans text-xs text-jgt-muted hover:text-jgt-gold transition-colors cursor-pointer">
+              <a href="sms:9494968468" onClick={() => trackTextJasonClick('footer_contact')} className="flex items-center gap-3 font-sans text-xs text-jgt-muted hover:text-jgt-gold transition-colors cursor-pointer">
                 <MessageIcon />
                 Text for fastest response
               </a>
@@ -110,6 +112,7 @@ export default function Footer() {
             {/* CTA */}
             <a
               href="sms:9494968468"
+              onClick={() => trackTextJasonClick('footer_cta')}
               className="mt-8 btn-gold text-xs px-5 py-3 inline-flex w-full justify-center"
             >
               Text Jason
