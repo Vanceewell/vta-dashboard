@@ -113,14 +113,15 @@ export default function HeroSection({
             marginBottom: mb(L.gapLogoSince),
             transform: `translateY(${L.yOffsetLogo}px)`,
           }}>
-            <motion.div
+            {/* The logo is the page headline: its alt text ("Jason's Glass Tint") is the H1. */}
+            <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.35, ease: [0.25, 0.1, 0, 1] }}
               className="relative w-full mx-auto"
             >
               <HeroLogoImage src={heroLogo} />
-            </motion.div>
+            </motion.h1>
           </div>
 
           {/* ── 3. Since 1989 ── */}
