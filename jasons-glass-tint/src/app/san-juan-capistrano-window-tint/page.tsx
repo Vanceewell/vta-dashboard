@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Window Tinting San Juan Capistrano | Jason's Glass Tint",
     description: "Premium residential and commercial window tinting in San Juan Capistrano by Jason himself. 40+ years experience.",
-    url: 'https://jasonsglasstint.com/san-juan-capistrano-window-tint',
+    url: 'https://www.jasonsglasstint.com/san-juan-capistrano-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/san-juan-capistrano-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/san-juan-capistrano-window-tint' },
 };
 
 export default function Page() {

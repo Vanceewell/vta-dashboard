@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Residential Window Tinting San Clemente | Jason's Glass Tint",
     description: "Premium home window tinting by Jason himself. Solar control, privacy film, and safety film for San Clemente homes and South Orange County.",
-    url: 'https://jasonsglasstint.com/residential-window-tint',
+    url: 'https://www.jasonsglasstint.com/residential-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/residential-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/residential-window-tint' },
 };
 
 export default function Page() {

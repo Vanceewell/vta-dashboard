@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Window Tinting Camp Pendleton | Jason's Glass Tint",
     description: "Serving Marines and military families near Camp Pendleton with premium window film. Automotive and residential tinting by Jason himself -- straight talk, quality work.",
-    url: 'https://jasonsglasstint.com/camp-pendleton-window-tint',
+    url: 'https://www.jasonsglasstint.com/camp-pendleton-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/camp-pendleton-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/camp-pendleton-window-tint' },
 };
 
 export default function Page() {

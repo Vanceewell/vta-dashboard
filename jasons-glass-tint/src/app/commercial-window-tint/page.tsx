@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Commercial Window Tinting Orange County | Jason's Glass Tint",
     description: "Professional commercial tinting for San Clemente and South OC businesses. Solar control, privacy film, storefront tinting by Jason himself.",
-    url: 'https://jasonsglasstint.com/commercial-window-tint',
+    url: 'https://www.jasonsglasstint.com/commercial-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/commercial-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/commercial-window-tint' },
 };
 
 export default function Page() {

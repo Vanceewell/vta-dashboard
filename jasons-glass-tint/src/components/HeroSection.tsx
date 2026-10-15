@@ -7,7 +7,7 @@ import { loadHeroConfig, DEFAULT_CONFIG, type HeroConfig } from '@/lib/heroConfi
 import { fetchSiteImages, type SiteImageMap } from '@/lib/siteImages';
 
 const LOGO_SRC_DEFAULT = '/images/ChatGPT%20Image%20May%207%2C%202026%2C%2009_16_16%20PM.png';
-const HERO_BG_DEFAULT   = 'https://ioneldfkqkhlokdmkuh.supabase.co/storage/v1/object/public/gallery/site/1778359990410-heroBackground.png';
+const HERO_BG_DEFAULT   = '/images/hero-bg.jpg';
 export const HERO_IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
 
 /**

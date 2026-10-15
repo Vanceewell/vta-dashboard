@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Window Tinting Talega, CA | Jason's Glass Tint",
     description: "Serving Talega since 1989. Premium home and automotive tinting by Jason himself. No subcontractors, honest pricing.",
-    url: 'https://jasonsglasstint.com/talega-window-tint',
+    url: 'https://www.jasonsglasstint.com/talega-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/talega-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/talega-window-tint' },
 };
 
 export default function Page() {

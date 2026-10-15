@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Automotive Window Tinting San Clemente | Jason's Glass Tint",
     description: "40+ years tinting cars, trucks, and SUVs in San Clemente. Premium American-made film, factory-precise installation by Jason himself.",
-    url: 'https://jasonsglasstint.com/automotive-window-tint',
+    url: 'https://www.jasonsglasstint.com/automotive-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/automotive-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/automotive-window-tint' },
 };
 
 export default function Page() {

@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Window Tinting Dana Point | Jason's Glass Tint",
     description: "Car, home, and boat tinting in Dana Point by Jason himself. 40+ years experience, no subcontractors, premium film.",
-    url: 'https://jasonsglasstint.com/dana-point-window-tint',
+    url: 'https://www.jasonsglasstint.com/dana-point-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/dana-point-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/dana-point-window-tint' },
 };
 
 export default function Page() {

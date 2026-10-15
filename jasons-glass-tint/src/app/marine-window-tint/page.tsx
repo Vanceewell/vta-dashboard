@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Marine Window Tinting San Clemente | Jason's Glass Tint",
     description: "Marine-grade window film for boats and yachts at Dana Point Harbor and San Clemente. Jason personally installs every marine project.",
-    url: 'https://jasonsglasstint.com/marine-window-tint',
+    url: 'https://www.jasonsglasstint.com/marine-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/marine-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/marine-window-tint' },
 };
 
 export default function Page() {

@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Window Tinting Ranch Mission Viejo | Jason's Glass Tint",
     description: "Serving Ranch Mission Viejo with premium window film. Residential and automotive tinting by Jason himself — no subcontractors, honest pricing.",
-    url: 'https://jasonsglasstint.com/ranch-mission-viejo-window-tint',
+    url: 'https://www.jasonsglasstint.com/ranch-mission-viejo-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/ranch-mission-viejo-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/ranch-mission-viejo-window-tint' },
 };
 
 export default function Page() {

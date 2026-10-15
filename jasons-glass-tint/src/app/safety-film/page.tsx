@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Safety & Security Window Film | Jason's Glass Tint",
     description: "Safety film holds broken glass in place — added protection for homes, businesses, and vehicles. Installed personally by Jason in San Clemente and South Orange County.",
-    url: 'https://jasonsglasstint.com/safety-film',
+    url: 'https://www.jasonsglasstint.com/safety-film',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/safety-film' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/safety-film' },
 };
 
 export default function Page() {

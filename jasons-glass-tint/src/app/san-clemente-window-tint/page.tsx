@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Window Tinting San Clemente | Jason's Glass Tint",
     description: "40+ years of window film installation in San Clemente. Jason personally installs every project. No subcontractors. Premium film. Honest pricing.",
-    url: 'https://jasonsglasstint.com/san-clemente-window-tint',
+    url: 'https://www.jasonsglasstint.com/san-clemente-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/san-clemente-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/san-clemente-window-tint' },
 };
 
 const faqSchema = {

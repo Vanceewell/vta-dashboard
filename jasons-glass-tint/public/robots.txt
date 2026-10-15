@@ -4,4 +4,4 @@ Allow: /
 # Exclude admin
 Disallow: /admin-gallery
 
-Sitemap: https://jasonsglasstint.com/sitemap.xml
+Sitemap: https://www.jasonsglasstint.com/sitemap.xml

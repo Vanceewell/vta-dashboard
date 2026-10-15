@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Window Tinting Ladera Ranch | Jason's Glass Tint",
     description: "Serving Ladera Ranch with premium window film installation. Residential, automotive, and commercial tinting by Jason himself. No subcontractors.",
-    url: 'https://jasonsglasstint.com/ladera-ranch-window-tint',
+    url: 'https://www.jasonsglasstint.com/ladera-ranch-window-tint',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/ladera-ranch-window-tint' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/ladera-ranch-window-tint' },
 };
 
 export default function Page() {

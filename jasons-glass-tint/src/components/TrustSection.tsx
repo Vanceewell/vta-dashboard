@@ -13,7 +13,9 @@ const STATS = [
 ];
 
 function CountUp({ target, suffix }: { target: number; suffix: string }) {
-  const [count, setCount] = useState(0);
+  // Start at the real number so the server HTML (what Google reads) shows
+  // "40+" / "100K+" instead of "0+"; the count-up restarts from 0 on scroll.
+  const [count, setCount] = useState(target);
   const ref               = useRef<HTMLSpanElement>(null);
   const inView            = useInView(ref, { once: true, margin: '-60px' });
 
@@ -24,6 +26,7 @@ function CountUp({ target, suffix }: { target: number; suffix: string }) {
     const step     = target / steps;
     let current    = 0;
     let frame      = 0;
+    setCount(0);
     const timer = setInterval(() => {
       frame++;
       current = Math.min(target, Math.round(step * frame));

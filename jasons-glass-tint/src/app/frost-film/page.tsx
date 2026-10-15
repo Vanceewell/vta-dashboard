@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Frost Film & Privacy Window Film | Jason's Glass Tint",
     description: "Frosted privacy film for bathrooms, office glass, and residential windows. Natural light in, unwanted sightlines out. 40+ years of professional installation.",
-    url: 'https://jasonsglasstint.com/frost-film',
+    url: 'https://www.jasonsglasstint.com/frost-film',
   },
-  alternates: { canonical: 'https://jasonsglasstint.com/frost-film' },
+  alternates: { canonical: 'https://www.jasonsglasstint.com/frost-film' },
 };
 
 export default function Page() {
