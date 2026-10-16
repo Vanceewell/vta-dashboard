@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { fetchSiteImages, type SiteImageMap } from '@/lib/siteImages';
+import { SITE_IMAGE_URLS } from '@/lib/siteImageSnapshot';
 
 const IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
 function useImageOverrides() {
   const [legacyImgs, setLegacyImgs] = useState<Record<string, string>>({});
-  const [supabaseImgs, setSupabaseImgs] = useState<SiteImageMap>({});
+  const [supabaseImgs, setSupabaseImgs] = useState<SiteImageMap>(SITE_IMAGE_URLS);
   useEffect(() => {
     // Legacy localStorage fallback
     try {

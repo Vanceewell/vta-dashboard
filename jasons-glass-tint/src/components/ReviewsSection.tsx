@@ -59,10 +59,12 @@ export default function ReviewsSection() {
   const next = useCallback(() => setIdx((p) => (p + 1) % REVIEWS.length), []);
   const prev = useCallback(() => setIdx((p) => (p - 1 + REVIEWS.length) % REVIEWS.length), []);
 
+  const [paused, setPaused] = useState(false);
   useEffect(() => {
+    if (paused) return;
     const timer = setInterval(next, 6000);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, paused]);
 
   const r = REVIEWS[idx];
 
@@ -87,7 +89,13 @@ export default function ReviewsSection() {
         </motion.div>
 
         {/* Carousel */}
-        <div className="relative">
+        <div
+          className="relative"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={idx}
@@ -99,8 +107,7 @@ export default function ReviewsSection() {
             >
               <div className="flex items-center gap-3 mb-6">
                 <Stars n={r.stars} />
-                <span className="font-sans text-jgt-muted text-xs">Verified Customer</span>
-              </div>
+                              </div>
 
               <blockquote className="font-display italic text-jgt-text leading-relaxed mb-8"
                 style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)' }}>
@@ -138,6 +145,13 @@ export default function ReviewsSection() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
           </div>
+        </div>
+
+        <div className="text-center mt-10 font-sans text-sm text-jgt-muted">
+          Rated 4.7 out of 5 from 35 reviews on Google.{' '}
+          <a href="https://www.google.com/maps?cid=10756109855489898423" target="_blank" rel="noopener noreferrer" className="text-jgt-gold hover:underline">
+            Read them all or leave a review
+          </a>
         </div>
       </div>
     </section>

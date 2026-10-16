@@ -14,8 +14,14 @@ import ServiceAreaSection from '@/components/ServiceAreaSection';
 import CTASection        from '@/components/CTASection';
 import Footer            from '@/components/Footer';
 import FloatingCTA       from '@/components/FloatingCTA';
+import { loadGallery }   from '@/lib/galleryStorage';
 
-export default function HomePage() {
+// Gallery photos are fetched on the server (refreshed hourly) so they are in
+// the HTML Google reads instead of appearing only after JavaScript runs.
+export const revalidate = 3600;
+
+export default async function HomePage() {
+  const gallery = await loadGallery().catch(() => []);
   return (
     <>
       <Navigation />
@@ -24,7 +30,7 @@ export default function HomePage() {
         <TrustSection />
         <ServicesSection />
         <AboutSection />
-        <GallerySection />
+        <GallerySection initialItems={gallery} />
         <FilmBenefitsSection />
         <ReviewsSection />
         <ProcessSection />

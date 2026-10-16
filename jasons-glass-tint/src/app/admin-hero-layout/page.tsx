@@ -26,6 +26,7 @@ import {
 } from '@/lib/galleryStorage';
 import {
   fetchSiteImages,
+  fetchSiteImagesLive,
   uploadSiteImage,
   deleteSiteImage,
   processSiteImageFile,
@@ -184,7 +185,7 @@ export default function AdminHeroLayout() {
   useEffect(() => {
     try { setCfg(loadHeroConfig()); } catch { /* fall back to DEFAULT_CONFIG */ }
     // Load site images from Supabase
-    fetchSiteImages().then(({ urls }) => setSiteImageUrls(urls)).catch(() => {});
+    fetchSiteImagesLive().then(({ urls }) => setSiteImageUrls(urls)).catch(() => {});
     // Load gallery from Supabase
     setGalleryLoading(true);
     loadGallery().then((items) => {

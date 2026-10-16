@@ -2,9 +2,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { fetchSiteImages } from '@/lib/siteImages';
+import { SITE_IMAGE_URLS } from '@/lib/siteImageSnapshot';
 import { trackTextJasonClick, trackPhoneCallClick } from '@/lib/gtag';
 
-const CTA_BG_DEFAULT = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80';
+const CTA_BG_DEFAULT = SITE_IMAGE_URLS.ctaBackground ?? 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80';
 
 export default function CTASection() {
   const [bgUrl, setBgUrl] = useState(CTA_BG_DEFAULT);

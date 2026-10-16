@@ -83,11 +83,13 @@ interface RenderItem extends GalleryItem {
   tall: boolean;
 }
 
-export default function GallerySection() {
+export default function GallerySection({ initialItems = [] }: { initialItems?: GalleryItem[] }) {
   const [active,   setActive]   = useState<GalleryCategory>('All Projects');
   const [lightbox, setLightbox] = useState<string | null>(null);
-  const [items,    setItems]    = useState<RenderItem[]>([]);
-  const [loaded,   setLoaded]   = useState(false);
+  const [items,    setItems]    = useState<RenderItem[]>(
+    initialItems.map((item, i) => ({ ...item, tall: i % 3 === 0 })),
+  );
+  const [loaded,   setLoaded]   = useState(initialItems.length > 0);
 
   useEffect(() => {
     // loadGallery() fetches from Supabase — returns public URLs that work everywhere

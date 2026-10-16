@@ -58,6 +58,8 @@ const localBusinessSchema = {
     '@type':           'PostalAddress',
     addressLocality:   'San Clemente',
     addressRegion:     'CA',
+    streetAddress:     '23 Via Conocido',
+    postalCode:        '92673',
     addressCountry:    'US',
   },
   geo: {
@@ -86,6 +88,8 @@ const localBusinessSchema = {
     ],
   },
   foundingDate: '1989',
+  sameAs:       ['https://www.google.com/maps?cid=10756109855489898423'],
+  hasMap:       'https://www.google.com/maps?cid=10756109855489898423',
   priceRange:   '$$',
 };
 

@@ -57,6 +57,10 @@ export default function Page() {
           q: 'How long should I wait to roll down my windows?',
           a: 'Typically a couple days.',
         },
+        {
+          q: 'Is window tint legal in California?',
+          a: 'Yes, within limits. California Vehicle Code 26708 restricts tint on the windshield and front side windows, while rear side and back windows can be darker. Jason will tell you what is legal for your vehicle before he installs anything. Medical exemptions require a signed letter from your doctor.',
+        },
       ]}
       relatedLinks={[
         { label: 'San Clemente Tint',  href: '/san-clemente-window-tint'  },

@@ -3,9 +3,10 @@ import { trackTextJasonClick } from '@/lib/gtag';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { fetchSiteImages } from '@/lib/siteImages';
+import { SITE_IMAGE_URLS } from '@/lib/siteImageSnapshot';
 
 const IMAGE_STORAGE_KEY = 'jgt_image_overrides_v1';
-const ABOUT_PORTRAIT_DEFAULT = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80';
+const ABOUT_PORTRAIT_DEFAULT = SITE_IMAGE_URLS.aboutPortrait ?? 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80';
 
 // AI-EDITABLE: about content
 const COMMITMENTS = [

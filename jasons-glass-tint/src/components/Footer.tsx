@@ -126,6 +126,8 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="font-sans text-jgt-muted text-xs">
             &copy; {year} Jason's Glass Tint. All rights reserved. San Clemente, California.
+            {' · '}<Link href="/privacy" className="hover:text-jgt-gold">Privacy</Link>
+            {' · '}<Link href="/accessibility" className="hover:text-jgt-gold">Accessibility</Link>
           </p>
           <p className="font-sans text-jgt-gold/60 text-xs tracking-wide italic">
             One town, one tint.

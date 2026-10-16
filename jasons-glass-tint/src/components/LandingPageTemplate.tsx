@@ -6,6 +6,7 @@ import Navigation from './Navigation';
 import Footer from './Footer';
 import FloatingCTA from './FloatingCTA';
 import { fetchSiteImages, type SiteImageSlot } from '@/lib/siteImages';
+import { SITE_IMAGE_URLS } from '@/lib/siteImageSnapshot';
 import { trackTextJasonClick, trackPhoneCallClick } from '@/lib/gtag';
 
 export interface FAQ     { q: string; a: string; }
@@ -26,7 +27,7 @@ export interface LPProps {
 }
 
 export default function LandingPageTemplate({ hero, intro, sections, benefits, benefitsHeading, faqs, relatedLinks }: LPProps) {
-  const [heroImgUrl, setHeroImgUrl] = useState(hero.img);
+  const [heroImgUrl, setHeroImgUrl] = useState((hero.slot && SITE_IMAGE_URLS[hero.slot]) || hero.img);
 
   useEffect(() => {
     if (!hero.slot) return;

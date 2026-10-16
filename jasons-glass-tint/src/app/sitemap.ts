@@ -20,6 +20,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/ladera-ranch-window-tint',       priority: 0.8,  changeFrequency: 'monthly' as const },
     { path: '/camp-pendleton-window-tint',     priority: 0.8,  changeFrequency: 'monthly' as const },
     { path: '/ranch-mission-viejo-window-tint', priority: 0.8,  changeFrequency: 'monthly' as const },
+    { path: '/privacy',                        priority: 0.2,  changeFrequency: 'yearly'  as const },
+    { path: '/accessibility',                  priority: 0.2,  changeFrequency: 'yearly'  as const },
   ];
 
   return routes.map(({ path, priority, changeFrequency }) => ({

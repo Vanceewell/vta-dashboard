@@ -28,6 +28,7 @@
 
 import { supabase, STORAGE_BUCKET, isSupabaseConfigured } from './supabase';
 import type { ImageFraming } from './galleryStorage';
+import { SITE_IMAGE_URLS, SITE_IMAGE_FRAMING } from './siteImageSnapshot';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Named image slots
@@ -145,7 +146,18 @@ function isTableMissingError(error: { code?: string; message?: string }): boolea
   );
 }
 
+/**
+ * Public pages read the repo snapshot (siteImageSnapshot.ts): no network, no
+ * Supabase dependency. Admin tools use fetchSiteImagesLive().
+ */
 export async function fetchSiteImages(): Promise<{
+  urls:    SiteImageMap;
+  framing: SiteFramingMap;
+}> {
+  return { urls: { ...SITE_IMAGE_URLS }, framing: { ...SITE_IMAGE_FRAMING } };
+}
+
+export async function fetchSiteImagesLive(): Promise<{
   urls:    SiteImageMap;
   framing: SiteFramingMap;
 }> {

@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 // AI-EDITABLE: trust stats
-const STATS = [
+// `text` shows a fixed value instead of a count-up (e.g. a decimal rating).
+const STATS: { value: number; suffix: string; label: string; sub: string; text?: string }[] = [
   { value: 40,       suffix: '+',  label: 'Years Experience',          sub: 'Hands-on since 1989'               },
   { value: 100000,   suffix: '+',  label: 'Windows Tinted',            sub: 'Across San Clemente & OC'          },
   { value: 0,        suffix: '',   label: 'Subcontractors',            sub: 'Jason installs every job himself'   },
-  { value: 5,        suffix: '-Star Reviews', label: '',              sub: 'From all customers'                 },
+  { value: 0,        suffix: '',   label: 'Google Rating',             sub: '35 Google reviews', text: '4.7★'   },
   { value: 100,      suffix: '%',  label: 'Premium Film',              sub: 'No cheap film, ever'                },
   { value: 1,        suffix: '',   label: 'Installer',                 sub: 'No rotating crews, no surprises'   },
 ];
@@ -82,7 +83,7 @@ export default function TrustSection() {
                 className="font-display font-light text-jgt-gold leading-none mb-3"
                 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
               >
-                <CountUp target={stat.value} suffix={stat.suffix} />
+                {stat.text ?? <CountUp target={stat.value} suffix={stat.suffix} />}
               </div>
               <div className="font-sans text-jgt-text text-sm tracking-wider uppercase font-500 mb-1">
                 {stat.label}
