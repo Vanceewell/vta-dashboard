@@ -27,7 +27,6 @@ const QUICK_LINKS = [
   { label: 'Gallery',       href: '#gallery'          },
   { label: 'Reviews',       href: '#reviews'          },
   { label: 'Process',       href: '#process'          },
-  { label: 'Upload Photos', href: '/admin-gallery'    },
 ];
 
 export default function Footer() {
