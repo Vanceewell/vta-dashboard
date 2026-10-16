@@ -88,7 +88,7 @@ const localBusinessSchema = {
     ],
   },
   foundingDate: '1989',
-  sameAs:       ['https://www.google.com/maps?cid=10756109855489898423'],
+  sameAs:       ['https://www.google.com/maps?cid=10756109855489898423', 'https://www.yelp.com/biz/jasons-glass-tint-san-clemente', 'https://www.facebook.com/talegatint/'],
   hasMap:       'https://www.google.com/maps?cid=10756109855489898423',
   priceRange:   '$$',
 };
