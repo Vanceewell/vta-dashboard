@@ -8,7 +8,7 @@ const STATS: { value: number; suffix: string; label: string; sub: string; text?:
   { value: 40,       suffix: '+',  label: 'Years Experience',          sub: 'Hands-on since 1989'               },
   { value: 100000,   suffix: '+',  label: 'Windows Tinted',            sub: 'Across San Clemente & OC'          },
   { value: 0,        suffix: '',   label: 'Subcontractors',            sub: 'Jason installs every job himself'   },
-  { value: 0,        suffix: '',   label: 'Google Rating',             sub: '35 Google reviews', text: '4.7★'   },
+  { value: 5,        suffix: '-Star Reviews', label: '',              sub: 'From all customers'                 },
   { value: 100,      suffix: '%',  label: 'Premium Film',              sub: 'No cheap film, ever'                },
   { value: 1,        suffix: '',   label: 'Installer',                 sub: 'No rotating crews, no surprises'   },
 ];
