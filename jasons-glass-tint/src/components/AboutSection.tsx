@@ -98,9 +98,9 @@ export default function AboutSection() {
 
             <div className="space-y-5 font-sans font-light text-jgt-muted leading-relaxed text-[0.95rem]">
               <p>
-                Jason started tinting windows in high school — not as a job, but as a craft. Over
-                40 years later, he still approaches every installation with the same obsessive
-                attention to detail he had on day one.
+                Jason started tinting windows in 1985, at 15 — not as a job, but as a craft. He
+                opened Jason's Glass Tint in 1989, and over 40 years later he still approaches every
+                installation with the same obsessive attention to detail he had on day one.
               </p>
               <p>
                 Unlike larger shops with rotating crews and upsell-driven counter staff, Jason keeps

@@ -1,35 +1,18 @@
 'use client';
 import { trackTextJasonClick } from '@/lib/gtag';
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { motion } from 'framer-motion';
 
 // AI-EDITABLE: film benefits data
 const BENEFITS = [
-  { label: 'Heat Rejection',       pct: 80, desc: 'Block up to 80% of heat for a dramatically cooler interior.' },
-  { label: 'UV Protection',        pct: 99, desc: 'Block 99.9% of harmful UV rays — the leading cause of interior fade and skin damage.' },
-  { label: 'Interior Protection',  pct: 87, desc: 'Protect leather, plastics, and upholstery from sun-related cracking and discoloration.' },
-  { label: 'Glare Reduction',      pct: 90, desc: 'Reduce eye strain and improve visibility on Southern California\'s bright coastal roads.' },
-  { label: 'Privacy & Security',   pct: 80, desc: 'Premium tint adds a discreet layer of privacy without compromising outward visibility.' },
-  { label: 'Energy Efficiency',    pct: 75, desc: 'Reduce A/C load in vehicles and reduce HVAC costs in homes and commercial buildings.' },
-  { label: 'Appearance',           pct: 95, desc: 'A clean, factory-look tint finish transforms the entire look of any vehicle or building.' },
-  { label: 'Safety Film Strength', pct: 88, desc: 'Shatter-resistant safety film holds glass together on impact, protecting occupants.' },
+  { label: 'Heat Rejection', desc: 'Reject much of the sun\'s heat for a dramatically cooler interior.' },
+  { label: 'UV Protection', desc: 'Block 99.9% of harmful UV rays — the leading cause of interior fade and skin damage.' },
+  { label: 'Interior Protection', desc: 'Protect leather, plastics, and upholstery from sun-related cracking and discoloration.' },
+  { label: 'Glare Reduction', desc: 'Reduce eye strain and improve visibility on Southern California\'s bright coastal roads.' },
+  { label: 'Privacy & Security', desc: 'Premium tint adds a discreet layer of privacy without compromising outward visibility.' },
+  { label: 'Energy Efficiency', desc: 'Reduce A/C load in vehicles and reduce HVAC costs in homes and commercial buildings.' },
+  { label: 'Appearance', desc: 'A clean, factory-look tint finish transforms the entire look of any vehicle or building.' },
+  { label: 'Safety Film Strength', desc: 'Shatter-resistant safety film holds glass together on impact, protecting occupants.' },
 ];
-
-function BarMeter({ pct, delay }: { pct: number; delay: number }) {
-  const ref    = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
-
-  return (
-    <div ref={ref} className="h-[3px] bg-jgt-border relative overflow-hidden">
-      <motion.div
-        className="absolute left-0 top-0 h-full bg-gradient-to-r from-jgt-gold to-jgt-gold-light"
-        initial={{ width: 0 }}
-        animate={inView ? { width: `${pct}%` } : { width: 0 }}
-        transition={{ duration: 1.2, delay, ease: [0.25, 0.1, 0, 1] }}
-      />
-    </div>
-  );
-}
 
 export default function FilmBenefitsSection() {
   return (
@@ -67,11 +50,10 @@ export default function FilmBenefitsSection() {
               transition={{ duration: 0.6, delay: (i % 2) * 0.12 }}
               className="glass-light p-6"
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="w-6 h-[1px] bg-jgt-gold" />
                 <span className="font-sans text-jgt-text text-sm font-500 tracking-wide">{b.label}</span>
-                <span className="font-display text-jgt-gold text-xl">{b.pct}%</span>
               </div>
-              <BarMeter pct={b.pct} delay={0.2 + (i % 2) * 0.1} />
               <p className="font-sans text-jgt-muted text-xs leading-relaxed mt-3">{b.desc}</p>
             </motion.div>
           ))}
